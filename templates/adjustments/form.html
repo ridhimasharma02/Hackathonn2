@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}StockSense - Issue Count Sheet{% endblock %}
+
+{% block breadcrumb %}
+  <span class="hover:text-on-surface cursor-pointer">Operations</span>
+  <span class="text-outline-variant">/</span>
+  <a href="/adjustments" class="hover:text-on-surface">Inventory Adjustments</a>
+  <span class="text-outline-variant">/</span>
+  <span class="font-body-medium text-on-surface">Issue Count Sheet</span>
+{% endblock %}
+
+{% block content %}
+<div class="p-6 max-w-5xl mx-auto w-full space-y-4">
+  <div class="flex items-center justify-between bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-surface-container-highest">
+    <div>
+      <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Issue Physical Count Sheet</h1>
+      <p class="font-body-default text-body-default text-on-surface-variant mt-0.5">Define audit scope, location, and assign warehouse staff for blind cycle counting.</p>
+    </div>
+    <a href="/adjustments" class="h-8 px-3 rounded-lg border border-surface-container-highest text-on-surface hover:bg-surface-container font-body-medium text-body-medium transition-colors flex items-center gap-1">
+      <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+      <span>Back</span>
+    </a>
+  </div>
+
+  <form method="POST" action="/adjustments/new" class="space-y-4">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+    <!-- Metadata Section -->
+    <div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm border border-surface-container-highest space-y-4">
+      <h2 class="font-headline-sm text-headline-sm text-on-surface border-b border-surface-container-highest pb-2 flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[18px] text-tertiary">assignment</span>
+        Audit Session Details
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-table-header text-table-header uppercase text-on-surface-variant mb-1">Sheet Title / Audit Name *</label>
+          <input type="text" name="title" required placeholder="e.g. Zone B Quarterly Routine Review" class="w-full h-9 px-3 bg-surface-container-low rounded-lg border border-surface-container-highest text-body-default text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container"/>
+        </div>
+
+        <div>
+          <label class="block font-table-header text-table-header uppercase text-on-surface-variant mb-1">Audit Location *</label>
+          <div class="relative">
+            <select name="location_id" required class="w-full h-9 pl-3 pr-8 bg-surface-container-low rounded-lg border border-surface-container-highest text-body-default text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container appearance-none cursor-pointer">
+              <option value="">Select location to audit...</option>
+              {% for loc in locations %}
+              <option value="{{ loc.id }}">{{ loc.warehouse.name }} - {{ loc.name }} ({{ loc.code }})</option>
+              {% endfor %}
+            </select>
+            <span class="material-symbols-outlined pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[16px] text-outline">expand_more</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-table-header text-table-header uppercase text-on-surface-variant mb-1">Assigned Auditor / Staff</label>
+          <div class="relative">
+            <select name="assigned_to_id" class="w-full h-9 pl-3 pr-8 bg-surface-container-low rounded-lg border border-surface-container-highest text-body-default text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container appearance-none cursor-pointer">
+              <option value="">Assign staff member (optional)...</option>
+              {% for member in staff_members %}
+              <option value="{{ member.id }}">{{ member.name }} ({{ member.role }})</option>
+              {% endfor %}
+            </select>
+            <span class="material-symbols-outlined pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[16px] text-outline">expand_more</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-table-header text-table-header uppercase text-on-surface-variant mb-1">Notes / Instructions</label>
+          <input type="text" name="notes" placeholder="e.g. Recount twice if discrepancy observed." class="w-full h-9 px-3 bg-surface-container-low rounded-lg border border-surface-container-highest text-body-default text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products to Count Selection -->
+    <div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm border border-surface-container-highest space-y-4">
+      <div class="flex items-center justify-between border-b border-surface-container-highest pb-2">
+        <div>
+          <h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px] text-tertiary">inventory_2</span>
+            Select Products for Blind Count Sheet *
+          </h2>
+          <p class="font-meta-default text-[12px] text-on-surface-variant mt-0.5">Staff will perform a blind count without knowing existing ledger quantities.</p>
+        </div>
+        <button type="button" onclick="toggleAllProducts()" class="text-meta-medium text-tertiary hover:underline text-[12px]">Select / Deselect All</button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {% for p in products %}
+        <label class="p-3 bg-surface-container-low rounded-lg border border-surface-container-highest flex items-start gap-2.5 cursor-pointer hover:bg-surface-container transition-colors">
+          <input type="checkbox" name="product_ids[]" value="{{ p.id }}" class="prod-checkbox mt-0.5 w-4 h-4 accent-[#1e3a66] rounded cursor-pointer"/>
+          <div class="min-w-0">
+            <div class="font-body-medium text-body-medium text-on-surface truncate">{{ p.name }}</div>
+            <div class="font-code-default text-[11px] text-on-surface-variant">SKU: {{ p.sku }} · Unit: {{ p.uom }}</div>
+          </div>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Submit bar -->
+    <div class="flex items-center justify-end gap-3 pt-2">
+      <a href="/adjustments" class="h-9 px-4 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-body-medium text-body-medium transition-colors">Cancel</a>
+      <button type="submit" class="h-9 px-5 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-body-medium text-body-medium shadow-sm transition-colors flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[17px]">send</span>
+        <span>Issue Count Sheet</span>
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+function toggleAllProducts() {
+  const boxes = document.querySelectorAll('.prod-checkbox');
+  const allChecked = Array.from(boxes).every(b => b.checked);
+  boxes.forEach(b => b.checked = !allChecked);
+}
+</script>
+{% endblock %}

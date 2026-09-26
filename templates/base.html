@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="web_dashboard" name="shell-type"/>
+  <title>{% block title %}StockSense - WMS Core{% endblock %}</title>
+
+  <!-- Google Material Symbols Outlined -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+
+  <!-- Google Fonts: IBM Plex Sans & JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Exact Tailwind Configuration from Stitch Design System -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "outline": "#747780",
+            "on-tertiary-container": "#869fff",
+            "surface-dim": "#d9dadc",
+            "on-surface": "#191c1e",
+            "on-primary-container": "#8ba5d7",
+            "primary-container": "#1e3a66",
+            "on-primary": "#ffffff",
+            "secondary": "#525e7b",
+            "on-tertiary": "#ffffff",
+            "on-primary-fixed-variant": "#2c4773",
+            "on-tertiary-fixed": "#001551",
+            "tertiary-fixed": "#dce1ff",
+            "surface-variant": "#e1e2e4",
+            "surface": "#f8f9fb",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed": "#0e1b35",
+            "surface-tint": "#445e8d",
+            "surface-container-highest": "#e1e2e4",
+            "primary-fixed-dim": "#adc7fb",
+            "primary-fixed": "#d7e3ff",
+            "on-secondary-container": "#54617e",
+            "on-error-container": "#93000a",
+            "surface-container-lowest": "#ffffff",
+            "error": "#ba1a1a",
+            "inverse-surface": "#2e3132",
+            "surface-container": "#edeef0",
+            "on-secondary-fixed-variant": "#3a4663",
+            "error-container": "#ffdad6",
+            "on-background": "#191c1e",
+            "on-primary-fixed": "#001b3f",
+            "secondary-container": "#d0dcff",
+            "surface-container-high": "#e7e8ea",
+            "on-surface-variant": "#44474f",
+            "secondary-fixed": "#d8e2ff",
+            "secondary-fixed-dim": "#bac6e8",
+            "tertiary-fixed-dim": "#b7c4ff",
+            "outline-variant": "#c4c6d0",
+            "tertiary": "#001c66",
+            "on-tertiary-fixed-variant": "#0039b5",
+            "surface-container-low": "#f3f4f6",
+            "inverse-on-surface": "#f0f1f3",
+            "tertiary-container": "#002e98",
+            "primary": "#01244f",
+            "background": "#f8f9fb",
+            "surface-bright": "#f8f9fb",
+            "on-error": "#ffffff",
+            "inverse-primary": "#adc7fb"
+          },
+          borderRadius: {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          spacing: {
+            "space-sm": "0.375rem",
+            "space-xs": "0.25rem",
+            "margin": "1rem",
+            "gutter": "0.75rem",
+            "space-md": "0.5rem",
+            "space-lg": "0.75rem",
+            "space-xl": "1rem"
+          },
+          fontFamily: {
+            "meta-default": ["IBM Plex Sans"],
+            "body-default": ["IBM Plex Sans"],
+            "meta-medium": ["IBM Plex Sans"],
+            "headline-lg": ["IBM Plex Sans"],
+            "table-header": ["IBM Plex Sans"],
+            "headline-md": ["IBM Plex Sans"],
+            "body-medium": ["IBM Plex Sans"],
+            "code-default": ["JetBrains Mono"],
+            "headline-sm": ["IBM Plex Sans"],
+            "code-medium": ["JetBrains Mono"]
+          },
+          fontSize: {
+            "meta-default": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-default": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "meta-medium": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "headline-lg": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "table-header": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "headline-md": ["15px", { "lineHeight": "20px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "body-medium": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "code-default": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "headline-sm": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "code-medium": ["12px", { "lineHeight": "16px", "fontWeight": "500" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface font-body-default text-body-default text-on-surface antialiased">
+  
+  {% if current_user.is_authenticated %}
+    <!-- Sidebar -->
+    {% include 'partials/sidebar.html' %}
+
+    <!-- Main Container offset by sidebar width (248px) -->
+    <div class="pl-[248px]">
+      
+      <!-- Topbar Header -->
+      {% include 'partials/topbar.html' %}
+
+      <!-- Main Operational Surface -->
+      <main class="w-full pt-12 min-h-screen bg-surface-container-low max-w-full">
+        <!-- Flashed Messages -->
+        {% include 'partials/alerts.html' %}
+
+        <!-- Page Content -->
+        {% block content %}{% endblock %}
+
+        <!-- Sticky Footer / Action Bar if present -->
+        {% block footer %}{% endblock %}
+      </main>
+
+    </div>
+
+    <!-- Modals -->
+    {% block modals %}{% endblock %}
+
+  {% else %}
+    <!-- Non-authenticated pages (e.g. login/register) use full-width -->
+    {% block public_content %}{% endblock %}
+  {% endif %}
+
+  <!-- Core Scripts -->
+  <script src="/static/js/stocksense.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

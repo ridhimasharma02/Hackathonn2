@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="web_dashboard" name="shell-type"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: "#1E3A66",
+              sidebar: "#13203A",
+              bg: "#F4F5F7",
+              surface: "#FFFFFF",
+              border: "#E1E4E9",
+              text: "#1B2230",
+              secondary: "#4D5667",
+              muted: "#7C8595"
+            }
+          },
+          fontFamily: {
+            sans: ['"IBM Plex Sans"', 'sans-serif'],
+            mono: ['"IBM Plex Mono"', 'monospace']
+          },
+          borderRadius: {
+            'DEFAULT': '4px',
+            'sm': '2px',
+            'md': '4px',
+            'lg': '6px',
+            'xl': '8px'
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-brand-bg font-sans text-[13px] text-brand-text antialiased">
+<!-- Sidebar -->
+<aside class="fixed left-0 top-0 h-full w-[248px] bg-brand-sidebar z-50 flex flex-col justify-between border-r border-[#1e2c4a]">
+<div class="flex flex-col h-[calc(100%-61px)]">
+<!-- App Brand -->
+<div class="h-12 px-4 border-b border-[#1e2c4a] flex items-center gap-2.5 shrink-0">
+        https://lh3.googleusercontent.com/aida/AEtjO1VoUThKarn-BLG7s9pDBN2x7XZsgmKeQyJ3QhheHvgqXD5Npijwbbkm6l65NfG3QiWIXYa-PbwtQsMWms52rT1oB-tR2Eo_3GMInyX75I1kvgoqY65fILVRWDxiIpG46hg1ip-IkSq2PIgsDwartWbLPoLsltDQU3cC5mWjk6Z_VE03WZ8J3pfV2DwjIxhwaDsOt2fMEHkqQU3gKD2S8cRBRgXDixBk3Wrc8P9T4inHfFJXvZlWjX8CJV8
+        <span class="font-bold text-[15px] text-white tracking-tight">StockSense</span>
+</div>
+<!-- Navigation links -->
+<div class="flex-1 overflow-y-auto py-3 px-2 space-y-4">
+<section>
+<div>
+<span class="block px-2.5 py-1 text-[10px] font-semibold text-slate-400 tracking-wider uppercase">Overview</span>
+</div>
+<nav class="space-y-0.5 mt-1">
+<a aria-current="page" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded bg-white/10 text-white font-medium border-l-[3px] border-blue-400" href="#">
+<span class="material-symbols-outlined text-[18px]">dashboard</span>
+<span class="truncate">Dashboard</span>
+</a>
+</nav>
+</section>
+<section>
+<div>
+<span class="block px-2.5 py-1 text-[10px] font-semibold text-slate-400 tracking-wider uppercase">Inventory</span>
+</div>
+<nav class="space-y-0.5 mt-1">
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded text-slate-300 hover:bg-white/5 hover:text-white transition-colors" href="#">
+<div class="flex items-center gap-2.5 truncate">
+<span class="material-symbols-outlined text-[18px]">inventory_2</span>
+<span class="truncate">Products</span>
+</div>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded text-slate-300 hover:bg-white/5 hover:text-white transition-colors" href="#">
+<div class="flex items-center gap-2.5 truncate">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+<span class="truncate">Inventory Adjustments</span>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-amber-500/20 text-amber-300 font-medium">3</span>
+</a>
+</nav>
+</section>
+<section>
+<div>
+<span class="block px-2.5 py-1 text-[10px] font-semibold text-slate-400 tracking-wider uppercase">Operations</span>
+</div>
+<nav class="space-y-0.5 mt-1">
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded text-slate-300 hover:bg-white/5 hover:text-white transition-colors" href="#">
+<div class="flex items-center gap-2.5 truncate">
+<span class="material-symbols-outlined text-[18px]">move_to_inbox</span>
+<span class="truncate">Receipts</span>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-blue-500/20 text-blue-300 font-medium">3</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded text-slate-300 hover:bg-white/5 hover:text-white transition-colors" href="#">
+<div class="flex items-center gap-2.5 truncate">
+<span class="material-symbols-outlined text-[18px]">local_shipping</span>
+<span class="truncate">Delivery Orders</span>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 font-medium">5</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded text-slate-300 hover:bg-white/5 hover:text-white transition-colors" href="#">
+<div class="flex items-center gap-2.5 truncate">
+<span class="material-symbols-outlined text-[18px]">compare_arrows</span>
+<span class="truncate">Internal Transfers</span>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-amber-500/20 text-amber-300 font-medium">2</span>
+</a>
+</nav>
+</section>
+<section>
+<div>
+<span class="block px-2.5 py-1 text-[10px] font-semibold text-slate-400 tracking-wider uppercase">Reporting</span>
+</div>
+<nav class="space-y-0.5 mt-1">
+<a class="flex items-center gap-2.5 px-2.5 py-1.5 rounded text-slate-300 hover:bg-white/5 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">history</span>
+<span class="truncate">Move History</span>
+</a>
+<a class="flex items-center gap-2.5 px-2.5 py-1.5 rounded text-slate-300 hover:bg-white/5 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">bar_chart</span>
+<span class="truncate">Stock Valuation</span>
+</a>
+</nav>
+</section>
+<section>
+<div>
+<span class="block px-2.5 py-1 text-[10px] font-semibold text-slate-400 tracking-wider uppercase">Configuration</span>
+</div>
+<nav class="space-y-0.5 mt-1">
+<a class="flex items-center gap-2.5 px-2.5 py-1.5 rounded text-slate-300 hover:bg-white/5 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span class="truncate">Settings</span>
+</a>
+<a class="flex items-center gap-2.5 px-2.5 py-1.5 rounded text-slate-300 hover:bg-white/5 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">warehouse</span>
+<span class="truncate">Locations &amp; Warehouses</span>
+</a>
+</nav>
+</section>
+</div>
+</div>
+<!-- User Profile Footer -->
+<div class="h-[61px] border-t border-[#1e2c4a] px-3 py-2 flex items-center justify-between bg-black/20">
+<div class="flex items-center gap-2.5 min-w-0">
+<img alt="Ridhima Sharma" class="w-8 h-8 rounded-full object-cover border border-slate-600 shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1XIpaOCuc6uuRM_TpuILUY2Dqhwp4zvVW8HDqu9L5A2u72WUQH2R_UkaZ9ryuIydegYofyLIaesIMWYrYD8isVt_zIGlM68j2onzgk0TZ2ip0549oVOQpz51WzDnfehOi02E-c8DtDUIImJWAXdJ6bDT7CrFhDerxVOXiQybX4VXatKQBNFWCo-kM_QPaRAo-2-EYZDV_8F0dE0bO4MlVaMsDyS5AAVQFCYIQlD4i94vPYeac1wj29ZJQ"/>
+<div class="min-w-0 flex flex-col leading-tight">
+<span class="font-medium text-white truncate text-[12px]">Ridhima Sharma</span>
+<span class="text-[11px] text-slate-400 truncate">Inventory Manager</span>
+</div>
+</div>
+<button class="text-slate-400 hover:text-white transition-colors p-1 rounded" title="Sign Out" type="button">
+<span class="material-symbols-outlined text-[18px]">logout</span>
+</button>
+</div>
+</aside>
+<!-- Main Container -->
+<div class="pl-[248px]">
+<!-- Topbar Navigation -->
+<header class="fixed top-0 left-[248px] right-0 h-12 bg-brand-surface border-b border-brand-border z-40 px-5 flex items-center justify-between">
+<div class="flex items-center gap-3 shrink-0">
+<div class="flex items-center gap-1.5 text-[12px] text-brand-secondary">
+<span class="hover:text-brand-text cursor-pointer">Overview</span>
+<span class="text-brand-muted">/</span>
+<span class="font-medium text-brand-text">Dashboard</span>
+</div>
+<div class="h-4 w-px bg-brand-border"></div>
+<button class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-brand-bg text-brand-text text-[12px] font-medium border border-brand-border hover:bg-slate-100 transition-colors" type="button">
+<span class="material-symbols-outlined text-[15px] text-brand-secondary">store</span>
+<span>Main Warehouse (Pune Hub)</span>
+<span class="material-symbols-outlined text-[14px] text-brand-muted">expand_more</span>
+</button>
+</div>
+<!-- Quick Search -->
+<div class="w-80 relative">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-brand-muted">search</span>
+<input class="w-full h-8 pl-8 pr-7 bg-brand-bg rounded border border-brand-border text-[12px] text-brand-text placeholder:text-brand-muted focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary" placeholder="Search products, SKUs, references..." type="text"/>
+<span class="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-[10px] text-brand-muted bg-white px-1 py-0.5 rounded border border-brand-border">/</span>
+</div>
+<!-- Action items -->
+<div class="flex items-center gap-2.5 shrink-0">
+<button class="relative p-1.5 text-brand-secondary hover:text-brand-text rounded hover:bg-brand-bg transition-colors" title="Notifications" type="button">
+<span class="material-symbols-outlined text-[18px]">notifications</span>
+<span class="absolute top-1 right-1 w-3.5 h-3.5 bg-red-600 text-white font-mono text-[9px] rounded-full flex items-center justify-center leading-none">3</span>
+</button>
+<button class="p-1.5 text-brand-secondary hover:text-brand-text rounded hover:bg-brand-bg transition-colors" title="Help" type="button">
+<span class="material-symbols-outlined text-[18px]">help_outline</span>
+</button>
+<div class="h-4 w-px bg-brand-border mx-0.5"></div>
+<div class="flex items-center gap-1.5 cursor-pointer pl-1">
+<img alt="Ridhima Sharma" class="w-7 h-7 rounded-full object-cover border border-brand-border" src="https://lh3.googleusercontent.com/aida/AEtjO1XIpaOCuc6uuRM_TpuILUY2Dqhwp4zvVW8HDqu9L5A2u72WUQH2R_UkaZ9ryuIydegYofyLIaesIMWYrYD8isVt_zIGlM68j2onzgk0TZ2ip0549oVOQpz51WzDnfehOi02E-c8DtDUIImJWAXdJ6bDT7CrFhDerxVOXiQybX4VXatKQBNFWCo-kM_QPaRAo-2-EYZDV_8F0dE0bO4MlVaMsDyS5AAVQFCYIQlD4i94vPYeac1wj29ZJQ"/>
+<span class="material-symbols-outlined text-[14px] text-brand-secondary">arrow_drop_down</span>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="w-full pt-12 min-h-screen bg-brand-bg p-5 space-y-4">
+<!-- 1. Page Header & Action Buttons -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+<div>
+<h1 class="text-[18px] font-semibold text-[#1B2230] leading-none tracking-tight">Inventory overview</h1>
+</div>
+<div class="flex items-center gap-2">
+<!-- Secondary white button with grey border: "+ New receipt" -->
+<button class="h-8 px-3 rounded bg-white border border-brand-border text-[#1B2230] font-medium text-[12px] hover:bg-slate-50 transition-colors flex items-center gap-1 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[15px] text-brand-secondary">add</span>
+<span>New receipt</span>
+</button>
+<!-- Secondary white button with grey border: "+ New delivery" -->
+<button class="h-8 px-3 rounded bg-white border border-brand-border text-[#1B2230] font-medium text-[12px] hover:bg-slate-50 transition-colors flex items-center gap-1 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[15px] text-brand-secondary">add</span>
+<span>New delivery</span>
+</button>
+<!-- Primary deep navy button (#1E3A66 text white): "+ New product" -->
+<button class="h-8 px-3.5 rounded bg-[#1E3A66] text-white font-medium text-[12px] hover:bg-[#162c4e] transition-colors flex items-center gap-1 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[15px]">add</span>
+<span>New product</span>
+</button>
+</div>
+</div>
+<!-- 2. Six Compact KPI Cards in ONE single horizontal row (grid-cols-6, gap-3) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+<!-- Card 1: Products in stock -->
+<div class="bg-white border border-[#E1E4E9] rounded p-3 flex flex-col justify-between shadow-xs">
+<div class="flex items-start justify-between">
+<span class="text-[11px] font-medium uppercase tracking-wider text-brand-muted">Products in stock</span>
+<div class="w-6 h-6 rounded bg-emerald-50 text-emerald-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-[15px]">inventory_2</span>
+</div>
+</div>
+<div class="mt-1.5">
+<div class="text-[20px] font-semibold text-[#1B2230] leading-tight">7 / 8</div>
+<p class="text-[11px] text-brand-muted mt-0.5 truncate">87.5% catalog available</p>
+</div>
+</div>
+<!-- Card 2: Low stock -->
+<div class="bg-white border border-[#E1E4E9] rounded p-3 flex flex-col justify-between shadow-xs">
+<div class="flex items-start justify-between">
+<span class="text-[11px] font-medium uppercase tracking-wider text-brand-muted">Low stock</span>
+<div class="w-6 h-6 rounded bg-amber-50 text-amber-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-[15px]">warning</span>
+</div>
+</div>
+<div class="mt-1.5">
+<div class="text-[20px] font-semibold text-amber-600 leading-tight">2</div>
+<p class="text-[11px] text-brand-muted mt-0.5 truncate">Approaching reorder point</p>
+</div>
+</div>
+<!-- Card 3: Out of stock -->
+<div class="bg-white border border-[#E1E4E9] rounded p-3 flex flex-col justify-between shadow-xs">
+<div class="flex items-start justify-between">
+<span class="text-[11px] font-medium uppercase tracking-wider text-brand-muted">Out of stock</span>
+<div class="w-6 h-6 rounded bg-red-50 text-red-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-[15px]">error_outline</span>
+</div>
+</div>
+<div class="mt-1.5">
+<div class="text-[20px] font-semibold text-red-600 leading-tight">1</div>
+<p class="text-[11px] text-brand-muted mt-0.5 truncate">Critical reorder required</p>
+</div>
+</div>
+<!-- Card 4: Pending receipts -->
+<div class="bg-white border border-[#E1E4E9] rounded p-3 flex flex-col justify-between shadow-xs">
+<div class="flex items-start justify-between">
+<span class="text-[11px] font-medium uppercase tracking-wider text-brand-muted">Pending receipts</span>
+<div class="w-6 h-6 rounded bg-blue-50 text-blue-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-[15px]">call_received</span>
+</div>
+</div>
+<div class="mt-1.5">
+<div class="text-[20px] font-semibold text-[#1B2230] leading-tight">3</div>
+<p class="text-[11px] text-brand-muted mt-0.5 truncate">Inbound dock arrivals</p>
+</div>
+</div>
+<!-- Card 5: Pending deliveries -->
+<div class="bg-white border border-[#E1E4E9] rounded p-3 flex flex-col justify-between shadow-xs">
+<div class="flex items-start justify-between">
+<span class="text-[11px] font-medium uppercase tracking-wider text-brand-muted">Pending deliveries</span>
+<div class="w-6 h-6 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-[15px]">local_shipping</span>
+</div>
+</div>
+<div class="mt-1.5">
+<div class="text-[20px] font-semibold text-[#1B2230] leading-tight">5</div>
+<p class="text-[11px] text-brand-muted mt-0.5 truncate">Outbound customer dispatch</p>
+</div>
+</div>
+<!-- Card 6: Internal transfers -->
+<div class="bg-white border border-[#E1E4E9] rounded p-3 flex flex-col justify-between shadow-xs">
+<div class="flex items-start justify-between">
+<span class="text-[11px] font-medium uppercase tracking-wider text-brand-muted">Internal transfers</span>
+<div class="w-6 h-6 rounded bg-cyan-50 text-cyan-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-[15px]">sync_alt</span>
+</div>
+</div>
+<div class="mt-1.5">
+<div class="text-[20px] font-semibold text-[#1B2230] leading-tight">2</div>
+<p class="text-[11px] text-brand-muted mt-0.5 truncate">Plant floor movements</p>
+</div>
+</div>
+</div>
+<!-- 3. "Awaiting your validation" list section -->
+<div class="bg-white border border-[#E1E4E9] rounded-lg overflow-hidden shadow-xs">
+<div class="px-4 py-2.5 bg-[#FAFBFD] border-b border-[#E1E4E9] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<h2 class="text-[13px] font-semibold text-[#1B2230]">Awaiting your validation</h2>
+<span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200/60">3 pending actions</span>
+</div>
+<span class="text-[11px] text-brand-muted">Action required by Inventory Manager</span>
+</div>
+<div class="divide-y divide-[#E1E4E9]">
+<!-- Row 1 -->
+<div class="px-4 py-2.5 flex items-center justify-between hover:bg-[#F8F9FB] transition-colors cursor-pointer group">
+<div class="flex items-center gap-3 min-w-0">
+<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-wide">Receipt</span>
+<span class="font-mono text-[12px] font-medium text-brand-primary">REC-0005</span>
+<span class="text-[13px] text-brand-text truncate">Steel Rods 197 kg receipt from Metro Industrial Supplies</span>
+</div>
+<div class="flex items-center gap-3 shrink-0 ml-4">
+<span class="text-[11px] text-brand-muted">11:30 AM • Dock 1</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-medium bg-blue-50 text-blue-700">Ready to Validate</span>
+<span class="material-symbols-outlined text-[16px] text-brand-muted group-hover:text-brand-primary group-hover:translate-x-0.5 transition-all">chevron_right</span>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="px-4 py-2.5 flex items-center justify-between hover:bg-[#F8F9FB] transition-colors cursor-pointer group">
+<div class="flex items-center gap-3 min-w-0">
+<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-100 uppercase tracking-wide">Adjustment</span>
+<span class="font-mono text-[12px] font-medium text-brand-primary">ADJ-0014</span>
+<span class="text-[13px] text-brand-text truncate">Aluminum Sheets -3 sheets variance in Rack B-12</span>
+</div>
+<div class="flex items-center gap-3 shrink-0 ml-4">
+<span class="text-[11px] text-brand-muted">10:42 AM • Cycle Audit</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-medium bg-amber-50 text-amber-700">Audit Review</span>
+<span class="material-symbols-outlined text-[16px] text-brand-muted group-hover:text-brand-primary group-hover:translate-x-0.5 transition-all">chevron_right</span>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="px-4 py-2.5 flex items-center justify-between hover:bg-[#F8F9FB] transition-colors cursor-pointer group">
+<div class="flex items-center gap-3 min-w-0">
+<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase tracking-wide">Delivery</span>
+<span class="font-mono text-[12px] font-medium text-brand-primary">DO-0011</span>
+<span class="text-[13px] text-brand-text truncate">Horizon Interiors 18 Office Chairs dispatch release</span>
+</div>
+<div class="flex items-center gap-3 shrink-0 ml-4">
+<span class="text-[11px] text-brand-muted">02:00 PM • Staging Bay 2</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700">Picked &amp; Staged</span>
+<span class="material-symbols-outlined text-[16px] text-brand-muted group-hover:text-brand-primary group-hover:translate-x-0.5 transition-all">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. Filter Bar -->
+<div class="bg-white border border-[#E1E4E9] rounded p-2.5 flex flex-wrap items-center justify-between gap-2.5 shadow-xs">
+<div class="flex flex-wrap items-center gap-2">
+<!-- Document type -->
+<div class="relative">
+<select class="h-8 pl-2.5 pr-8 bg-brand-bg border border-brand-border rounded text-[12px] text-brand-text font-medium appearance-none focus:outline-none focus:border-brand-primary">
+<option>All document types</option>
+<option>Receipts</option>
+<option>Deliveries</option>
+<option>Adjustments</option>
+<option>Transfers</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-[14px] text-brand-muted pointer-events-none">expand_more</span>
+</div>
+<!-- Status -->
+<div class="relative">
+<select class="h-8 pl-2.5 pr-8 bg-brand-bg border border-brand-border rounded text-[12px] text-brand-text font-medium appearance-none focus:outline-none focus:border-brand-primary">
+<option>All statuses</option>
+<option>Draft</option>
+<option>Ready</option>
+<option>Waiting</option>
+<option>Done</option>
+<option>Canceled</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-[14px] text-brand-muted pointer-events-none">expand_more</span>
+</div>
+<!-- Warehouse / location -->
+<div class="relative">
+<select class="h-8 pl-2.5 pr-8 bg-brand-bg border border-brand-border rounded text-[12px] text-brand-text font-medium appearance-none focus:outline-none focus:border-brand-primary">
+<option>All locations</option>
+<option>Main Warehouse</option>
+<option>Rack A</option>
+<option>Rack B</option>
+<option>Warehouse 2 (Bulk)</option>
+<option>Production Floor</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-[14px] text-brand-muted pointer-events-none">expand_more</span>
+</div>
+<!-- Category -->
+<div class="relative">
+<select class="h-8 pl-2.5 pr-8 bg-brand-bg border border-brand-border rounded text-[12px] text-brand-text font-medium appearance-none focus:outline-none focus:border-brand-primary">
+<option>All categories</option>
+<option>Raw Materials</option>
+<option>Assemblies</option>
+<option>Packaging</option>
+<option>Safety &amp; PPE</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-[14px] text-brand-muted pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Clear filters button / reset shortcut -->
+<button class="h-8 px-2.5 rounded text-brand-secondary hover:text-brand-text hover:bg-brand-bg text-[12px] font-medium flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[15px]">filter_alt_off</span>
+<span>Clear filters</span>
+</button>
+</div>
+<!-- 5. Two-column Grid (Activity 65% + Low Stock 35%) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+<!-- Left Column: Recent inventory activity (65%) -->
+<div class="lg:col-span-8 bg-white border border-[#E1E4E9] rounded-lg shadow-xs overflow-hidden flex flex-col justify-between">
+<div>
+<div class="px-4 py-3 bg-[#FAFBFD] border-b border-[#E1E4E9] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[17px] text-brand-primary">swap_horiz</span>
+<h3 class="text-[13px] font-semibold text-[#1B2230]">Recent inventory activity</h3>
+</div>
+<span class="text-[11px] text-brand-muted">Real-time journal</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-brand-bg/60 border-b border-[#E1E4E9] text-[11px] font-semibold uppercase tracking-wider text-brand-muted">
+<th class="py-2 px-3">Date/Time</th>
+<th class="py-2 px-2.5">Reference</th>
+<th class="py-2 px-3">Product</th>
+<th class="py-2 px-2.5">Operation</th>
+<th class="py-2 px-3 text-right">Qty</th>
+<th class="py-2 px-2.5">Location</th>
+<th class="py-2 px-2.5">User</th>
+<th class="py-2 px-3 text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#E1E4E9] text-[12px]">
+<!-- Row 1 -->
+<tr class="hover:bg-[#F9FAFC] transition-colors">
+<td class="py-2 px-3 text-brand-secondary whitespace-nowrap">Today 11:30</td>
+<td class="py-2 px-2.5 font-mono text-[11px] font-medium text-brand-primary">REC-0005</td>
+<td class="py-2 px-3 font-medium text-brand-text truncate max-w-[150px]">Steel Rods (SR001)</td>
+<td class="py-2 px-2.5 text-brand-secondary">Receipt</td>
+<td class="py-2 px-3 text-right font-mono font-semibold text-emerald-600">+150 kg</td>
+<td class="py-2 px-2.5 text-brand-secondary">Dock 1 → Main</td>
+<td class="py-2 px-2.5 text-brand-secondary">Sunil K.</td>
+<td class="py-2 px-3 text-right">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700">
+<span class="w-1 h-1 rounded-full bg-blue-600"></span> Ready
+                      </span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-[#F9FAFC] transition-colors">
+<td class="py-2 px-3 text-brand-secondary whitespace-nowrap">Today 10:42</td>
+<td class="py-2 px-2.5 font-mono text-[11px] font-medium text-brand-primary">ADJ-0014</td>
+<td class="py-2 px-3 font-medium text-brand-text truncate max-w-[150px]">Aluminum Sheets (AL042)</td>
+<td class="py-2 px-2.5 text-brand-secondary">Adjustment</td>
+<td class="py-2 px-3 text-right font-mono font-semibold text-red-600">−3 sheets</td>
+<td class="py-2 px-2.5 text-brand-secondary">Rack B-12</td>
+<td class="py-2 px-2.5 text-brand-secondary">Ridhima S.</td>
+<td class="py-2 px-3 text-right">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-50 text-amber-700">
+<span class="w-1 h-1 rounded-full bg-amber-600"></span> In Progress
+                      </span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-[#F9FAFC] transition-colors">
+<td class="py-2 px-3 text-brand-secondary whitespace-nowrap">Today 09:15</td>
+<td class="py-2 px-2.5 font-mono text-[11px] font-medium text-brand-primary">DO-0011</td>
+<td class="py-2 px-3 font-medium text-brand-text truncate max-w-[150px]">Office Chairs (OC019)</td>
+<td class="py-2 px-2.5 text-brand-secondary">Delivery</td>
+<td class="py-2 px-3 text-right font-mono font-semibold text-red-600">−18 pcs</td>
+<td class="py-2 px-2.5 text-brand-secondary">Rack B-01 → Bay 2</td>
+<td class="py-2 px-2.5 text-brand-secondary">Rajesh V.</td>
+<td class="py-2 px-3 text-right">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700">
+<span class="w-1 h-1 rounded-full bg-emerald-600"></span> Done
+                      </span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-[#F9FAFC] transition-colors">
+<td class="py-2 px-3 text-brand-secondary whitespace-nowrap">Today 08:50</td>
+<td class="py-2 px-2.5 font-mono text-[11px] font-medium text-brand-primary">IT-0084</td>
+<td class="py-2 px-3 font-medium text-brand-text truncate max-w-[150px]">Packaging Boxes (PB089)</td>
+<td class="py-2 px-2.5 text-brand-secondary">Internal Move</td>
+<td class="py-2 px-3 text-right font-mono font-semibold text-emerald-600">+50 bundles</td>
+<td class="py-2 px-2.5 text-brand-secondary">Wh 2 → Rack A</td>
+<td class="py-2 px-2.5 text-brand-secondary">Sunil K.</td>
+<td class="py-2 px-3 text-right">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-50 text-amber-700">
+<span class="w-1 h-1 rounded-full bg-amber-600"></span> Waiting
+                      </span>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-[#F9FAFC] transition-colors">
+<td class="py-2 px-3 text-brand-secondary whitespace-nowrap">Yesterday 16:40</td>
+<td class="py-2 px-2.5 font-mono text-[11px] font-medium text-brand-primary">DO-0010</td>
+<td class="py-2 px-3 font-medium text-brand-text truncate max-w-[150px]">LED Panels (LP204)</td>
+<td class="py-2 px-2.5 text-brand-secondary">Delivery</td>
+<td class="py-2 px-3 text-right font-mono font-semibold text-red-600">−40 pcs</td>
+<td class="py-2 px-2.5 text-brand-secondary">Rack A-06</td>
+<td class="py-2 px-2.5 text-brand-secondary">Rajesh V.</td>
+<td class="py-2 px-3 text-right">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700">
+<span class="w-1 h-1 rounded-full bg-emerald-600"></span> Done
+                      </span>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="hover:bg-[#F9FAFC] transition-colors">
+<td class="py-2 px-3 text-brand-secondary whitespace-nowrap">Yesterday 14:10</td>
+<td class="py-2 px-2.5 font-mono text-[11px] font-medium text-brand-primary">REC-0004</td>
+<td class="py-2 px-3 font-medium text-brand-text truncate max-w-[150px]">Work Gloves (WG006)</td>
+<td class="py-2 px-2.5 text-brand-secondary">Receipt</td>
+<td class="py-2 px-3 text-right font-mono font-semibold text-emerald-600">+100 pairs</td>
+<td class="py-2 px-2.5 text-brand-secondary">Dock 2 → Rack A</td>
+<td class="py-2 px-2.5 text-brand-secondary">Sunil K.</td>
+<td class="py-2 px-3 text-right">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700">
+<span class="w-1 h-1 rounded-full bg-emerald-600"></span> Done
+                      </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="px-4 py-2 bg-brand-bg/40 border-t border-[#E1E4E9] flex items-center justify-between">
+<span class="text-[11px] text-brand-muted">Displaying latest 6 journal entries</span>
+<a class="text-[11px] font-medium text-brand-primary hover:underline flex items-center gap-1" href="#">
+<span>View full move history</span>
+<span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Right Column: Low stock items (35%) -->
+<div class="lg:col-span-4 bg-white border border-[#E1E4E9] rounded-lg shadow-xs overflow-hidden flex flex-col justify-between">
+<div>
+<div class="px-4 py-3 bg-[#FAFBFD] border-b border-[#E1E4E9] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[17px] text-amber-600">report_problem</span>
+<h3 class="text-[13px] font-semibold text-[#1B2230]">Low stock items</h3>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-red-50 text-red-700">3 critical</span>
+</div>
+<div class="divide-y divide-[#E1E4E9]">
+<!-- Item 1: Packaging Boxes -->
+<div class="p-3.5 space-y-2">
+<div class="flex items-start justify-between">
+<div>
+<div class="font-medium text-[13px] text-brand-text">Packaging Boxes (3-Ply)</div>
+<div class="font-mono text-[11px] text-brand-muted">SKU: PB089 • Wh 2</div>
+</div>
+<button class="h-6 px-2 rounded bg-red-600 text-white text-[11px] font-medium hover:bg-red-700 transition-colors shadow-xs" type="button">
+                    PO Reorder
+                  </button>
+</div>
+<div>
+<div class="flex items-center justify-between text-[11px] mb-1">
+<span class="text-brand-secondary">On Hand: <strong class="text-red-600 font-mono">26 bundles</strong></span>
+<span class="text-brand-muted font-mono">Min: 200 (13%)</span>
+</div>
+<div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-red-500 rounded-full" style="width: 13%"></div>
+</div>
+</div>
+</div>
+<!-- Item 2: Aluminum Sheets -->
+<div class="p-3.5 space-y-2">
+<div class="flex items-start justify-between">
+<div>
+<div class="font-medium text-[13px] text-brand-text">Aluminum Sheets (2mm)</div>
+<div class="font-mono text-[11px] text-brand-muted">SKU: AL042 • Rack A</div>
+</div>
+<button class="h-6 px-2 rounded bg-brand-primary text-white text-[11px] font-medium hover:bg-[#162c4e] transition-colors shadow-xs" type="button">
+                    Reorder PO
+                  </button>
+</div>
+<div>
+<div class="flex items-center justify-between text-[11px] mb-1">
+<span class="text-brand-secondary">On Hand: <strong class="text-red-600 font-mono">44 sheets</strong></span>
+<span class="text-brand-muted font-mono">Min: 150 (29%)</span>
+</div>
+<div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-red-500 rounded-full" style="width: 29%"></div>
+</div>
+</div>
+</div>
+<!-- Item 3: Steel Rods -->
+<div class="p-3.5 space-y-2">
+<div class="flex items-start justify-between">
+<div>
+<div class="font-medium text-[13px] text-brand-text">Steel Rods (12mm TMT)</div>
+<div class="font-mono text-[11px] text-brand-muted">SKU: SR001 • Rack B</div>
+</div>
+<button class="h-6 px-2 rounded bg-brand-primary text-white text-[11px] font-medium hover:bg-[#162c4e] transition-colors shadow-xs" type="button">
+                    Reorder PO
+                  </button>
+</div>
+<div>
+<div class="flex items-center justify-between text-[11px] mb-1">
+<span class="text-brand-secondary">On Hand: <strong class="text-amber-700 font-mono">197 kg</strong></span>
+<span class="text-brand-muted font-mono">Min: 500 (39%)</span>
+</div>
+<div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-amber-500 rounded-full" style="width: 39%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-3.5 py-2.5 bg-brand-bg/40 border-t border-[#E1E4E9]">
+<a class="text-[11px] font-medium text-brand-primary hover:underline flex items-center justify-between" href="#">
+<span>Run Automated Reorder Wizard</span>
+<span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+<!-- 6. Three Columns: Pending Movements Breakdown -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Column 1: Pending Receipts (3 items) -->
+<div class="bg-white border border-[#E1E4E9] rounded-lg shadow-xs flex flex-col justify-between">
+<div>
+<div class="px-3.5 py-2.5 bg-[#FAFBFD] border-b border-[#E1E4E9] flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-blue-600">move_to_inbox</span>
+<h4 class="text-[13px] font-semibold text-[#1B2230]">Pending Receipts</h4>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-blue-50 text-blue-700">3 Total</span>
+</div>
+<div class="divide-y divide-[#E1E4E9] p-1">
+<!-- Item 1 -->
+<div class="p-2.5 hover:bg-[#F9FAFC] rounded transition-colors space-y-1.5">
+<div class="flex items-center justify-between">
+<span class="font-mono text-[11px] font-semibold text-brand-primary">REC-0005</span>
+<span class="text-[11px] text-blue-700 font-medium">11:30 AM Expected</span>
+</div>
+<div class="text-[12px] font-medium text-brand-text truncate">Metro Industrial Supplies</div>
+<div class="text-[11px] text-brand-muted truncate">SR001 Steel Rods (1,200 kg), AL042 (300)</div>
+<div class="pt-1 flex justify-end">
+<button class="h-6 px-2 rounded bg-brand-primary text-white text-[11px] font-medium hover:bg-[#162c4e] transition-colors" type="button">
+                    Validate Receipt
+                  </button>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="p-2.5 hover:bg-[#F9FAFC] rounded transition-colors space-y-1.5">
+<div class="flex items-center justify-between">
+<span class="font-mono text-[11px] font-semibold text-brand-primary">REC-0006</span>
+<span class="text-[11px] text-brand-muted">03:30 PM Dock 2</span>
+</div>
+<div class="text-[12px] font-medium text-brand-text truncate">Prime Office Solutions</div>
+<div class="text-[11px] text-brand-muted truncate">PP003 Printer Paper A4 (150 reams)</div>
+<div class="pt-1 flex justify-end">
+<button class="h-6 px-2 rounded border border-brand-border text-brand-text text-[11px] font-medium hover:bg-slate-50 transition-colors" type="button">
+                    Details
+                  </button>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="p-2.5 hover:bg-[#F9FAFC] rounded transition-colors space-y-1.5">
+<div class="flex items-center justify-between">
+<span class="font-mono text-[11px] font-semibold text-brand-primary">REC-0007</span>
+<span class="text-[11px] text-brand-muted">05:15 PM Dock 1</span>
+</div>
+<div class="text-[12px] font-medium text-brand-text truncate">TechLine Distributors</div>
+<div class="text-[11px] text-brand-muted truncate">LP204 LED Panels 36W (80 units)</div>
+<div class="pt-1 flex justify-end">
+<button class="h-6 px-2 rounded border border-brand-border text-brand-text text-[11px] font-medium hover:bg-slate-50 transition-colors" type="button">
+                    Details
+                  </button>
+</div>
+</div>
+</div>
+</div>
+<div class="px-3.5 py-2 bg-brand-bg/40 border-t border-[#E1E4E9] text-center">
+<a class="text-[11px] font-medium text-brand-primary hover:underline" href="#">View Inbound Schedule</a>
+</div>
+</div>
+<!-- Column 2: Pending Deliveries (5 items) -->
+<div class="bg-white border border-[#E1E4E9] rounded-lg shadow-xs flex flex-col justify-between">
+<div>
+<div class="px-3.5 py-2.5 bg-[#FAFBFD] border-b border-[#E1E4E9] flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-emerald-600">local_shipping</span>
+<h4 class="text-[13px] font-semibold text-[#1B2230]">Pending Deliveries</h4>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-emerald-50 text-emerald-700">5 Total</span>
+</div>
+<div class="divide-y divide-[#E1E4E9] p-1">
+<!-- Item 1 -->
+<div class="p-2 hover:bg-[#F9FAFC] rounded transition-colors flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5">
+<span class="font-mono text-[11px] font-semibold text-brand-primary">DO-0011</span>
+<span class="text-[10px] px-1 bg-slate-100 rounded text-brand-muted">Bay 2</span>
+</div>
+<div class="text-[12px] font-medium text-brand-text truncate">ABC Manufacturing</div>
+<div class="text-[10px] text-brand-muted">12 Chairs, 44 LEDs</div>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700 whitespace-nowrap">Staged</span>
+</div>
+<!-- Item 2 -->
+<div class="p-2 hover:bg-[#F9FAFC] rounded transition-colors flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5">
+<span class="font-mono text-[11px] font-semibold text-brand-primary">DO-0012</span>
+<span class="text-[10px] px-1 bg-slate-100 rounded text-brand-muted">Dock 1</span>
+</div>
+<div class="text-[12px] font-medium text-brand-text truncate">Horizon Interiors</div>
+<div class="text-[10px] text-brand-muted">18 Chairs, 26 LEDs</div>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-50 text-amber-700 whitespace-nowrap">Packing</span>
+</div>
+<!-- Item 3 -->
+<div class="p-2 hover:bg-[#F9FAFC] rounded transition-colors flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5">
+<span class="font-mono text-[11px] font-semibold text-brand-primary">DO-0013</span>
+<span class="text-[10px] px-1 bg-slate-100 rounded text-brand-muted">Bay 4</span>
+</div>
+<div class="text-[12px] font-medium text-brand-text truncate">NorthStar Retail</div>
+<div class="text-[10px] text-brand-muted">30 Paper reams, 10 Helmets</div>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700 whitespace-nowrap">Ready</span>
+</div>
+<!-- Item 4 -->
+<div class="p-2 hover:bg-[#F9FAFC] rounded transition-colors flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5">
+<span class="font-mono text-[11px] font-semibold text-brand-primary">DO-0014</span>
+<span class="text-[10px] px-1 bg-slate-100 rounded text-brand-muted">Bay 1</span>
+</div>
+<div class="text-[12px] font-medium text-brand-text truncate">Apex Construction Ltd</div>
+<div class="text-[10px] text-brand-muted">500 kg Steel Rods</div>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-brand-muted whitespace-nowrap">Picking</span>
+</div>
+<!-- Item 5 -->
+<div class="p-2 hover:bg-[#F9FAFC] rounded transition-colors flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5">
+<span class="font-mono text-[11px] font-semibold text-brand-primary">DO-0015</span>
+<span class="text-[10px] px-1 bg-slate-100 rounded text-brand-muted">Bay 3</span>
+</div>
+<div class="text-[12px] font-medium text-brand-text truncate">Pune Precision Tools</div>
+<div class="text-[10px] text-brand-muted">20 Nitrile Gloves, 4 Helmets</div>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-50 text-amber-700 whitespace-nowrap">Waiting</span>
+</div>
+</div>
+</div>
+<div class="px-3.5 py-2 bg-brand-bg/40 border-t border-[#E1E4E9] text-center">
+<a class="text-[11px] font-medium text-brand-primary hover:underline" href="#">Open Outbound Dispatch Board</a>
+</div>
+</div>
+<!-- Column 3: Scheduled Transfers (2 items) -->
+<div class="bg-white border border-[#E1E4E9] rounded-lg shadow-xs flex flex-col justify-between">
+<div>
+<div class="px-3.5 py-2.5 bg-[#FAFBFD] border-b border-[#E1E4E9] flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-cyan-700">sync_alt</span>
+<h4 class="text-[13px] font-semibold text-[#1B2230]">Scheduled Transfers</h4>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-cyan-50 text-cyan-700">2 Active</span>
+</div>
+<div class="divide-y divide-[#E1E4E9] p-1">
+<!-- Transfer 1 -->
+<div class="p-3 hover:bg-[#F9FAFC] rounded transition-colors space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-mono text-[11px] font-semibold text-brand-primary">IT-0084</span>
+<span class="text-[10px] px-1.5 py-0.2 rounded font-medium bg-amber-50 text-amber-800">In Transit</span>
+</div>
+<div class="text-[12px] font-medium text-brand-text">
+                  Main Warehouse → Production Floor
+                </div>
+<div class="bg-slate-50 p-2 rounded text-[11px] text-brand-secondary space-y-0.5">
+<div class="font-semibold text-brand-text">200 kg Steel Rods (SR001)</div>
+<div class="flex justify-between text-brand-muted text-[10px]">
+<span>ETA: 03:15 PM</span>
+<span>Supervisor: Rajesh V.</span>
+</div>
+</div>
+<div class="flex justify-end pt-1">
+<button class="h-6 px-2 rounded border border-brand-border text-brand-text text-[11px] font-medium hover:bg-slate-50" type="button">
+                    Track Pallet
+                  </button>
+</div>
+</div>
+<!-- Transfer 2 -->
+<div class="p-3 hover:bg-[#F9FAFC] rounded transition-colors space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-mono text-[11px] font-semibold text-brand-primary">IT-0085</span>
+<span class="text-[10px] px-1.5 py-0.2 rounded font-medium bg-blue-50 text-blue-800">Scheduled</span>
+</div>
+<div class="text-[12px] font-medium text-brand-text">
+                  Warehouse 2 (Bulk) → Rack A
+                </div>
+<div class="bg-slate-50 p-2 rounded text-[11px] text-brand-secondary space-y-0.5">
+<div class="font-semibold text-brand-text">50 Packaging Boxes (PB089)</div>
+<div class="flex justify-between text-brand-muted text-[10px]">
+<span>ETA: 04:45 PM</span>
+<span>Supervisor: Sunil K.</span>
+</div>
+</div>
+<div class="flex justify-end pt-1">
+<button class="h-6 px-2 rounded border border-brand-border text-brand-text text-[11px] font-medium hover:bg-slate-50" type="button">
+                    Assign Forklift
+                  </button>
+</div>
+</div>
+</div>
+</div>
+<div class="px-3.5 py-2 bg-brand-bg/40 border-t border-[#E1E4E9] text-center">
+<a class="text-[11px] font-medium text-brand-primary hover:underline" href="#">View Internal Movement Log</a>
+</div>
+</div>
+</div>
+<!-- 7. "Stock by location" Matrix Table -->
+<div class="bg-white border border-[#E1E4E9] rounded-lg shadow-xs overflow-hidden">
+<div class="px-4 py-3 bg-[#FAFBFD] border-b border-[#E1E4E9] flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[17px] text-brand-primary">grid_on</span>
+<h3 class="text-[13px] font-semibold text-[#1B2230]">Stock by location</h3>
+<span class="text-[11px] text-brand-muted">(Cross-tabulation matrix)</span>
+</div>
+<div class="flex items-center gap-2">
+<!-- Unit of measure toggle -->
+<div class="flex items-center bg-brand-bg rounded p-0.5 border border-brand-border text-[11px] font-medium">
+<button class="px-2 py-0.5 rounded bg-white shadow-xs text-brand-text">Standard UoM</button>
+<button class="px-2 py-0.5 rounded text-brand-muted hover:text-brand-text">Secondary</button>
+</div>
+<!-- Export CSV button -->
+<button class="h-7 px-2.5 rounded bg-white border border-brand-border text-brand-text font-medium text-[11px] hover:bg-slate-50 transition-colors flex items-center gap-1 shadow-xs" type="button">
+<span class="material-symbols-outlined text-[14px] text-brand-secondary">file_download</span>
+<span>Export CSV</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse text-[12px]">
+<thead>
+<tr class="bg-brand-bg/70 border-b border-[#E1E4E9] text-[11px] font-semibold uppercase tracking-wider text-brand-muted">
+<th class="py-2.5 px-3">SKU &amp; Product Name</th>
+<th class="py-2.5 px-2 text-right">Main Warehouse</th>
+<th class="py-2.5 px-2 text-right">Warehouse 2 (Bulk)</th>
+<th class="py-2.5 px-2 text-right">Production Floor</th>
+<th class="py-2.5 px-2 text-right">Rack A</th>
+<th class="py-2.5 px-2 text-right">Rack B</th>
+<th class="py-2.5 px-3 text-right bg-[#F8F9FA] font-bold text-brand-text border-x border-[#E1E4E9]">Total On Hand</th>
+<th class="py-2.5 px-3 text-right">Valuation (₹ INR)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#E1E4E9]">
+<!-- Product 1 -->
+<tr class="hover:bg-[#F9FAFC] transition-colors">
+<td class="py-2 px-3 font-medium text-brand-text">
+<span class="font-mono text-brand-primary font-semibold mr-1.5">SR001</span> Steel Rods (12mm TMT)
+                </td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">47 kg</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">30 kg</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">120 kg</td>
+<td class="py-2 px-3 text-right font-mono font-bold bg-[#F8F9FA] border-x border-[#E1E4E9] text-brand-text">197 kg</td>
+<td class="py-2 px-3 text-right font-mono font-medium text-brand-text">₹1,18,200</td>
+</tr>
+<!-- Product 2 -->
+<tr class="hover:bg-[#F9FAFC] transition-colors">
+<td class="py-2 px-3 font-medium text-brand-text">
+<span class="font-mono text-brand-primary font-semibold mr-1.5">AL042</span> Aluminum Sheets (2mm)
+                </td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">10 sheets</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">8 sheets</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">26 sheets</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-3 text-right font-mono font-bold bg-[#F8F9FA] border-x border-[#E1E4E9] text-amber-700">44 sheets</td>
+<td class="py-2 px-3 text-right font-mono font-medium text-brand-text">₹2,42,000</td>
+</tr>
+<!-- Product 3 -->
+<tr class="hover:bg-[#F9FAFC] transition-colors">
+<td class="py-2 px-3 font-medium text-brand-text">
+<span class="font-mono text-brand-primary font-semibold mr-1.5">PB089</span> Packaging Boxes (3-Ply)
+                </td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">26 bdls</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-3 text-right font-mono font-bold bg-[#F8F9FA] border-x border-[#E1E4E9] text-red-600">26 bdls</td>
+<td class="py-2 px-3 text-right font-mono font-medium text-brand-text">₹18,200</td>
+</tr>
+<!-- Product 4 -->
+<tr class="hover:bg-[#F9FAFC] transition-colors">
+<td class="py-2 px-3 font-medium text-brand-text">
+<span class="font-mono text-brand-primary font-semibold mr-1.5">SG014</span> Safety Helmets (EN397)
+                </td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">6 pcs</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">2 pcs</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">10 pcs</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-3 text-right font-mono font-bold bg-[#F8F9FA] border-x border-[#E1E4E9] text-brand-text">18 pcs</td>
+<td class="py-2 px-3 text-right font-mono font-medium text-brand-text">₹15,300</td>
+</tr>
+<!-- Product 5 -->
+<tr class="hover:bg-[#F9FAFC] transition-colors">
+<td class="py-2 px-3 font-medium text-brand-text">
+<span class="font-mono text-brand-primary font-semibold mr-1.5">WG006</span> Work Gloves (Nitrile)
+                </td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">4 pairs</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">10 pairs</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">20 pairs</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-3 text-right font-mono font-bold bg-[#F8F9FA] border-x border-[#E1E4E9] text-brand-text">34 pairs</td>
+<td class="py-2 px-3 text-right font-mono font-medium text-brand-text">₹8,500</td>
+</tr>
+<!-- Product 6 -->
+<tr class="hover:bg-[#F9FAFC] transition-colors">
+<td class="py-2 px-3 font-medium text-brand-text">
+<span class="font-mono text-brand-primary font-semibold mr-1.5">LP204</span> LED Panels (600x600 36W)
+                </td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">50 pcs</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">80 pcs</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">116 pcs</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-3 text-right font-mono font-bold bg-[#F8F9FA] border-x border-[#E1E4E9] text-emerald-700">246 pcs</td>
+<td class="py-2 px-3 text-right font-mono font-medium text-brand-text">₹4,42,800</td>
+</tr>
+<!-- Product 7 -->
+<tr class="hover:bg-[#F9FAFC] transition-colors">
+<td class="py-2 px-3 font-medium text-brand-text">
+<span class="font-mono text-brand-primary font-semibold mr-1.5">OC019</span> Office Chairs (Mesh)
+                </td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">12 pcs</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">32 pcs</td>
+<td class="py-2 px-3 text-right font-mono font-bold bg-[#F8F9FA] border-x border-[#E1E4E9] text-brand-text">44 pcs</td>
+<td class="py-2 px-3 text-right font-mono font-medium text-brand-text">₹2,86,000</td>
+</tr>
+<!-- Product 8 -->
+<tr class="hover:bg-[#F9FAFC] transition-colors">
+<td class="py-2 px-3 font-medium text-brand-text">
+<span class="font-mono text-brand-primary font-semibold mr-1.5">PP003</span> Printer Paper A4 (75 GSM)
+                </td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">40 reams</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">50 reams</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">7 reams</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">100 reams</td>
+<td class="py-2 px-2 text-right font-mono text-brand-secondary">—</td>
+<td class="py-2 px-3 text-right font-mono font-bold bg-[#F8F9FA] border-x border-[#E1E4E9] text-brand-text">197 reams</td>
+<td class="py-2 px-3 text-right font-mono font-medium text-brand-text">₹55,160</td>
+</tr>
+</tbody>
+<!-- Bottom row: Bold Location Totals -->
+<tfoot>
+<tr class="bg-[#FAFBFD] border-t-2 border-[#D3D7DF] font-semibold text-brand-text text-[12px]">
+<td class="py-2.5 px-3">Location Totals</td>
+<td class="py-2.5 px-2 text-right font-mono font-bold text-brand-primary">169 units</td>
+<td class="py-2.5 px-2 text-right font-mono font-bold text-brand-primary">156 units</td>
+<td class="py-2.5 px-2 text-right font-mono font-bold text-brand-primary">57 units</td>
+<td class="py-2.5 px-2 text-right font-mono font-bold text-brand-primary">272 units</td>
+<td class="py-2.5 px-2 text-right font-mono font-bold text-brand-primary">152 units</td>
+<td class="py-2.5 px-3 text-right font-mono font-bold text-[#1B2230] bg-[#EFF1F5] border-x border-[#E1E4E9]">806 units</td>
+<td class="py-2.5 px-3 text-right font-mono font-bold text-emerald-700">₹11,86,160</td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+</main>
+</div>
+</body></html>

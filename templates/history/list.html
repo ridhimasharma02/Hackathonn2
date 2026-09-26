@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+
+{% block title %}StockSense - Move History Stock Ledger{% endblock %}
+
+{% block breadcrumb %}
+  <span class="hover:text-on-surface cursor-pointer">Reporting</span>
+  <span class="text-outline-variant">/</span>
+  <span class="font-headline-sm text-headline-sm text-on-surface">Move History</span>
+{% endblock %}
+
+{% block content %}
+<div class="p-space-xl space-y-space-lg w-full">
+  <!-- SECTION 1: HEADER & LIVE STREAM METRICS -->
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md bg-surface-container-lowest p-space-lg rounded-lg shadow-sm border border-surface-container-highest">
+    <div class="space-y-1">
+      <div class="flex items-center gap-space-sm">
+        <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Move History</h1>
+        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-code-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+          Auto-sync ON
+        </span>
+      </div>
+      <p class="font-body-default text-body-default text-on-surface-variant">
+        Comprehensive audit trail and immutable ledger of all physical stock movements, inward receipts, dispatches, and warehouse adjustments.
+        {% if not current_user.is_manager %}
+        <span class="block text-amber-800 text-[11px] font-medium mt-0.5">Showing records from the last 30 days.</span>
+        {% endif %}
+      </p>
+    </div>
+    <!-- Action Buttons -->
+    <div class="flex items-center gap-space-sm shrink-0">
+      {% if can('history:export') %}
+      <a href="/history/export.csv?{{ request.query_string.decode() }}" class="h-8 px-space-md bg-primary-container text-on-primary rounded hover:bg-primary text-body-medium font-body-medium flex items-center gap-1.5 transition-colors shadow-sm">
+        <span class="material-symbols-outlined text-[16px]">download</span>
+        <span>Export CSV</span>
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- SUMMARY METRICS BAR -->
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-space-md">
+    <!-- Metric 1 -->
+    <div class="bg-surface-container-lowest p-space-md rounded border border-surface-container-highest flex flex-col justify-between">
+      <div class="flex items-center justify-between text-on-surface-variant">
+        <span class="font-table-header text-table-header uppercase tracking-wider">Total Moves Today</span>
+        <span class="material-symbols-outlined text-[16px] text-primary-container">sync_alt</span>
+      </div>
+      <div class="mt-2 flex items-baseline gap-1.5">
+        <span class="font-code-medium text-[20px] font-semibold text-on-surface">{{ moves_today_count }}</span>
+        <span class="font-meta-default text-meta-default text-on-surface-variant">events</span>
+      </div>
+    </div>
+    <!-- Metric 2 -->
+    <div class="bg-surface-container-lowest p-space-md rounded border border-surface-container-highest flex flex-col justify-between">
+      <div class="flex items-center justify-between text-on-surface-variant">
+        <span class="font-table-header text-table-header uppercase tracking-wider">Inward Receipts</span>
+        <span class="material-symbols-outlined text-[16px] text-emerald-600">login</span>
+      </div>
+      <div class="mt-2 flex items-baseline gap-1.5">
+        <span class="font-code-medium text-[20px] font-semibold text-emerald-700">+{{ inward_units|round(1) }}</span>
+        <span class="font-meta-default text-meta-default text-emerald-700">units</span>
+      </div>
+    </div>
+    <!-- Metric 3 -->
+    <div class="bg-surface-container-lowest p-space-md rounded border border-surface-container-highest flex flex-col justify-between">
+      <div class="flex items-center justify-between text-on-surface-variant">
+        <span class="font-table-header text-table-header uppercase tracking-wider">Outward Dispatches</span>
+        <span class="material-symbols-outlined text-[16px] text-rose-600">logout</span>
+      </div>
+      <div class="mt-2 flex items-baseline gap-1.5">
+        <span class="font-code-medium text-[20px] font-semibold text-rose-700">−{{ outward_units|round(1) }}</span>
+        <span class="font-meta-default text-meta-default text-rose-700">units</span>
+      </div>
+    </div>
+    <!-- Metric 4 -->
+    <div class="bg-surface-container-lowest p-space-md rounded border border-surface-container-highest flex flex-col justify-between">
+      <div class="flex items-center justify-between text-on-surface-variant">
+        <span class="font-table-header text-table-header uppercase tracking-wider">Internal Transfers</span>
+        <span class="material-symbols-outlined text-[16px] text-blue-600">swap_horiz</span>
+      </div>
+      <div class="mt-2 flex items-baseline gap-1.5">
+        <span class="font-code-medium text-[20px] font-semibold text-blue-700">{{ internal_transfers }}</span>
+        <span class="font-meta-default text-meta-default text-on-surface-variant">transfers</span>
+      </div>
+    </div>
+    <!-- Metric 5 -->
+    <div class="bg-surface-container-lowest p-space-md rounded border border-surface-container-highest flex flex-col justify-between">
+      <div class="flex items-center justify-between text-on-surface-variant">
+        <span class="font-table-header text-table-header uppercase tracking-wider">Adjustments</span>
+        <span class="material-symbols-outlined text-[16px] text-amber-600">report_problem</span>
+      </div>
+      <div class="mt-2 flex items-baseline gap-1.5">
+        <span class="font-code-medium text-[20px] font-semibold text-amber-700">{{ discrepancies }}</span>
+        <span class="font-meta-default text-meta-default text-amber-700">ADJ items</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: DENSE FILTER CONTROLS BAR -->
+  <form method="GET" action="/move-history" class="bg-surface-container-lowest p-space-md rounded-lg border border-surface-container-highest shadow-sm space-y-space-sm">
+    <div class="flex flex-wrap items-center gap-space-sm">
+      <!-- Search Field -->
+      <div class="flex-1 min-w-[200px] relative">
+        <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant">search</span>
+        <input name="q" value="{{ selected_q }}" class="w-full h-8 pl-8 pr-3 text-body-default font-body-default bg-surface rounded border border-surface-container-highest text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container" placeholder="Search SKU, reference, counterparty..." type="text"/>
+      </div>
+      <!-- Operation Filter Dropdown -->
+      <div class="relative shrink-0">
+        <select name="operation" onchange="this.form.submit()" class="h-8 pl-2.5 pr-7 appearance-none text-meta-default font-meta-default bg-surface border border-surface-container-highest rounded text-on-surface focus:outline-none focus:border-primary-container cursor-pointer">
+          <option value="">All Operations</option>
+          <option value="Receipt" {% if selected_op == 'Receipt' %}selected{% endif %}>Receipts (REC)</option>
+          <option value="Delivery" {% if selected_op == 'Delivery' %}selected{% endif %}>Deliveries (DO)</option>
+          <option value="Internal Transfer" {% if selected_op == 'Internal Transfer' %}selected{% endif %}>Internal Transfers (INT)</option>
+          <option value="Adjustment" {% if selected_op == 'Adjustment' %}selected{% endif %}>Adjustments (ADJ)</option>
+        </select>
+        <span class="material-symbols-outlined absolute right-1.5 top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant pointer-events-none">expand_more</span>
+      </div>
+      <!-- Product Filter Dropdown -->
+      <div class="relative shrink-0">
+        <select name="product" onchange="this.form.submit()" class="h-8 pl-2.5 pr-7 appearance-none text-meta-default font-meta-default bg-surface border border-surface-container-highest rounded text-on-surface focus:outline-none focus:border-primary-container cursor-pointer">
+          <option value="">All Products</option>
+          {% for p in products %}
+          <option value="{{ p.id }}" {% if selected_product == p.id|string %}selected{% endif %}>{{ p.name }} ({{ p.sku }})</option>
+          {% endfor %}
+        </select>
+        <span class="material-symbols-outlined absolute right-1.5 top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant pointer-events-none">expand_more</span>
+      </div>
+      <!-- Location Filter Dropdown -->
+      <div class="relative shrink-0">
+        <select name="location" onchange="this.form.submit()" class="h-8 pl-2.5 pr-7 appearance-none text-meta-default font-meta-default bg-surface border border-surface-container-highest rounded text-on-surface focus:outline-none focus:border-primary-container cursor-pointer">
+          <option value="">All Locations</option>
+          {% for loc in locations %}
+          <option value="{{ loc.id }}" {% if selected_location == loc.id|string %}selected{% endif %}>{{ loc.code }}</option>
+          {% endfor %}
+        </select>
+        <span class="material-symbols-outlined absolute right-1.5 top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant pointer-events-none">expand_more</span>
+      </div>
+      <!-- User Filter -->
+      <div class="relative shrink-0">
+        <select name="user" onchange="this.form.submit()" class="h-8 pl-2.5 pr-7 appearance-none text-meta-default font-meta-default bg-surface border border-surface-container-highest rounded text-on-surface focus:outline-none focus:border-primary-container cursor-pointer">
+          <option value="">All Operators</option>
+          {% for op in operators %}
+          <option value="{{ op.id }}" {% if selected_user == op.id|string %}selected{% endif %}>{{ op.name }}</option>
+          {% endfor %}
+        </select>
+        <span class="material-symbols-outlined absolute right-1.5 top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant pointer-events-none">expand_more</span>
+      </div>
+      <!-- Quick Date Range Pills -->
+      <div class="flex items-center border border-surface-container-highest rounded p-0.5 bg-surface shrink-0">
+        <a href="?range=today" class="h-6 px-2 text-[11px] font-body-medium rounded flex items-center {% if selected_range == 'today' %}bg-surface-container-lowest text-on-surface font-semibold shadow-xs{% else %}text-on-surface-variant hover:text-on-surface{% endif %}">Today</a>
+        <a href="?range=7d" class="h-6 px-2 text-[11px] font-body-medium rounded flex items-center {% if selected_range == '7d' %}bg-surface-container-lowest text-on-surface font-semibold shadow-xs{% else %}text-on-surface-variant hover:text-on-surface{% endif %}">7D</a>
+        <a href="?range=30d" class="h-6 px-2 text-[11px] font-body-medium rounded flex items-center {% if selected_range == '30d' %}bg-surface-container-lowest text-on-surface font-semibold shadow-xs{% else %}text-on-surface-variant hover:text-on-surface{% endif %}">30D</a>
+      </div>
+      <!-- "Only My Operations" Checkbox & Reset -->
+      <div class="flex items-center gap-space-md ml-auto shrink-0">
+        <label class="flex items-center gap-1.5 cursor-pointer text-meta-default font-meta-default text-on-surface">
+          <input name="only_mine" value="1" onchange="this.form.submit()" class="w-3.5 h-3.5 accent-[#1e3a66] rounded cursor-pointer" type="checkbox" {% if only_mine %}checked{% endif %}/>
+          <span>Only my operations</span>
+        </label>
+        <div class="h-4 w-px bg-surface-container-highest"></div>
+        <a href="/move-history" class="text-meta-default font-meta-default text-on-surface-variant hover:text-error flex items-center gap-1 transition-colors">
+          <span class="material-symbols-outlined text-[14px]">filter_alt_off</span>
+          <span>Reset</span>
+        </a>
+      </div>
+    </div>
+  </form>
+
+  <!-- SECTION 3: DENSE STOCK LEDGER TABLE -->
+  <div class="bg-surface-container-lowest rounded-lg border border-surface-container-highest shadow-sm overflow-hidden flex flex-col">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse min-w-[1100px]">
+        <thead>
+          <tr class="bg-surface-container-low border-b border-surface-container-highest h-8">
+            <th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[150px]">Date &amp; Time</th>
+            <th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[110px]">Reference</th>
+            <th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider min-w-[200px]">Product / Spec</th>
+            <th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[80px]">SKU</th>
+            <th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[130px]">Operation</th>
+            <th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[160px]">Source (From)</th>
+            <th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[160px]">Target (To)</th>
+            <th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider text-right w-[110px]">Quantity</th>
+            <th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[140px]">Operator</th>
+            <th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[130px]">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-surface-container-highest text-body-default font-body-default">
+          {% for m in movements %}
+          <tr class="hover:bg-surface-bright transition-colors group">
+            <td class="px-3 py-2 text-on-surface whitespace-nowrap">
+              <span class="font-code-default text-[12px] text-on-surface">{{ m.at.strftime('%d %b %Y') }}</span>
+              <span class="block text-[11px] font-code-default text-outline">{{ m.at.strftime('%I:%M:%S %p') }}</span>
+            </td>
+            <td class="px-3 py-2 whitespace-nowrap">
+              {% if m.doc_type == 'Receipt' %}
+                <a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="/receipts/{{ m.doc_id }}">
+                  <span>{{ m.reference }}</span>
+                  <span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+                </a>
+              {% elif m.doc_type == 'Delivery' %}
+                <a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="/delivery-orders/{{ m.doc_id }}">
+                  <span>{{ m.reference }}</span>
+                  <span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+                </a>
+              {% elif m.doc_type == 'Internal Transfer' %}
+                <a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="/internal-transfers/{{ m.doc_id }}">
+                  <span>{{ m.reference }}</span>
+                  <span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+                </a>
+              {% elif m.doc_type == 'Adjustment' %}
+                <a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="/adjustments/{{ m.doc_id }}">
+                  <span>{{ m.reference }}</span>
+                  <span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+                </a>
+              {% else %}
+                <span class="font-code-medium text-[12px] text-on-surface">{{ m.reference }}</span>
+              {% endif %}
+            </td>
+            <td class="px-3 py-2">
+              <a href="/products/{{ m.product_id }}" class="font-body-medium text-body-medium text-on-surface font-semibold hover:underline">{{ m.product.name }}</a>
+              <div class="text-[11px] text-on-surface-variant">{{ m.product.description or m.product.category.name if m.product.category else 'Standard Item' }}</div>
+            </td>
+            <td class="px-3 py-2 whitespace-nowrap">
+              <span class="px-1.5 py-0.5 rounded bg-surface-container font-code-medium text-[11px] text-on-surface border border-surface-container-highest">{{ m.product.sku }}</span>
+            </td>
+            <td class="px-3 py-2 whitespace-nowrap">
+              {% if m.operation == 'Receipt' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-emerald-50 text-emerald-800">
+                  <span class="w-2 h-2 rounded-xs bg-emerald-600"></span>
+                  <span>Receipt</span>
+                </span>
+              {% elif m.operation == 'Delivery' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-rose-50 text-rose-800">
+                  <span class="w-2 h-2 rounded-xs bg-rose-600"></span>
+                  <span>Delivery</span>
+                </span>
+              {% elif m.operation == 'Internal Transfer' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-blue-50 text-blue-800">
+                  <span class="w-2 h-2 rounded-xs bg-blue-600"></span>
+                  <span>Transfer</span>
+                </span>
+              {% else %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-amber-50 text-amber-800">
+                  <span class="w-2 h-2 rounded-xs bg-amber-600"></span>
+                  <span>Adjustment</span>
+                </span>
+              {% endif %}
+            </td>
+            <td class="px-3 py-2 text-on-surface-variant text-[12px] whitespace-nowrap">
+              {% if m.from_location %}
+                <span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">{{ m.from_location.code }}</span>
+              {% else %}
+                <span class="font-medium text-on-surface">Vendor:</span> {{ m.counterparty or 'External' }}
+              {% endif %}
+            </td>
+            <td class="px-3 py-2 text-[12px] whitespace-nowrap">
+              {% if m.to_location %}
+                <span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">{{ m.to_location.code }}</span>
+              {% else %}
+                <span class="font-medium text-on-surface">Customer:</span> {{ m.counterparty or 'External' }}
+              {% endif %}
+            </td>
+            <td class="px-3 py-2 text-right whitespace-nowrap">
+              {% if m.operation == 'Receipt' %}
+                <span class="font-code-medium text-[13px] font-semibold text-emerald-700">+{{ m.quantity|round(2) }} {{ m.product.uom }}</span>
+              {% elif m.operation == 'Delivery' %}
+                <span class="font-code-medium text-[13px] font-semibold text-rose-700">−{{ m.quantity|round(2) }} {{ m.product.uom }}</span>
+              {% elif m.operation == 'Internal Transfer' %}
+                <span class="font-code-medium text-[13px] font-semibold text-blue-700">{{ m.quantity|round(2) }} {{ m.product.uom }}</span>
+              {% else %}
+                <span class="font-code-medium text-[13px] font-semibold text-amber-700">{{ m.quantity|round(2) }} {{ m.product.uom }}</span>
+              {% endif %}
+            </td>
+            <td class="px-3 py-2 whitespace-nowrap">
+              <div class="flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-[#1e3a66] text-white flex items-center justify-center text-[10px] font-code-medium">{{ m.user.name[:2].upper() if m.user else 'SY' }}</span>
+                <span class="text-[12px] text-on-surface truncate">{{ m.user.name if m.user else 'System' }}</span>
+              </div>
+            </td>
+            <td class="px-3 py-2 whitespace-nowrap">
+              <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-body-medium bg-emerald-100 text-emerald-800">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                <span>Posted</span>
+              </span>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="10" class="py-12 text-center text-on-surface-variant font-body-default">
+              <span class="material-symbols-outlined text-[36px] text-outline block mx-auto mb-2">history_edu</span>
+              No stock ledger movements match the current filter criteria.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if pagination and pagination.pages > 1 %}
+    <div class="px-4 py-3 bg-surface-container-low border-t border-surface-container-highest flex items-center justify-between text-meta-default">
+      <span class="text-on-surface-variant">Showing page {{ pagination.page }} of {{ pagination.pages }} ({{ pagination.total }} movements)</span>
+      <div class="flex items-center gap-1">
+        {% if pagination.has_prev %}
+        <a href="?page={{ pagination.prev_num }}&q={{ selected_q }}&operation={{ selected_op }}&product={{ selected_product }}&location={{ selected_location }}&user={{ selected_user }}&range={{ selected_range }}" class="px-2 py-1 bg-surface-container rounded hover:bg-surface-container-high text-on-surface">Previous</a>
+        {% endif %}
+        {% if pagination.has_next %}
+        <a href="?page={{ pagination.next_num }}&q={{ selected_q }}&operation={{ selected_op }}&product={{ selected_product }}&location={{ selected_location }}&user={{ selected_user }}&range={{ selected_range }}" class="px-2 py-1 bg-surface-container rounded hover:bg-surface-container-high text-on-surface">Next</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

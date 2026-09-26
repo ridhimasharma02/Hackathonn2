@@ -1,0 +1,432 @@
+{% extends "base.html" %}
+
+{% block title %}StockSense - {{ adj.reference }}{% endblock %}
+
+{% block breadcrumb %}
+  <span class="hover:text-on-surface cursor-pointer">Operations</span>
+  <span class="text-outline-variant">/</span>
+  <a href="/adjustments" class="hover:text-on-surface">Inventory Adjustments</a>
+  <span class="text-outline-variant">/</span>
+  <span class="font-code-medium text-code-medium text-on-surface">{{ adj.reference }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-col w-full">
+  <!-- Main Operational Container -->
+  <div class="w-full px-space-xl py-space-lg space-y-space-lg pb-24">
+
+    <!-- Top Document Header -->
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md border border-surface-container-highest">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+        <!-- Identity & Status -->
+        <div class="space-y-1">
+          <div class="flex items-center gap-space-sm">
+            <span class="font-table-header text-table-header text-on-surface-variant tracking-wider uppercase">INVENTORY ADJUSTMENT</span>
+            {% if adj.status == 'Counted' %}
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-body-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Count Submitted
+              </span>
+            {% elif adj.status == 'Approved' %}
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-body-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Adjustment Approved
+              </span>
+            {% elif adj.status == 'Draft' %}
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-100 text-slate-800 text-[11px] font-body-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Draft Sheet (Pending Count)
+              </span>
+            {% elif adj.status == 'Rejected' %}
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-100 text-red-800 text-[11px] font-body-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span> Rejected
+              </span>
+            {% else %}
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-100 text-slate-800 text-[11px] font-body-medium">
+                {{ adj.status }}
+              </span>
+            {% endif %}
+          </div>
+          <div class="flex items-baseline gap-space-md">
+            <h1 class="font-code-medium text-[24px] leading-tight font-bold text-on-surface tracking-tight">{{ adj.reference }}</h1>
+            <span class="font-body-default text-meta-default text-on-surface-variant">{{ adj.title }}</span>
+          </div>
+        </div>
+
+        <!-- Utility Action Buttons -->
+        <div class="flex items-center gap-space-sm self-start lg:self-center shrink-0">
+          <button onclick="window.print()" class="h-8 px-space-md bg-surface-container-low hover:bg-surface-container text-on-surface font-body-medium text-meta-medium rounded flex items-center gap-1.5 transition-colors" type="button">
+            <span class="material-symbols-outlined text-[16px] text-on-surface-variant">print</span>
+            <span>Print Count Sheet</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Document Metadata Line -->
+      <div class="pt-space-sm bg-surface-container-low/50 px-space-md py-space-xs rounded flex flex-wrap items-center gap-y-1 gap-x-space-md text-meta-default font-meta-default text-on-surface-variant">
+        <div class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-[14px]">warehouse</span>
+          <span>Location: <strong class="text-on-surface font-body-medium">{{ adj.items[0].location.warehouse.name if adj.items else 'Main Warehouse' }} · {{ adj.items[0].location.name if adj.items else 'STOCK' }}</strong></span>
+        </div>
+        <span class="text-outline-variant">·</span>
+        <div class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-[14px]">schedule</span>
+          <span>Created {{ adj.created_at.strftime('%b %d, %Y at %I:%M %p') }} by <strong class="text-on-surface font-body-medium">{{ adj.creator.name if adj.creator else 'Manager' }}</strong></span>
+        </div>
+        {% if adj.counter %}
+        <span class="text-outline-variant">·</span>
+        <div class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-[14px]">person_check</span>
+          <span>Physical Count By: <strong class="text-on-surface font-body-medium">{{ adj.counter.name }}</strong></span>
+        </div>
+        {% elif adj.assignee %}
+        <span class="text-outline-variant">·</span>
+        <div class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-[14px]">person</span>
+          <span>Assigned Staff: <strong class="text-on-surface font-body-medium">{{ adj.assignee.name }}</strong></span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Key Metadata Summary Bar -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+      <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm border border-surface-container-highest flex items-start gap-space-sm">
+        <div class="p-2 rounded bg-surface-container text-on-surface-variant shrink-0">
+          <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+        </div>
+        <div class="min-w-0">
+          <span class="block font-table-header text-table-header text-on-surface-variant uppercase">Audit Session</span>
+          <p class="font-body-medium text-body-default text-on-surface truncate">{{ adj.title }}</p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm border border-surface-container-highest flex items-start gap-space-sm">
+        <div class="p-2 rounded bg-surface-container text-on-surface-variant shrink-0">
+          <span class="material-symbols-outlined text-[18px]">person_check</span>
+        </div>
+        <div class="min-w-0">
+          <span class="block font-table-header text-table-header text-on-surface-variant uppercase">Physical Count By</span>
+          <p class="font-body-medium text-body-default text-on-surface truncate">{{ adj.counter.name if adj.counter else (adj.assignee.name if adj.assignee else 'Unassigned') }}</p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm border border-surface-container-highest flex items-start gap-space-sm">
+        <div class="p-2 rounded bg-surface-container text-on-surface-variant shrink-0">
+          <span class="material-symbols-outlined text-[18px]">qr_code_scanner</span>
+        </div>
+        <div class="min-w-0">
+          <span class="block font-table-header text-table-header text-on-surface-variant uppercase">Verification Method</span>
+          <p class="font-body-medium text-body-default text-on-surface truncate">Physical Blind Count + Audit Review</p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm border border-surface-container-highest flex items-start gap-space-sm">
+        <div class="p-2 rounded {% if discrepancy_count > 0 %}bg-red-50 text-red-700{% else %}bg-emerald-50 text-emerald-700{% endif %} shrink-0">
+          <span class="material-symbols-outlined text-[18px]">{% if discrepancy_count > 0 %}warning{% else %}check_circle{% endif %}</span>
+        </div>
+        <div class="min-w-0">
+          <span class="block font-table-header text-table-header text-on-surface-variant uppercase">Discrepancy Status</span>
+          <p class="font-code-medium text-body-default {% if discrepancy_count > 0 %}text-red-700{% else %}text-emerald-700{% endif %} font-semibold truncate">
+            {% if adj.status == 'Draft' %}Pending Count{% elif discrepancy_count > 0 %}{{ discrepancy_count }} Discrepanc{{ 'ies' if discrepancy_count > 1 else 'y' }}{% else %}Accurate Tally{% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- If Discrepant and Counted: Highlight Variance Hero Card -->
+    {% if adj.status in ('Counted', 'Approved') and discrepancy_count > 0 %}
+    {% for info in lines_info %}
+    {% if info.is_discrepant %}
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-surface-container-highest">
+      <!-- Card Header -->
+      <div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+        <div class="flex items-center gap-space-sm">
+          <span class="font-table-header text-table-header uppercase tracking-wider text-on-surface font-semibold">LEDGER VARIANCE ANALYSIS</span>
+          <span class="text-outline-variant font-code-default text-meta-default">/</span>
+          <span class="font-code-medium text-code-medium text-primary-container">SKU: {{ info.item.product.sku }}</span>
+          <span class="font-body-default text-meta-default text-on-surface-variant">({{ info.item.product.name }})</span>
+        </div>
+        <span class="px-2 py-0.5 rounded text-[10px] font-code-medium bg-red-100 text-red-800 uppercase tracking-wide">Variance Flagged</span>
+      </div>
+      <!-- Ledger Content Grid -->
+      <div class="p-space-lg">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-space-lg items-center">
+          <!-- Column 1: System Qty -->
+          <div class="md:col-span-3 bg-surface-container-low/60 p-space-md rounded-lg flex flex-col justify-between h-full">
+            <span class="font-table-header text-table-header text-on-surface-variant uppercase">System Quantity</span>
+            <div class="mt-2 flex items-baseline gap-1.5">
+              <span class="font-code-medium text-[26px] font-semibold text-on-surface">{{ info.item.system_quantity }}</span>
+              <span class="font-body-default text-meta-default text-on-surface-variant">{{ info.item.product.uom }}</span>
+            </div>
+            <span class="font-meta-default text-[11px] text-on-surface-variant mt-1">Recorded in Ledger Prior to Audit</span>
+          </div>
+          <!-- Column 2: Physical Count -->
+          <div class="md:col-span-3 bg-surface-container-low/60 p-space-md rounded-lg flex flex-col justify-between h-full">
+            <span class="font-table-header text-table-header text-on-surface-variant uppercase">Physical Count</span>
+            <div class="mt-2 flex items-baseline gap-1.5">
+              <span class="font-code-medium text-[26px] font-semibold text-on-surface">{{ info.item.counted_quantity }}</span>
+              <span class="font-body-default text-meta-default text-on-surface-variant">{{ info.item.product.uom }}</span>
+            </div>
+            <span class="font-meta-default text-[11px] text-on-surface-variant mt-1">Entered by Physical Auditor</span>
+          </div>
+          <!-- Divider Arrow -->
+          <div class="hidden md:flex md:col-span-1 justify-center items-center text-on-surface-variant">
+            <div class="h-10 w-px bg-surface-container-highest"></div>
+          </div>
+          <!-- Column 3: Adjustment Delta -->
+          <div class="md:col-span-5 bg-red-50/60 p-space-md rounded-lg flex flex-col justify-between h-full border border-red-200">
+            <div class="flex items-center justify-between">
+              <span class="font-table-header text-table-header text-red-900 uppercase">Adjustment Delta</span>
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-red-100 text-red-700 font-code-medium text-code-medium font-bold">
+                <span class="material-symbols-outlined text-[14px]">{% if (info.item.counted_quantity - info.item.system_quantity) < 0 %}arrow_downward{% else %}arrow_upward{% endif %}</span>
+                {{ (info.item.counted_quantity - info.item.system_quantity)|round(2) }} {{ info.item.product.uom }}
+              </span>
+            </div>
+            <div class="mt-2">
+              <p class="font-headline-sm text-headline-sm text-red-900">Reason: {{ info.item.reason or 'Not Specified' }}</p>
+              <p class="font-body-default text-meta-default text-red-800/80 mt-0.5 leading-snug">Discrepancy between system ledger and floor physical count.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+    <!-- Count Results Table Section -->
+    <form id="countForm" method="POST" action="/adjustments/{{ adj.id }}/submit-count">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+      <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-surface-container-highest">
+        <!-- Table Header Bar -->
+        <div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between border-b border-surface-container-highest">
+          <div class="flex items-center gap-space-sm">
+            <h2 class="font-headline-sm text-headline-sm text-on-surface">Count Results &amp; Inventory Tally</h2>
+            <span class="px-2 py-0.5 rounded text-[11px] font-code-medium bg-surface-container text-on-surface-variant">{{ adj.items|length }} SKU{{ 's' if adj.items|length != 1 else '' }}</span>
+          </div>
+          {% if adj.status == 'Draft' %}
+          <span class="font-meta-default text-amber-800 text-[12px] bg-amber-100 px-2 py-0.5 rounded font-medium">
+            Blind Count Mode: System counts are hidden from staff
+          </span>
+          {% endif %}
+        </div>
+
+        <!-- High Density Table Container -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-surface-container-low/70 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider">
+                <th class="py-2.5 px-space-md">Product &amp; SKU</th>
+                <th class="py-2.5 px-space-md">Location / Bin</th>
+                {% if adj.status != 'Draft' or current_user.is_manager %}
+                <th class="py-2.5 px-space-md text-right">System at Count</th>
+                <th class="py-2.5 px-space-md text-right">Current Stock</th>
+                {% endif %}
+                <th class="py-2.5 px-space-md text-right">Physical Count</th>
+                {% if adj.status != 'Draft' %}
+                <th class="py-2.5 px-space-md text-center">Variance</th>
+                {% endif %}
+                <th class="py-2.5 px-space-md">Reason &amp; Findings</th>
+              </tr>
+            </thead>
+            <tbody class="font-body-default text-body-default text-on-surface divide-y divide-surface-container-highest">
+              {% for info in lines_info %}
+              {% set item = info.item %}
+              <tr class="hover:bg-surface-container-low/40 transition-colors {% if info.is_discrepant %}bg-red-50/20{% endif %}">
+                <td class="py-3 px-space-md">
+                  <div class="flex items-start gap-space-sm">
+                    <div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center shrink-0">
+                      <span class="material-symbols-outlined text-[16px] text-on-surface-variant">inventory_2</span>
+                    </div>
+                    <div class="min-w-0">
+                      <p class="font-body-medium text-body-medium text-on-surface leading-tight">{{ item.product.name }}</p>
+                      <p class="font-code-default text-[11px] text-on-surface-variant">SKU: {{ item.product.sku }} · Unit: {{ item.product.uom }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3 px-space-md whitespace-nowrap">
+                  <span class="inline-block px-2 py-0.5 rounded font-code-medium text-[11px] bg-surface-container text-on-surface">
+                    {{ item.location.code }}
+                  </span>
+                </td>
+
+                {% if adj.status != 'Draft' or current_user.is_manager %}
+                <td class="py-3 px-space-md text-right font-code-default text-code-default">
+                  {{ item.system_quantity }} {{ item.product.uom }}
+                </td>
+                <td class="py-3 px-space-md text-right font-code-default text-code-default">
+                  {{ info.current_on_hand }} {{ item.product.uom }}
+                </td>
+                {% endif %}
+
+                <td class="py-3 px-space-md text-right">
+                  {% if adj.status == 'Draft' and can('adjustments:count') %}
+                    <input type="number" step="any" min="0" required name="counted_qty_{{ item.id }}" placeholder="0" class="w-24 h-8 px-2 text-right bg-surface-container-low border border-surface-container-highest rounded text-body-medium font-code-medium focus:outline-none focus:ring-1 focus:ring-primary-container"/>
+                  {% else %}
+                    <span class="font-code-medium text-code-medium font-semibold">
+                      {{ item.counted_quantity if item.counted_quantity is not None else '—' }} {{ item.product.uom }}
+                    </span>
+                  {% endif %}
+                </td>
+
+                {% if adj.status != 'Draft' %}
+                <td class="py-3 px-space-md text-center">
+                  {% if item.counted_quantity is not None %}
+                    {% set diff = item.counted_quantity - item.system_quantity %}
+                    {% if diff == 0 %}
+                      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-code-medium bg-emerald-100 text-emerald-800">
+                        Match (0)
+                      </span>
+                    {% else %}
+                      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-code-medium bg-red-100 text-red-800 font-semibold">
+                        {{ diff|round(2) }} {{ item.product.uom }}
+                      </span>
+                    {% endif %}
+                  {% else %}
+                    —
+                  {% endif %}
+                </td>
+                {% endif %}
+
+                <td class="py-3 px-space-md">
+                  {% if adj.status == 'Draft' and can('adjustments:count') %}
+                    <select name="reason_{{ item.id }}" class="h-8 px-2 bg-surface-container-low border border-surface-container-highest rounded text-meta-default font-body-default focus:outline-none focus:ring-1 focus:ring-primary-container cursor-pointer">
+                      <option value="">Select reason if discrepancy...</option>
+                      <option value="Accurate Count">Accurate Count</option>
+                      <option value="Damaged">Damaged</option>
+                      <option value="Missing">Missing</option>
+                      <option value="Counting Error">Counting Error</option>
+                      <option value="Found Stock">Found Stock</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  {% else %}
+                    <p class="font-body-medium text-meta-medium text-on-surface leading-tight">{{ item.reason or 'Accurate Count' }}</p>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        {% if adj.status == 'Draft' and can('adjustments:count') %}
+        <div class="p-3 bg-surface-container-low border-t border-surface-container-highest flex items-center justify-between">
+          <span class="text-meta-default text-on-surface-variant font-meta-default">Ensure all physical items in bin are tallied prior to submission.</span>
+          <button type="submit" class="h-8 px-4 bg-primary-container hover:bg-primary text-on-primary rounded font-body-medium text-body-medium shadow-sm transition-colors flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">send</span>
+            <span>Submit Physical Count</span>
+          </button>
+        </div>
+        {% endif %}
+      </div>
+    </form>
+
+    <!-- Two-Column Bottom Section: Field Notes & Activity Timeline -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+      <!-- Left Column: Count Inspection & Field Notes -->
+      <div class="lg:col-span-6 bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col justify-between space-y-space-md border border-surface-container-highest">
+        <div>
+          <div class="flex items-center justify-between pb-space-sm mb-space-md border-b border-surface-container-highest">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px] text-on-surface-variant">assignment</span>
+              Audit Scope &amp; Instructions
+            </h3>
+            <span class="font-table-header text-[10px] px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant uppercase">Signed Log</span>
+          </div>
+          <!-- Note Block -->
+          <div class="bg-surface-container-low p-space-md rounded-lg space-y-space-xs">
+            <div class="flex items-center justify-between text-meta-default">
+              <div class="flex items-center gap-1.5 font-body-medium text-on-surface">
+                <span class="material-symbols-outlined text-[16px] text-on-surface-variant">notes</span>
+                <span>Audit Instructions</span>
+              </div>
+            </div>
+            <p class="font-body-default text-body-default text-on-surface leading-relaxed pl-space-md">
+              {{ adj.notes or 'Perform physical count of all inventory units in target bin. Recount discrepancy lines before submitting review.' }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Activity & Movement Timeline -->
+      <div class="lg:col-span-6 bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col justify-between border border-surface-container-highest">
+        <div>
+          <div class="flex items-center justify-between pb-space-sm mb-space-md border-b border-surface-container-highest">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px] text-on-surface-variant">history</span>
+              Audit Activity Timeline
+            </h3>
+            <span class="font-meta-default text-meta-default text-on-surface-variant">{{ logs|length }} Events Logged</span>
+          </div>
+          <!-- Timeline Items -->
+          <div class="space-y-space-md pl-1 relative">
+            {% for log in logs %}
+            <div class="flex items-start gap-space-md relative">
+              <div class="w-6 h-6 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center shrink-0 mt-0.5 text-[12px] font-bold">
+                <span class="material-symbols-outlined text-[14px]">check</span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-baseline justify-between gap-space-xs">
+                  <span class="font-body-medium text-body-medium text-on-surface">{{ log.action }}</span>
+                  <span class="font-code-default text-[11px] text-on-surface-variant shrink-0">{{ log.at.strftime('%I:%M %p') }}</span>
+                </div>
+                <p class="font-body-default text-meta-default text-on-surface-variant mt-0.5">
+                  {{ log.note }}
+                </p>
+              </div>
+            </div>
+            {% else %}
+            <p class="text-meta-default text-outline py-2">No activity recorded yet.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Sticky Bottom Action Bar -->
+  <div class="fixed bottom-0 left-[240px] right-0 h-16 bg-surface-container-lowest shadow-[0_-4px_12px_rgba(0,0,0,0.06)] z-30 px-space-xl flex items-center justify-between border-t border-surface-container-highest">
+    <!-- Left Controls -->
+    <div class="flex items-center gap-space-sm shrink-0">
+      {% if adj.status == 'Counted' and can('adjustments:approve') %}
+      <form method="POST" action="/adjustments/{{ adj.id }}/reject" class="inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <button class="h-8 px-space-md rounded bg-red-50 hover:bg-red-100 text-red-700 font-body-medium text-meta-medium transition-colors flex items-center gap-1.5" type="submit">
+          <span class="material-symbols-outlined text-[16px]">close</span>
+          <span>Reject Count</span>
+        </button>
+      </form>
+      {% endif %}
+    </div>
+
+    <!-- Center Status Text -->
+    <div class="hidden md:flex items-center gap-2 text-center text-meta-default font-meta-default text-on-surface-variant">
+      {% if adj.status == 'Counted' %}
+        <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+        <span><strong class="text-on-surface font-body-medium">{{ discrepancy_count }} discrepanc{{ 'ies' if discrepancy_count != 1 else 'y' }}</strong> flagged · Stock balances will reconcile upon Manager approval.</span>
+      {% elif adj.status == 'Approved' %}
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Adjustment approved and posted to immutable stock ledger.</span>
+      {% elif adj.status == 'Draft' %}
+        <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+        <span>Sheet issued. Awaiting physical floor count submission.</span>
+      {% endif %}
+    </div>
+
+    <!-- Right Primary Action -->
+    <div class="flex items-center gap-space-sm shrink-0">
+      {% if adj.status == 'Counted' and can('adjustments:approve') %}
+      <form method="POST" action="/adjustments/{{ adj.id }}/approve" class="inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <button class="h-9 px-space-xl rounded bg-primary-container hover:bg-primary text-on-primary font-body-medium text-meta-medium shadow-sm transition-all flex items-center gap-2" type="submit">
+          <span class="material-symbols-outlined text-[18px]">check_circle</span>
+          <span>Approve Adjustment</span>
+        </button>
+      </form>
+      {% elif adj.status == 'Draft' and can('adjustments:count') %}
+      <button onclick="document.getElementById('countForm').submit()" class="h-9 px-space-xl rounded bg-primary-container hover:bg-primary text-on-primary font-body-medium text-meta-medium shadow-sm transition-all flex items-center gap-2" type="button">
+        <span class="material-symbols-outlined text-[18px]">send</span>
+        <span>Submit Count</span>
+      </button>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

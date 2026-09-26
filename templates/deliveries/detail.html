@@ -1,0 +1,398 @@
+{% extends "base.html" %}
+
+{% block title %}StockSense - Delivery {{ delivery.reference }}{% endblock %}
+
+{% block breadcrumb %}
+  <span class="hover:text-on-surface cursor-pointer"><a href="/delivery-orders">Delivery Orders</a></span>
+  <span class="text-outline-variant">/</span>
+  <span class="font-code-medium text-on-surface">{{ delivery.reference }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-col w-full pb-24">
+  <!-- Top Meta Header Area -->
+  <section class="px-space-xl py-space-lg bg-surface-container-lowest border-b border-surface-container-highest">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center gap-2">
+          <span class="font-table-header text-table-header uppercase text-on-surface-variant tracking-wider">DELIVERY ORDER</span>
+          {% if delivery.status == 'Done' %}
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-meta-medium text-meta-medium border border-emerald-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Dispatched
+            </span>
+          {% elif delivery.status == 'Packed' %}
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-indigo-50 text-indigo-800 font-meta-medium text-meta-medium border border-indigo-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-indigo-600"></span> Packed & Staged
+            </span>
+          {% elif delivery.status == 'Picked' %}
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-50 text-amber-800 font-meta-medium text-meta-medium border border-amber-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Picked
+            </span>
+          {% elif delivery.status == 'Ready' %}
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-blue-50 text-blue-800 font-meta-medium text-meta-medium border border-blue-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span> Ready to Pick
+            </span>
+          {% elif delivery.status == 'Waiting' %}
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-red-50 text-red-800 font-meta-medium text-meta-medium border border-red-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span> Waiting Stock
+            </span>
+          {% else %}
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-slate-200 text-slate-800 font-meta-medium text-meta-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Draft
+            </span>
+          {% endif %}
+
+          {% if delivery.priority == 'Urgent' %}
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-900 font-meta-medium text-[10px] uppercase font-bold">Urgent</span>
+          {% endif %}
+        </div>
+        <div class="flex items-center gap-3">
+          <h1 class="font-code-medium text-[22px] leading-7 font-bold text-on-surface tracking-tight">{{ delivery.reference }}</h1>
+          <span class="text-outline-variant font-body-default">|</span>
+          <p class="font-body-default text-body-default text-on-surface-variant">
+            Customer: <strong class="text-on-surface font-semibold">{{ delivery.customer.name if delivery.customer else 'N/A' }}</strong> · Source: {{ delivery.source_location.name if delivery.source_location else 'Main Warehouse' }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Insufficient Stock Alert Banner (Shown when Waiting for stock or shortage detected) -->
+  {% if has_shortage and delivery.status in ('Draft', 'Waiting') %}
+  <div class="px-space-xl mt-space-md">
+    <div class="bg-[#FEF2F2] border border-[#FECACA] rounded-xl p-space-md flex flex-col gap-space-sm shadow-sm">
+      <div class="flex flex-wrap items-start justify-between gap-space-md">
+        <div class="flex items-start gap-space-sm">
+          <div class="w-8 h-8 rounded-lg bg-[#FEE2E2] flex items-center justify-center shrink-0 mt-0.5 text-[#991B1B]">
+            <span class="material-symbols-outlined text-[20px]">error</span>
+          </div>
+          <div class="flex flex-col">
+            <div class="flex items-center gap-2">
+              <span class="font-headline-sm text-headline-sm text-[#991B1B]">Insufficient stock at {{ delivery.source_location.name if delivery.source_location else 'Main Warehouse' }}</span>
+              <span class="px-1.5 py-0.5 rounded text-[10px] font-code-medium bg-[#FEE2E2] text-[#991B1B]">STOCK SHORTAGE</span>
+            </div>
+            <p class="font-body-default text-body-default text-[#7F1D1D] mt-0.5">
+              You cannot pick or dispatch this order until stock arrives or the order quantity is adjusted.
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-space-xs shrink-0 self-start">
+          <form method="POST" action="/delivery-orders/{{ delivery.id }}/check-availability">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button class="h-7 px-space-sm bg-[#991B1B] text-white rounded-sm hover:bg-[#7F1D1D] transition-colors flex items-center gap-1 font-body-medium text-meta-default" type="submit">
+              <span class="material-symbols-outlined text-[14px]">refresh</span>
+              <span>Re-check Stock Availability</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Shortage Breakdown Table -->
+      <div class="bg-surface-container-lowest rounded border border-[#FECACA] overflow-hidden mt-1">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-[#FFF5F5] border-b border-[#FECACA] h-7">
+              <th class="px-space-md font-table-header text-table-header text-[#991B1B]">Product Deficit</th>
+              <th class="px-space-md font-table-header text-table-header text-[#991B1B]">SKU</th>
+              <th class="px-space-md font-table-header text-table-header text-[#991B1B] text-right">Requested</th>
+              <th class="px-space-md font-table-header text-table-header text-[#991B1B] text-right">Available in Hub</th>
+              <th class="px-space-md font-table-header text-table-header text-[#991B1B] text-right">Shortage</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#FEE2E2] font-body-default text-body-default">
+            {% for s in shortages %}
+            <tr class="hover:bg-[#FFF9F9]">
+              <td class="px-space-md py-1.5 font-body-medium text-on-surface">{{ s.product.name }}</td>
+              <td class="px-space-md py-1.5 font-code-default text-outline">{{ s.product.sku }}</td>
+              <td class="px-space-md py-1.5 font-code-medium text-right text-on-surface">{{ s.requested }} {{ s.product.uom }}</td>
+              <td class="px-space-md py-1.5 font-code-medium text-right text-error font-semibold">{{ s.available }} {{ s.product.uom }}</td>
+              <td class="px-space-md py-1.5 text-right">
+                <span class="inline-flex px-1.5 py-0.5 rounded text-[11px] font-code-medium bg-[#FEE2E2] text-error font-semibold">-{{ s.shortage }} {{ s.product.uom }}</span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Stepper Card -->
+  <div class="px-space-xl mt-space-md">
+    <div class="bg-surface-container-lowest rounded-md border border-surface-container-highest p-space-md shadow-sm">
+      <div class="grid grid-cols-2 md:grid-cols-6 items-center gap-2">
+        <!-- Step 1: Draft -->
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-full {% if delivery.status in ('Draft', 'Waiting', 'Ready', 'Picked', 'Packed', 'Done') %}bg-primary-container text-on-primary{% else %}border border-slate-300 bg-surface-container text-slate-400{% endif %} flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[14px]">check</span>
+          </div>
+          <span class="font-body-medium text-[12px] text-on-surface">1. Draft</span>
+        </div>
+        <!-- Step 2: Waiting -->
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-full {% if delivery.status in ('Waiting', 'Ready', 'Picked', 'Packed', 'Done') %}bg-primary-container text-on-primary{% else %}border border-slate-300 bg-surface-container text-slate-400{% endif %} flex items-center justify-center shrink-0">
+            {% if delivery.status in ('Ready', 'Picked', 'Packed', 'Done') %}
+              <span class="material-symbols-outlined text-[14px]">check</span>
+            {% elif delivery.status == 'Waiting' %}
+              <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
+            {% else %}
+              <span class="font-code-medium text-[10px]">2</span>
+            {% endif %}
+          </div>
+          <span class="font-body-medium text-[12px] text-on-surface">2. Waiting</span>
+        </div>
+        <!-- Step 3: Ready -->
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-full {% if delivery.status in ('Ready', 'Picked', 'Packed', 'Done') %}bg-primary-container text-on-primary{% else %}border border-slate-300 bg-surface-container text-slate-400{% endif %} flex items-center justify-center shrink-0">
+            {% if delivery.status in ('Picked', 'Packed', 'Done') %}
+              <span class="material-symbols-outlined text-[14px]">check</span>
+            {% elif delivery.status == 'Ready' %}
+              <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+            {% else %}
+              <span class="font-code-medium text-[10px]">3</span>
+            {% endif %}
+          </div>
+          <span class="font-body-medium text-[12px] text-on-surface">3. Ready</span>
+        </div>
+        <!-- Step 4: Picked -->
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-full {% if delivery.status in ('Picked', 'Packed', 'Done') %}bg-primary-container text-on-primary{% else %}border border-slate-300 bg-surface-container text-slate-400{% endif %} flex items-center justify-center shrink-0">
+            {% if delivery.status in ('Packed', 'Done') %}
+              <span class="material-symbols-outlined text-[14px]">check</span>
+            {% elif delivery.status == 'Picked' %}
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            {% else %}
+              <span class="font-code-medium text-[10px]">4</span>
+            {% endif %}
+          </div>
+          <span class="font-body-medium text-[12px] text-on-surface">4. Picked</span>
+        </div>
+        <!-- Step 5: Packed -->
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-full {% if delivery.status in ('Packed', 'Done') %}bg-primary-container text-on-primary{% else %}border border-slate-300 bg-surface-container text-slate-400{% endif %} flex items-center justify-center shrink-0">
+            {% if delivery.status == 'Done' %}
+              <span class="material-symbols-outlined text-[14px]">check</span>
+            {% elif delivery.status == 'Packed' %}
+              <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+            {% else %}
+              <span class="font-code-medium text-[10px]">5</span>
+            {% endif %}
+          </div>
+          <span class="font-body-medium text-[12px] text-on-surface">5. Packed</span>
+        </div>
+        <!-- Step 6: Done -->
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-full {% if delivery.status == 'Done' %}bg-emerald-700 text-white{% else %}border border-slate-300 bg-surface-container text-slate-400{% endif %} flex items-center justify-center shrink-0">
+            {% if delivery.status == 'Done' %}
+              <span class="material-symbols-outlined text-[14px]">check</span>
+            {% else %}
+              <span class="font-code-medium text-[10px]">6</span>
+            {% endif %}
+          </div>
+          <span class="font-body-medium text-[12px] {% if delivery.status == 'Done' %}text-on-surface font-semibold{% else %}text-slate-400{% endif %}">6. Dispatched</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Information Cards Grid -->
+  <div class="px-space-xl mt-space-md">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-4 shadow-sm">
+        <span class="font-table-header text-table-header text-outline uppercase tracking-wider">Destination Customer</span>
+        <div class="mt-1">
+          <div class="font-headline-sm text-headline-sm text-on-surface font-semibold">{{ delivery.customer.name if delivery.customer else 'N/A' }}</div>
+          <p class="font-body-default text-meta-default text-on-surface-variant mt-0.5">{{ delivery.customer.contact if delivery.customer else 'N/A' }} · {{ delivery.customer.city if delivery.customer else 'Pune' }}</p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-4 shadow-sm">
+        <span class="font-table-header text-table-header text-outline uppercase tracking-wider">Source Warehouse & Bin</span>
+        <div class="mt-1">
+          <div class="font-headline-sm text-headline-sm text-on-surface font-semibold">{{ delivery.source_location.warehouse.name if delivery.source_location else 'Main Warehouse' }}</div>
+          <p class="font-code-default text-[12px] text-on-surface-variant mt-0.5">{{ delivery.source_location.code if delivery.source_location else 'MAIN/STOCK' }}</p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-4 shadow-sm">
+        <span class="font-table-header text-table-header text-outline uppercase tracking-wider">Fulfillment Schedule</span>
+        <div class="mt-1">
+          <div class="font-headline-sm text-headline-sm text-on-surface font-semibold">{{ delivery.scheduled_date.strftime('%b %d, %Y') if delivery.scheduled_date else 'Immediate' }}</div>
+          <p class="font-body-default text-meta-default text-on-surface-variant mt-0.5">Priority: <strong class="text-on-surface">{{ delivery.priority }}</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Line Items Table -->
+  <div class="px-space-xl mt-space-md">
+    <div class="bg-surface-container-lowest rounded-md border border-surface-container-highest shadow-sm overflow-hidden">
+      <div class="h-10 px-space-lg border-b border-surface-container-highest flex items-center justify-between bg-surface-bright">
+        <div class="flex items-center gap-space-md">
+          <h2 class="font-body-medium text-body-medium text-on-surface font-semibold">Dispatch Items</h2>
+          <span class="px-2 py-0.5 rounded text-[11px] font-code-medium bg-slate-200 text-slate-800">{{ delivery.items|length }} line(s)</span>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse text-left">
+          <thead>
+            <tr class="h-8 bg-surface-container-low border-b border-surface-container-highest text-slate-600 font-table-header text-table-header uppercase">
+              <th class="px-space-lg py-1 w-10 text-center">#</th>
+              <th class="px-space-md py-1 min-w-[200px]">Product / Spec</th>
+              <th class="px-space-md py-1 w-24">SKU</th>
+              <th class="px-space-md py-1 w-28 text-right">Requested Qty</th>
+              <th class="px-space-md py-1 w-20">Unit</th>
+              <th class="px-space-md py-1 w-32 text-right">Available in Hub</th>
+              <th class="px-space-lg py-1 min-w-[150px]">Stock Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-surface-container-highest font-body-default text-body-default text-on-surface">
+            {% for item_data in items_info %}
+            {% set it = item_data.item %}
+            <tr class="h-10 hover:bg-slate-50/80 transition-colors {% if item_data.is_short %}bg-red-50/30{% endif %}">
+              <td class="px-space-lg text-center font-code-default text-slate-400">{{ loop.index }}</td>
+              <td class="px-space-md py-2">
+                <div class="font-body-medium font-semibold text-on-surface">{{ it.product.name }}</div>
+                <div class="font-meta-default text-[11px] text-slate-500">{{ it.product.description or '' }}</div>
+              </td>
+              <td class="px-space-md font-code-medium text-slate-700">{{ it.product.sku }}</td>
+              <td class="px-space-md text-right font-code-medium font-bold text-on-surface">
+                {{ it.quantity|int if it.quantity == it.quantity|int else it.quantity }}
+              </td>
+              <td class="px-space-md text-slate-600 font-code-default">{{ it.product.uom }}</td>
+              <td class="px-space-md text-right font-code-medium {% if item_data.is_short %}text-error font-bold{% else %}text-emerald-800{% endif %}">
+                {{ item_data.available|int if item_data.available == item_data.available|int else item_data.available }} {{ it.product.uom }}
+              </td>
+              <td class="px-space-lg">
+                {% if item_data.is_short %}
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-100 text-red-900 font-meta-medium text-[11px]">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span> Shortage Detected
+                  </span>
+                {% else %}
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-meta-medium text-[11px]">
+                    <span class="material-symbols-outlined text-[13px] text-emerald-600">check_circle</span> In Stock
+                  </span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custody & Activity Timeline -->
+  <div class="px-space-xl mt-space-md">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+      <div class="lg:col-span-7 bg-surface-container-lowest rounded-md border border-surface-container-highest shadow-sm p-4">
+        <h3 class="font-body-medium text-body-medium text-on-surface font-semibold mb-3">Custody & Logistics Log</h3>
+        <dl class="divide-y divide-surface-container-highest text-body-default">
+          <div class="py-2 flex justify-between">
+            <dt class="font-meta-medium text-on-surface-variant text-[12px]">Created By</dt>
+            <dd class="font-body-default text-on-surface">{{ delivery.creator.name if delivery.creator else 'Manager' }} ({{ delivery.created_at.strftime('%b %d, %H:%M') }})</dd>
+          </div>
+          <div class="py-2 flex justify-between">
+            <dt class="font-meta-medium text-on-surface-variant text-[12px]">Picked By</dt>
+            <dd class="font-body-default text-on-surface">{{ delivery.picker.name if delivery.picker else '—' }}</dd>
+          </div>
+          <div class="py-2 flex justify-between">
+            <dt class="font-meta-medium text-on-surface-variant text-[12px]">Packed By</dt>
+            <dd class="font-body-default text-on-surface">{{ delivery.packer.name if delivery.packer else '—' }}</dd>
+          </div>
+          <div class="py-2 flex justify-between">
+            <dt class="font-meta-medium text-on-surface-variant text-[12px]">Validated / Dispatched By</dt>
+            <dd class="font-body-default text-on-surface">{{ delivery.done_user.name if delivery.done_user else '—' }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="lg:col-span-5 bg-surface-container-lowest rounded-md border border-surface-container-highest shadow-sm p-4">
+        <h3 class="font-body-medium text-body-medium text-on-surface font-semibold mb-3">Audit Timeline</h3>
+        <div class="relative pl-6 space-y-4 before:content-[''] before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[2px] before:bg-surface-container-highest">
+          {% for log in logs %}
+          <div class="relative">
+            <div class="absolute -left-[27px] top-0.5 w-3.5 h-3.5 rounded-full bg-primary-container border-2 border-white"></div>
+            <div class="flex items-center justify-between">
+              <span class="font-code-medium text-[11px] text-on-surface font-bold">{{ log.action }}</span>
+              <span class="text-meta-default text-[10px] text-slate-400">{{ log.at.strftime('%H:%M') }}</span>
+            </div>
+            <p class="font-body-default text-[12px] text-on-surface-variant mt-0.5">{{ log.note or '' }} ({{ log.user.name if log.user else 'System' }})</p>
+          </div>
+          {% else %}
+          <div class="text-on-surface-variant font-meta-default text-[11px]">No activity logs recorded.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<!-- Sticky Bottom Action Bar -->
+<footer class="fixed bottom-0 left-[248px] right-0 h-14 bg-surface-container-lowest border-t border-surface-container-highest px-space-xl flex items-center justify-between z-30 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+  <div class="flex items-center gap-space-sm">
+    {% if delivery.status in ('Draft', 'Waiting', 'Ready', 'Picked', 'Packed') and can('deliveries:cancel') %}
+    <form method="POST" action="/delivery-orders/{{ delivery.id }}/cancel" onsubmit="return confirm('Cancel this delivery order?');">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <button class="h-8 px-space-md rounded border border-red-300 text-red-700 bg-white hover:bg-red-50 font-body-medium text-meta-default transition-colors flex items-center gap-1.5" type="submit">
+        <span class="material-symbols-outlined text-[15px]">close</span>
+        <span>Cancel Order</span>
+      </button>
+    </form>
+    {% endif %}
+  </div>
+
+  <div class="flex items-center gap-space-md">
+    {% if delivery.status == 'Draft' and can('deliveries:confirm') %}
+    <form method="POST" action="/delivery-orders/{{ delivery.id }}/confirm">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <button class="h-8 px-5 rounded bg-primary-container hover:bg-primary text-on-primary font-body-medium text-body-default shadow-sm transition-all flex items-center gap-2" type="submit">
+        <span class="material-symbols-outlined text-[17px]">check</span>
+        <span>Confirm Order</span>
+      </button>
+    </form>
+    {% endif %}
+
+    {% if delivery.status == 'Waiting' and can('deliveries:check') %}
+    <form method="POST" action="/delivery-orders/{{ delivery.id }}/check-availability">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <button class="h-8 px-5 rounded bg-primary-container hover:bg-primary text-on-primary font-body-medium text-body-default shadow-sm transition-all flex items-center gap-2" type="submit">
+        <span class="material-symbols-outlined text-[17px]">refresh</span>
+        <span>Re-check Stock Availability</span>
+      </button>
+    </form>
+    {% endif %}
+
+    {% if delivery.status == 'Ready' and can('deliveries:pick') %}
+    <form method="POST" action="/delivery-orders/{{ delivery.id }}/pick">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <button class="h-8 px-5 rounded bg-primary-container hover:bg-primary text-on-primary font-body-medium text-body-default shadow-sm transition-all flex items-center gap-2" type="submit">
+        <span class="material-symbols-outlined text-[17px]">shopping_cart_checkout</span>
+        <span>Pick Order</span>
+      </button>
+    </form>
+    {% endif %}
+
+    {% if delivery.status == 'Picked' and can('deliveries:pack') %}
+    <form method="POST" action="/delivery-orders/{{ delivery.id }}/pack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <button class="h-8 px-5 rounded bg-primary-container hover:bg-primary text-on-primary font-body-medium text-body-default shadow-sm transition-all flex items-center gap-2" type="submit">
+        <span class="material-symbols-outlined text-[17px]">inventory_2</span>
+        <span>Pack Order</span>
+      </button>
+    </form>
+    {% endif %}
+
+    {% if delivery.status == 'Packed' and can('deliveries:validate') %}
+    <form method="POST" action="/delivery-orders/{{ delivery.id }}/validate">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <button class="h-8 px-5 rounded bg-emerald-700 hover:bg-emerald-800 text-white font-body-medium text-body-default shadow-sm transition-all flex items-center gap-2" type="submit">
+        <span class="material-symbols-outlined text-[17px]">local_shipping</span>
+        <span>Validate Dispatch Release</span>
+      </button>
+    </form>
+    {% endif %}
+  </div>
+</footer>
+{% endblock %}

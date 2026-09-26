@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="web_dashboard" name="shell-type"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style>
+<script src="https://cdn.tailwindcss.com"></script>
+<script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-tint": "#445e8d", "on-tertiary": "#ffffff", "surface-bright": "#f8f9fb", "on-secondary-container": "#54617e", "on-background": "#191c1e", "error-container": "#ffdad6", "primary-fixed-dim": "#adc7fb", "inverse-on-surface": "#f0f1f3", "surface-dim": "#d9dadc", "on-secondary": "#ffffff", "on-primary-fixed": "#001b3f", "on-surface": "#191c1e", "on-tertiary-fixed-variant": "#0039b5", "surface-container-lowest": "#ffffff", "on-primary-fixed-variant": "#2c4773", "tertiary": "#001c66", "on-error": "#ffffff", "surface-container-low": "#f3f4f6", "on-tertiary-fixed": "#001551", "on-error-container": "#93000a", "tertiary-container": "#002e98", "surface-variant": "#e1e2e4", "on-secondary-fixed-variant": "#3a4663", "surface-container-highest": "#e1e2e4", "error": "#ba1a1a", "surface": "#f8f9fb", "on-secondary-fixed": "#0e1b35", "on-primary": "#ffffff", "secondary-fixed": "#d8e2ff", "primary-fixed": "#d7e3ff", "inverse-surface": "#2e3132", "on-surface-variant": "#44474f", "on-primary-container": "#8ba5d7", "surface-container-high": "#e7e8ea", "secondary-fixed-dim": "#bac6e8", "tertiary-fixed": "#dce1ff", "inverse-primary": "#adc7fb", "secondary-container": "#d0dcff", "secondary": "#525e7b", "outline": "#747780", "background": "#f8f9fb", "primary": "#01244f", "outline-variant": "#c4c6d0", "primary-container": "#1e3a66", "surface-container": "#edeef0", "tertiary-fixed-dim": "#b7c4ff", "on-tertiary-container": "#869fff" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xs": "0.25rem", "space-sm": "0.375rem", "space-xl": "1rem", "gutter": "0.75rem", "space-lg": "0.75rem", "space-md": "0.5rem", "margin": "1rem" }, "fontFamily": { "body-default": [ "IBM Plex Sans" ], "meta-medium": [ "IBM Plex Sans" ], "code-default": [ "JetBrains Mono" ], "body-medium": [ "IBM Plex Sans" ], "table-header": [ "IBM Plex Sans" ], "headline-lg": [ "IBM Plex Sans" ], "headline-md": [ "IBM Plex Sans" ], "headline-sm": [ "IBM Plex Sans" ], "meta-default": [ "IBM Plex Sans" ], "code-medium": [ "JetBrains Mono" ] }, "fontSize": { "body-default": [ "13px", { "lineHeight": "18px", "fontWeight": "400" } ], "meta-medium": [ "12px", { "lineHeight": "16px", "fontWeight": "500" } ], "code-default": [ "12px", { "lineHeight": "16px", "fontWeight": "400" } ], "body-medium": [ "13px", { "lineHeight": "18px", "fontWeight": "500" } ], "table-header": [ "11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" } ], "headline-lg": [ "18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "headline-md": [ "15px", { "lineHeight": "20px", "letterSpacing": "-0.005em", "fontWeight": "600" } ], "headline-sm": [ "13px", { "lineHeight": "18px", "fontWeight": "600" } ], "meta-default": [ "12px", { "lineHeight": "16px", "fontWeight": "400" } ], "code-medium": [ "12px", { "lineHeight": "16px", "fontWeight": "500" } ] } } } };</script>
+</head>
+<body class="bg-surface font-body-default text-body-default text-on-surface antialiased">
+<aside class="fixed left-0 top-0 h-full w-[240px] bg-[#13203A] z-50 flex flex-col justify-between border-r border-slate-800">
+<div class="flex flex-col h-[calc(100%-56px)]">
+<div class="h-12 px-space-lg border-b border-slate-800 flex items-center gap-space-md shrink-0">
+<img alt="StockSense Logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1X3_oUN3UnIFP7xHyGjrhPOFRLnT3DpnQBdFWT_8FwzziCRI4xMdCZ6L9JO-RRmEwJ8SFBTCeUvaDtoPE6q16El5Z26uGiSNO7FsZmiFMu1mhKyWMq7hA-LvnzVfjl7zbmqiW4VSVJhHilmaaWuwupSHcwxutn3wZ8JUdlepHbHScMYBcNWE2SFSvXAxtOKomAY7jEeivo7oUvXYS6EQw2gCncvMWzAIW7vncRT7j0Uhve2aPM6j2Sijw"/>
+<div class="flex flex-col min-w-0 leading-tight">
+<span class="font-headline-sm text-headline-sm text-white tracking-tight truncate">StockSense</span>
+<span class="font-table-header text-[10px] text-slate-400 truncate">Pune Plant 01</span>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto py-space-sm px-space-xs space-y-space-md">
+<section>
+<div><span class="block px-space-md py-space-xs font-table-header text-table-header text-slate-400 tracking-wider uppercase">OVERVIEW</span></div>
+<nav class="space-y-0.5 mt-0.5" data-active-classes="bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim">
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="dashboard" href="#">
+<span class="truncate">Dashboard</span>
+</a>
+</nav>
+</section>
+<section>
+<div><span class="block px-space-md py-space-xs font-table-header text-table-header text-slate-400 tracking-wider uppercase">INVENTORY</span></div>
+<nav class="space-y-0.5 mt-0.5" data-active-classes="bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim">
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="products" href="#">
+<span class="truncate">Products</span>
+</a>
+</nav>
+</section>
+<section>
+<div><span class="block px-space-md py-space-xs font-table-header text-table-header text-slate-400 tracking-wider uppercase">OPERATIONS</span></div>
+<nav class="space-y-0.5 mt-0.5" data-active-classes="bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim">
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="receipts" href="#">
+<span class="truncate">Receipts</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-medium bg-blue-500/20 text-blue-300">7</span>
+</a>
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="delivery-orders" href="#">
+<span class="truncate">Delivery Orders</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-medium bg-emerald-500/20 text-emerald-300">12</span>
+</a>
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="internal-transfers" href="#">
+<span class="truncate">Internal Transfers</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-medium bg-amber-500/20 text-amber-300">4</span>
+</a>
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="inventory-adjustments" href="#">
+<span class="truncate">Inventory Adjustments</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-medium bg-amber-500/20 text-amber-300">3</span>
+</a>
+</nav>
+</section>
+<section>
+<div><span class="block px-space-md py-space-xs font-table-header text-table-header text-slate-400 tracking-wider uppercase">REPORTING</span></div>
+<nav class="space-y-0.5 mt-0.5" data-active-classes="bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim">
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="move-history" href="#">
+<span class="truncate">Move History</span>
+</a>
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="stock-valuation" href="#">
+<span class="truncate">Stock Valuation</span>
+</a>
+</nav>
+</section>
+<section>
+<div><span class="block px-space-md py-space-xs font-table-header text-table-header text-slate-400 tracking-wider uppercase">CONFIGURATION</span></div>
+<nav class="space-y-0.5 mt-0.5" data-active-classes="bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim">
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="settings" href="#">
+<span class="truncate">Settings</span>
+</a>
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="locations-and-warehouses" href="#">
+<span class="truncate">Locations &amp; Warehouses</span>
+</a>
+</nav>
+</section>
+</div>
+</div>
+<div class="h-[56px] border-t border-slate-800 px-space-md py-space-xs flex items-center justify-between bg-black/20">
+<div class="flex items-center gap-space-sm min-w-0">
+<img alt="Ridhima Sharma" class="w-8 h-8 rounded-full object-cover border border-slate-700 shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTptHVDjIQ2l7v9FCKnXUTVlG5J3TpxKu5UZS6JrCk3TCkvwgFPiicfJ3H_QCk8i2yKtjfjzaSL2lWiyg9pu5IA3Qza-E6hpqMCeVw0eBeCRrQ7n1Z3nXFzzvoKm5tDfWXQP7HHz4YNKSvmMiaIXHG45M_AuMKtxWUJxmpULmqG2sH6YAkUnfqiX71_SURCu89dtAhQoz6vP6iwAGrCQZ3m0vtbr1EQalnHFm3Vy_Geneth9HEYt6B"/>
+<div class="min-w-0 flex flex-col leading-tight">
+<span class="font-body-medium text-body-medium text-white truncate">Ridhima Sharma</span>
+<span class="font-meta-default text-[11px] text-slate-400 truncate">Inventory Manager</span>
+</div>
+</div>
+<button class="text-slate-400 hover:text-white transition-colors p-1 rounded-sm" title="Sign Out" type="button">
+<span class="material-symbols-outlined text-[18px]">logout</span>
+</button>
+</div>
+</aside>
+<div class="pl-[240px]">
+<header class="fixed top-0 left-[240px] right-0 h-12 bg-surface-container-lowest border-b border-surface-container-highest z-40 px-space-xl flex items-center justify-between">
+<div class="flex items-center gap-space-md shrink-0">
+<div class="flex items-center gap-1.5 font-body-default text-body-default text-on-surface-variant">
+<span class="hover:text-on-surface cursor-pointer">Operations</span>
+<span class="text-outline-variant">/</span>
+<span class="hover:text-on-surface cursor-pointer">Inventory Adjustments</span>
+<span class="text-outline-variant">/</span>
+<span class="font-code-medium text-code-medium text-on-surface">ADJ-0004</span>
+</div>
+<div class="h-4 w-px bg-surface-container-highest mx-space-xs"></div>
+<button class="flex items-center gap-space-xs px-space-md py-space-xs rounded bg-surface-container text-on-surface font-body-medium text-meta-default border border-surface-container-highest hover:bg-surface-dim transition-colors" type="button">
+<span class="material-symbols-outlined text-[15px] text-on-surface-variant">warehouse</span>
+<span>Main Warehouse (Pune Hub)</span>
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">expand_more</span>
+</button>
+</div>
+<div class="w-80 relative">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant">search</span>
+<input class="w-full h-8 pl-8 pr-7 bg-surface rounded-sm border border-surface-container-highest font-body-default text-meta-default text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container" placeholder="Search products, SKUs, references..." type="text"/>
+<span class="absolute right-2 top-1/2 -translate-y-1/2 font-code-medium text-[10px] text-outline bg-surface-container px-1 py-0.5 rounded border border-surface-container-highest">/</span>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<button class="relative p-1.5 text-on-surface-variant hover:text-on-surface rounded-sm hover:bg-surface-container transition-colors" title="Notifications" type="button">
+<span class="material-symbols-outlined text-[18px]">notifications</span>
+<span class="absolute top-1 right-1 w-3.5 h-3.5 bg-error text-on-error font-code-medium text-[9px] rounded-full flex items-center justify-center leading-none">5</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface rounded-sm hover:bg-surface-container transition-colors" title="Help &amp; Documentation" type="button">
+<span class="material-symbols-outlined text-[18px]">help_outline</span>
+</button>
+<div class="flex items-center gap-space-xs pl-space-xs cursor-pointer">
+<img alt="Ridhima Sharma" class="w-7 h-7 rounded-full object-cover border border-surface-container-highest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTptHVDjIQ2l7v9FCKnXUTVlG5J3TpxKu5UZS6JrCk3TCkvwgFPiicfJ3H_QCk8i2yKtjfjzaSL2lWiyg9pu5IA3Qza-E6hpqMCeVw0eBeCRrQ7n1Z3nXFzzvoKm5tDfWXQP7HHz4YNKSvmMiaIXHG45M_AuMKtxWUJxmpULmqG2sH6YAkUnfqiX71_SURCu89dtAhQoz6vP6iwAGrCQZ3m0vtbr1EQalnHFm3Vy_Geneth9HEYt6B"/>
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">arrow_drop_down</span>
+</div>
+</div>
+</header>
+<main class="w-full pt-12 min-h-screen bg-surface-container-low max-w-full"><div class="flex flex-col w-full">
+<!-- Dynamic shell updater script to sync top nav breadcrumbs & active sidebar state -->
+<script>
+    (function syncShell() {
+      // Highlight Move History in sidebar
+      const currentLinks = document.querySelectorAll('aside a[data-path]');
+      currentLinks.forEach(link => {
+        if (link.getAttribute('data-path') === 'move-history') {
+          link.className = "flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-medium text-body-medium bg-white/10 text-white border-l-[3px] border-primary-fixed-dim transition-colors";
+        } else {
+          link.classList.remove('bg-white/10', 'text-white', 'border-l-[3px]', 'border-primary-fixed-dim');
+          link.classList.add('text-slate-300');
+        }
+      });
+      // Synchronize breadcrumbs in top header
+      const breadcrumb = document.querySelector('header .text-on-surface-variant');
+      if (breadcrumb) {
+        breadcrumb.innerHTML = `
+          <span class="hover:text-on-surface cursor-pointer">Reporting</span>
+          <span class="text-outline-variant">/</span>
+          <span class="font-headline-sm text-headline-sm text-on-surface">Move History</span>
+        `;
+      }
+    })();
+  </script>
+<!-- CONTENT CONTAINER -->
+<div class="p-space-xl space-y-space-lg">
+<!-- SECTION 1: HEADER & LIVE STREAM METRICS -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md bg-surface-container-lowest p-space-lg rounded-lg shadow-sm border border-surface-container-highest">
+<div class="space-y-1">
+<div class="flex items-center gap-space-sm">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Move History</h1>
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-code-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+            Auto-sync ON · 10s ago
+          </span>
+</div>
+<p class="font-body-default text-body-default text-on-surface-variant">
+          Comprehensive audit trail and immutable ledger of all physical stock movements, inward receipts, dispatches, and warehouse adjustments.
+        </p>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="h-8 px-space-md bg-surface-container-lowest text-on-surface border border-surface-container-highest rounded hover:bg-surface-container text-body-medium font-body-medium flex items-center gap-1.5 transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">content_copy</span>
+<span>Copy as CSV</span>
+</button>
+<button class="h-8 px-space-md bg-primary-container text-on-primary rounded hover:bg-primary text-body-medium font-body-medium flex items-center gap-1.5 transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">download</span>
+<span>Export Ledger</span>
+</button>
+</div>
+</div>
+<!-- SUMMARY METRICS BAR -->
+<div class="grid grid-cols-2 md:grid-cols-5 gap-space-md">
+<!-- Metric 1 -->
+<div class="bg-surface-container-lowest p-space-md rounded border border-surface-container-highest flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-table-header text-table-header uppercase tracking-wider">Total Moves Today</span>
+<span class="material-symbols-outlined text-[16px] text-primary-container">sync_alt</span>
+</div>
+<div class="mt-2 flex items-baseline gap-1.5">
+<span class="font-code-medium text-[20px] font-semibold text-on-surface">142</span>
+<span class="font-meta-default text-meta-default text-on-surface-variant">events</span>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="bg-surface-container-lowest p-space-md rounded border border-surface-container-highest flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-table-header text-table-header uppercase tracking-wider">Inward Receipts</span>
+<span class="material-symbols-outlined text-[16px] text-emerald-600">login</span>
+</div>
+<div class="mt-2 flex items-baseline gap-1.5">
+<span class="font-code-medium text-[20px] font-semibold text-emerald-700">+420</span>
+<span class="font-meta-default text-meta-default text-emerald-700">units</span>
+</div>
+</div>
+<!-- Metric 3 -->
+<div class="bg-surface-container-lowest p-space-md rounded border border-surface-container-highest flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-table-header text-table-header uppercase tracking-wider">Outward Dispatches</span>
+<span class="material-symbols-outlined text-[16px] text-rose-600">logout</span>
+</div>
+<div class="mt-2 flex items-baseline gap-1.5">
+<span class="font-code-medium text-[20px] font-semibold text-rose-700">−312</span>
+<span class="font-meta-default text-meta-default text-rose-700">units</span>
+</div>
+</div>
+<!-- Metric 4 -->
+<div class="bg-surface-container-lowest p-space-md rounded border border-surface-container-highest flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-table-header text-table-header uppercase tracking-wider">Internal Transfers</span>
+<span class="material-symbols-outlined text-[16px] text-blue-600">swap_horiz</span>
+</div>
+<div class="mt-2 flex items-baseline gap-1.5">
+<span class="font-code-medium text-[20px] font-semibold text-blue-700">38</span>
+<span class="font-meta-default text-meta-default text-on-surface-variant">transfers</span>
+</div>
+</div>
+<!-- Metric 5 -->
+<div class="bg-surface-container-lowest p-space-md rounded border border-surface-container-highest flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-table-header text-table-header uppercase tracking-wider">Discrepancies</span>
+<span class="material-symbols-outlined text-[16px] text-amber-600">report_problem</span>
+</div>
+<div class="mt-2 flex items-baseline gap-1.5">
+<span class="font-code-medium text-[20px] font-semibold text-amber-700">2</span>
+<span class="font-meta-default text-meta-default text-amber-700">ADJ items</span>
+</div>
+</div>
+</div>
+<!-- SECTION 2: DENSE FILTER CONTROLS BAR -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg border border-surface-container-highest shadow-sm space-y-space-sm">
+<div class="flex flex-wrap items-center gap-space-sm">
+<!-- Search Field -->
+<div class="flex-1 min-w-[240px] relative">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant">search</span>
+<input class="w-full h-8 pl-8 pr-3 text-body-default font-body-default bg-surface rounded border border-surface-container-highest text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container" placeholder="Search SKU, reference, lot, note..." type="text"/>
+</div>
+<!-- Operation Filter Dropdown -->
+<div class="relative shrink-0">
+<select class="h-8 pl-2.5 pr-7 appearance-none text-meta-default font-meta-default bg-surface border border-surface-container-highest rounded text-on-surface focus:outline-none focus:border-primary-container cursor-pointer">
+<option value="">All Operations</option>
+<option value="receipt">Receipts (REC)</option>
+<option value="delivery">Deliveries (DO)</option>
+<option value="transfer">Internal Transfers (INT)</option>
+<option value="adjustment">Adjustments (ADJ)</option>
+</select>
+<span class="material-symbols-outlined absolute right-1.5 top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+<!-- Product Filter Dropdown -->
+<div class="relative shrink-0">
+<select class="h-8 pl-2.5 pr-7 appearance-none text-meta-default font-meta-default bg-surface border border-surface-container-highest rounded text-on-surface focus:outline-none focus:border-primary-container cursor-pointer">
+<option value="">All Products</option>
+<option value="sr">Steel Rods 12mm</option>
+<option value="lp">LED Panels 36W</option>
+<option value="wg">Work Gloves (Nitrile)</option>
+<option value="cw">Copper Wire Spool 2.5mm</option>
+<option value="al">Aluminum Sheets 2mm</option>
+<option value="bx">Corrugated Packaging</option>
+</select>
+<span class="material-symbols-outlined absolute right-1.5 top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+<!-- Location Filter Dropdown -->
+<div class="relative shrink-0">
+<select class="h-8 pl-2.5 pr-7 appearance-none text-meta-default font-meta-default bg-surface border border-surface-container-highest rounded text-on-surface focus:outline-none focus:border-primary-container cursor-pointer">
+<option value="">All Locations / Bins</option>
+<option value="main">Main Warehouse (Pune)</option>
+<option value="bay4">Bay 04 (Inward)</option>
+<option value="prod">Production Line 1</option>
+<option value="scrap">Scrap &amp; Shrinkage</option>
+</select>
+<span class="material-symbols-outlined absolute right-1.5 top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+<!-- User Filter -->
+<div class="relative shrink-0">
+<select class="h-8 pl-2.5 pr-7 appearance-none text-meta-default font-meta-default bg-surface border border-surface-container-highest rounded text-on-surface focus:outline-none focus:border-primary-container cursor-pointer">
+<option value="">All Operators</option>
+<option value="ridhima">Ridhima Sharma</option>
+<option value="aman">Aman Kumar</option>
+<option value="sunil">Sunil K.</option>
+<option value="daemon">System Daemon</option>
+</select>
+<span class="material-symbols-outlined absolute right-1.5 top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+<!-- Quick Date Range Pills -->
+<div class="flex items-center border border-surface-container-highest rounded p-0.5 bg-surface shrink-0">
+<button class="h-6 px-2 text-[11px] font-body-medium rounded bg-surface-container-lowest text-on-surface font-semibold shadow-xs" type="button">Today</button>
+<button class="h-6 px-2 text-[11px] font-body-medium rounded text-on-surface-variant hover:text-on-surface" type="button">7D</button>
+<button class="h-6 px-2 text-[11px] font-body-medium rounded text-on-surface-variant hover:text-on-surface" type="button">30D</button>
+</div>
+<!-- Custom Date Range -->
+<div class="flex items-center gap-1 shrink-0">
+<div class="flex items-center h-8 px-2 bg-surface rounded border border-surface-container-highest text-code-default text-[11px]">
+<span class="text-on-surface-variant mr-1">From:</span>
+<input class="w-18 bg-transparent focus:outline-none text-on-surface font-code-default" type="text" value="2024-10-01"/>
+</div>
+<span class="text-outline-variant text-[11px]">to</span>
+<div class="flex items-center h-8 px-2 bg-surface rounded border border-surface-container-highest text-code-default text-[11px]">
+<span class="text-on-surface-variant mr-1">To:</span>
+<input class="w-18 bg-transparent focus:outline-none text-on-surface font-code-default" type="text" value="2024-10-24"/>
+</div>
+</div>
+<!-- "Only My Operations" Checkbox & Reset -->
+<div class="flex items-center gap-space-md ml-auto shrink-0">
+<label class="flex items-center gap-1.5 cursor-pointer text-meta-default font-meta-default text-on-surface">
+<input class="w-3.5 h-3.5 accent-[#1e3a66] rounded cursor-pointer" type="checkbox"/>
+<span>Only my operations</span>
+</label>
+<div class="h-4 w-px bg-surface-container-highest"></div>
+<button class="text-meta-default font-meta-default text-on-surface-variant hover:text-error flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">filter_alt_off</span>
+<span>Reset</span>
+</button>
+</div>
+</div>
+</div>
+<!-- SECTION 3: DENSE STOCK LEDGER TABLE -->
+<div class="bg-surface-container-lowest rounded-lg border border-surface-container-highest shadow-sm overflow-hidden flex flex-col">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse min-w-[1100px]">
+<thead>
+<tr class="bg-surface-container-low border-b border-surface-container-highest h-8">
+<th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[150px]">Date &amp; Time</th>
+<th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[110px]">Reference</th>
+<th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider min-w-[200px]">Product / Spec</th>
+<th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[80px]">SKU</th>
+<th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[130px]">Operation</th>
+<th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[160px]">Source (From)</th>
+<th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[160px]">Target (To)</th>
+<th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider text-right w-[110px]">Quantity</th>
+<th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[140px]">Operator</th>
+<th class="px-3 py-1 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider w-[130px]">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-highest text-body-default font-body-default">
+<!-- ROW 1: REC-0005 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-3 py-2 text-on-surface whitespace-nowrap">
+<span class="font-code-default text-[12px] text-on-surface">24 Oct 2024</span>
+<span class="block text-[11px] font-code-default text-outline">11:15:22 AM</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="#">
+<span>REC-0005</span>
+<span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</td>
+<td class="px-3 py-2">
+<div class="font-body-medium text-body-medium text-on-surface font-semibold">Steel Rods 12mm</div>
+<div class="text-[11px] text-on-surface-variant">Fe500 Grade · Lot #IN-9082</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-medium text-[11px] text-on-surface border border-surface-container-highest">SR001</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-emerald-50 text-emerald-800">
+<span class="w-2 h-2 rounded-xs bg-emerald-600"></span>
+<span>Receipt</span>
+</span>
+</td>
+<td class="px-3 py-2 text-on-surface-variant text-[12px] whitespace-nowrap">
+<span class="font-medium text-on-surface">Vendor:</span> Metro Ind.
+              </td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">MAIN/STG-RCK-B08</span>
+</td>
+<td class="px-3 py-2 text-right whitespace-nowrap">
+<span class="font-code-medium text-[13px] font-semibold text-emerald-700">+197 kg</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-[#1e3a66] text-white flex items-center justify-center text-[10px] font-code-medium">AK</span>
+<span class="text-[12px] text-on-surface truncate">Aman Kumar</span>
+</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-body-medium bg-emerald-100 text-emerald-800">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span>Validated</span>
+</span>
+</td>
+</tr>
+<!-- ROW 2: DO-0010 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-3 py-2 text-on-surface whitespace-nowrap">
+<span class="font-code-default text-[12px] text-on-surface">24 Oct 2024</span>
+<span class="block text-[11px] font-code-default text-outline">10:42:09 AM</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="#">
+<span>DO-0010</span>
+<span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</td>
+<td class="px-3 py-2">
+<div class="font-body-medium text-body-medium text-on-surface font-semibold">LED Panels 36W</div>
+<div class="text-[11px] text-on-surface-variant">Cool White 6000K · Box of 10</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-medium text-[11px] text-on-surface border border-surface-container-highest">LP012</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-rose-50 text-rose-800">
+<span class="w-2 h-2 rounded-xs bg-rose-600"></span>
+<span>Delivery</span>
+</span>
+</td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">MAIN/BAY-04</span>
+</td>
+<td class="px-3 py-2 text-on-surface-variant text-[12px] whitespace-nowrap">
+<span class="font-medium text-on-surface">Customer:</span> Apex Auto
+              </td>
+<td class="px-3 py-2 text-right whitespace-nowrap">
+<span class="font-code-medium text-[13px] font-semibold text-rose-700">−12 units</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-slate-700 text-white flex items-center justify-center text-[10px] font-code-medium">RS</span>
+<span class="text-[12px] text-on-surface truncate">Ridhima S.</span>
+</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-body-medium bg-emerald-100 text-emerald-800">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span>Dispatched</span>
+</span>
+</td>
+</tr>
+<!-- ROW 3: INT-0006 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-3 py-2 text-on-surface whitespace-nowrap">
+<span class="font-code-default text-[12px] text-on-surface">24 Oct 2024</span>
+<span class="block text-[11px] font-code-default text-outline">09:55:40 AM</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="#">
+<span>INT-0006</span>
+<span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</td>
+<td class="px-3 py-2">
+<div class="font-body-medium text-body-medium text-on-surface font-semibold">Copper Wire Spool 2.5mm</div>
+<div class="text-[11px] text-on-surface-variant">Class 5 Flexible · 100m drums</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-medium text-[11px] text-on-surface border border-surface-container-highest">CW005</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-blue-50 text-blue-800">
+<span class="w-2 h-2 rounded-xs bg-blue-600"></span>
+<span>Transfer</span>
+</span>
+</td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">MAIN/RCK-B08</span>
+</td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">PROD/LINE-01</span>
+</td>
+<td class="px-3 py-2 text-right whitespace-nowrap">
+<span class="font-code-medium text-[13px] font-semibold text-secondary flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-[13px] text-slate-400">sync_alt</span>
+                  8 spools
+                </span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-slate-600 text-white flex items-center justify-center text-[10px] font-code-medium">SK</span>
+<span class="text-[12px] text-on-surface truncate">Sunil K.</span>
+</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-body-medium bg-blue-100 text-blue-800">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+<span>Completed</span>
+</span>
+</td>
+</tr>
+<!-- ROW 4: ADJ-0004 -->
+<tr class="hover:bg-surface-bright transition-colors group bg-amber-500/5">
+<td class="px-3 py-2 text-on-surface whitespace-nowrap">
+<span class="font-code-default text-[12px] text-on-surface">24 Oct 2024</span>
+<span class="block text-[11px] font-code-default text-outline">09:12:15 AM</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="#">
+<span>ADJ-0004</span>
+<span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</td>
+<td class="px-3 py-2">
+<div class="font-body-medium text-body-medium text-on-surface font-semibold">Work Gloves (Nitrile)</div>
+<div class="text-[11px] text-on-surface-variant">Size L · Water &amp; Oil Resistant</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-medium text-[11px] text-on-surface border border-surface-container-highest">WG006</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-amber-50 text-amber-800">
+<span class="w-2 h-2 rounded-xs bg-amber-600"></span>
+<span>Adjustment</span>
+</span>
+</td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">MAIN/AISLE-02</span>
+</td>
+<td class="px-3 py-2 text-rose-700 text-[12px] whitespace-nowrap">
+<span class="font-medium">Loss / Shrinkage</span>
+</td>
+<td class="px-3 py-2 text-right whitespace-nowrap">
+<span class="font-code-medium text-[13px] font-semibold text-rose-700">−3 pairs</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-slate-700 text-white flex items-center justify-center text-[10px] font-code-medium">RS</span>
+<span class="text-[12px] text-on-surface truncate">Ridhima S.</span>
+</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-body-medium bg-amber-100 text-amber-800">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+<span>Shortage Rec.</span>
+</span>
+</td>
+</tr>
+<!-- ROW 5: REC-0004 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-3 py-2 text-on-surface whitespace-nowrap">
+<span class="font-code-default text-[12px] text-on-surface">23 Oct 2024</span>
+<span class="block text-[11px] font-code-default text-outline">04:30:00 PM</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="#">
+<span>REC-0004</span>
+<span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</td>
+<td class="px-3 py-2">
+<div class="font-body-medium text-body-medium text-on-surface font-semibold">Aluminum Sheets 2mm</div>
+<div class="text-[11px] text-on-surface-variant">Alloy 6061-T6 · 4x8 ft</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-medium text-[11px] text-on-surface border border-surface-container-highest">AL042</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-emerald-50 text-emerald-800">
+<span class="w-2 h-2 rounded-xs bg-emerald-600"></span>
+<span>Receipt</span>
+</span>
+</td>
+<td class="px-3 py-2 text-on-surface-variant text-[12px] whitespace-nowrap">
+<span class="font-medium text-on-surface">Vendor:</span> Hindalco Ltd.
+              </td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">MAIN/STAGING-N</span>
+</td>
+<td class="px-3 py-2 text-right whitespace-nowrap">
+<span class="font-code-medium text-[13px] font-semibold text-emerald-700">+50 sheets</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-[#1e3a66] text-white flex items-center justify-center text-[10px] font-code-medium">AK</span>
+<span class="text-[12px] text-on-surface truncate">Aman Kumar</span>
+</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-body-medium bg-emerald-100 text-emerald-800">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span>Validated</span>
+</span>
+</td>
+</tr>
+<!-- ROW 6: DO-0009 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-3 py-2 text-on-surface whitespace-nowrap">
+<span class="font-code-default text-[12px] text-on-surface">23 Oct 2024</span>
+<span class="block text-[11px] font-code-default text-outline">03:15:10 PM</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="#">
+<span>DO-0009</span>
+<span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</td>
+<td class="px-3 py-2">
+<div class="font-body-medium text-body-medium text-on-surface font-semibold">Corrugated Packaging</div>
+<div class="text-[11px] text-on-surface-variant">Triple Wall Heavy Duty 40x40x30</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-medium text-[11px] text-on-surface border border-surface-container-highest">BX030</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-rose-50 text-rose-800">
+<span class="w-2 h-2 rounded-xs bg-rose-600"></span>
+<span>Delivery</span>
+</span>
+</td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">MAIN/BAY-02</span>
+</td>
+<td class="px-3 py-2 text-on-surface-variant text-[12px] whitespace-nowrap">
+<span class="font-medium text-on-surface">Customer:</span> Bharat Logistics
+              </td>
+<td class="px-3 py-2 text-right whitespace-nowrap">
+<span class="font-code-medium text-[13px] font-semibold text-rose-700">−40 boxes</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-slate-600 text-white flex items-center justify-center text-[10px] font-code-medium">SK</span>
+<span class="text-[12px] text-on-surface truncate">Sunil K.</span>
+</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-body-medium bg-emerald-100 text-emerald-800">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span>Dispatched</span>
+</span>
+</td>
+</tr>
+<!-- ROW 7: INT-0005 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-3 py-2 text-on-surface whitespace-nowrap">
+<span class="font-code-default text-[12px] text-on-surface">23 Oct 2024</span>
+<span class="block text-[11px] font-code-default text-outline">01:44:22 PM</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="#">
+<span>INT-0005</span>
+<span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</td>
+<td class="px-3 py-2">
+<div class="font-body-medium text-body-medium text-on-surface font-semibold">Steel Rods 12mm</div>
+<div class="text-[11px] text-on-surface-variant">Fe500 Grade · Staging to Rack</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-medium text-[11px] text-on-surface border border-surface-container-highest">SR001</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-blue-50 text-blue-800">
+<span class="w-2 h-2 rounded-xs bg-blue-600"></span>
+<span>Transfer</span>
+</span>
+</td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">MAIN/STG-RCK-B08</span>
+</td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">MAIN/RCK-B12</span>
+</td>
+<td class="px-3 py-2 text-right whitespace-nowrap">
+<span class="font-code-medium text-[13px] font-semibold text-secondary flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-[13px] text-slate-400">sync_alt</span>
+                  45 kg
+                </span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-slate-500 text-white flex items-center justify-center text-[10px] font-code-medium">SD</span>
+<span class="text-[12px] text-on-surface truncate">System Daemon</span>
+</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-body-medium bg-blue-100 text-blue-800">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+<span>Completed</span>
+</span>
+</td>
+</tr>
+<!-- ROW 8: ADJ-0003 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-3 py-2 text-on-surface whitespace-nowrap">
+<span class="font-code-default text-[12px] text-on-surface">23 Oct 2024</span>
+<span class="block text-[11px] font-code-default text-outline">11:05:18 AM</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="#">
+<span>ADJ-0003</span>
+<span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</td>
+<td class="px-3 py-2">
+<div class="font-body-medium text-body-medium text-on-surface font-semibold">Copper Wire Spool 2.5mm</div>
+<div class="text-[11px] text-on-surface-variant">Annual Cycle Count Verification</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-medium text-[11px] text-on-surface border border-surface-container-highest">CW005</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-amber-50 text-amber-800">
+<span class="w-2 h-2 rounded-xs bg-amber-600"></span>
+<span>Adjustment</span>
+</span>
+</td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-medium text-on-surface">Surplus Audit</span>
+</td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">MAIN/RCK-B08</span>
+</td>
+<td class="px-3 py-2 text-right whitespace-nowrap">
+<span class="font-code-medium text-[13px] font-semibold text-emerald-700">+2 spools</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-slate-700 text-white flex items-center justify-center text-[10px] font-code-medium">RS</span>
+<span class="text-[12px] text-on-surface truncate">Ridhima S.</span>
+</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-body-medium bg-emerald-100 text-emerald-800">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span>Validated</span>
+</span>
+</td>
+</tr>
+<!-- ROW 9: REC-0003 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-3 py-2 text-on-surface whitespace-nowrap">
+<span class="font-code-default text-[12px] text-on-surface">22 Oct 2024</span>
+<span class="block text-[11px] font-code-default text-outline">05:10:48 PM</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="#">
+<span>REC-0003</span>
+<span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</td>
+<td class="px-3 py-2">
+<div class="font-body-medium text-body-medium text-on-surface font-semibold">LED Panels 36W</div>
+<div class="text-[11px] text-on-surface-variant">Cool White 6000K · Inward Batch #220</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-medium text-[11px] text-on-surface border border-surface-container-highest">LP012</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-emerald-50 text-emerald-800">
+<span class="w-2 h-2 rounded-xs bg-emerald-600"></span>
+<span>Receipt</span>
+</span>
+</td>
+<td class="px-3 py-2 text-on-surface-variant text-[12px] whitespace-nowrap">
+<span class="font-medium text-on-surface">Vendor:</span> Syska Opto
+              </td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">MAIN/BAY-04</span>
+</td>
+<td class="px-3 py-2 text-right whitespace-nowrap">
+<span class="font-code-medium text-[13px] font-semibold text-emerald-700">+100 units</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-[#1e3a66] text-white flex items-center justify-center text-[10px] font-code-medium">AK</span>
+<span class="text-[12px] text-on-surface truncate">Aman Kumar</span>
+</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-body-medium bg-emerald-100 text-emerald-800">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span>Validated</span>
+</span>
+</td>
+</tr>
+<!-- ROW 10: DO-0008 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-3 py-2 text-on-surface whitespace-nowrap">
+<span class="font-code-default text-[12px] text-on-surface">22 Oct 2024</span>
+<span class="block text-[11px] font-code-default text-outline">02:18:30 PM</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="#">
+<span>DO-0008</span>
+<span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</td>
+<td class="px-3 py-2">
+<div class="font-body-medium text-body-medium text-on-surface font-semibold">Aluminum Sheets 2mm</div>
+<div class="text-[11px] text-on-surface-variant">Alloy 6061-T6 · Customer Dispatch</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-medium text-[11px] text-on-surface border border-surface-container-highest">AL042</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-rose-50 text-rose-800">
+<span class="w-2 h-2 rounded-xs bg-rose-600"></span>
+<span>Delivery</span>
+</span>
+</td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">MAIN/STAGING-N</span>
+</td>
+<td class="px-3 py-2 text-on-surface-variant text-[12px] whitespace-nowrap">
+<span class="font-medium text-on-surface">Customer:</span> Precision Eng.
+              </td>
+<td class="px-3 py-2 text-right whitespace-nowrap">
+<span class="font-code-medium text-[13px] font-semibold text-rose-700">−15 sheets</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-slate-600 text-white flex items-center justify-center text-[10px] font-code-medium">SK</span>
+<span class="text-[12px] text-on-surface truncate">Sunil K.</span>
+</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-body-medium bg-emerald-100 text-emerald-800">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span>Dispatched</span>
+</span>
+</td>
+</tr>
+<!-- ROW 11: INT-0004 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-3 py-2 text-on-surface whitespace-nowrap">
+<span class="font-code-default text-[12px] text-on-surface">22 Oct 2024</span>
+<span class="block text-[11px] font-code-default text-outline">10:02:14 AM</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="#">
+<span>INT-0004</span>
+<span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</td>
+<td class="px-3 py-2">
+<div class="font-body-medium text-body-medium text-on-surface font-semibold">Corrugated Packaging</div>
+<div class="text-[11px] text-on-surface-variant">Replenishment from Staging to Dock</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-medium text-[11px] text-on-surface border border-surface-container-highest">BX030</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-blue-50 text-blue-800">
+<span class="w-2 h-2 rounded-xs bg-blue-600"></span>
+<span>Transfer</span>
+</span>
+</td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">MAIN/STG-BOX</span>
+</td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">MAIN/BAY-02</span>
+</td>
+<td class="px-3 py-2 text-right whitespace-nowrap">
+<span class="font-code-medium text-[13px] font-semibold text-secondary flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-[13px] text-slate-400">sync_alt</span>
+                  50 boxes
+                </span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-slate-500 text-white flex items-center justify-center text-[10px] font-code-medium">SD</span>
+<span class="text-[12px] text-on-surface truncate">System Daemon</span>
+</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-body-medium bg-blue-100 text-blue-800">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+<span>Completed</span>
+</span>
+</td>
+</tr>
+<!-- ROW 12: DO-0007 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-3 py-2 text-on-surface whitespace-nowrap">
+<span class="font-code-default text-[12px] text-on-surface">21 Oct 2024</span>
+<span class="block text-[11px] font-code-default text-outline">03:40:55 PM</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<a class="font-code-medium text-[12px] text-primary-container font-semibold hover:underline inline-flex items-center gap-1" href="#">
+<span>DO-0007</span>
+<span class="material-symbols-outlined text-[13px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</td>
+<td class="px-3 py-2">
+<div class="font-body-medium text-body-medium text-on-surface font-semibold">Steel Rods 12mm</div>
+<div class="text-[11px] text-on-surface-variant">Fe500 Grade · Export Shipment</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-medium text-[11px] text-on-surface border border-surface-container-highest">SR001</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-rose-50 text-rose-800">
+<span class="w-2 h-2 rounded-xs bg-rose-600"></span>
+<span>Delivery</span>
+</span>
+</td>
+<td class="px-3 py-2 text-[12px] whitespace-nowrap">
+<span class="font-code-default text-on-surface bg-surface-container px-1 py-0.5 rounded">MAIN/RCK-B12</span>
+</td>
+<td class="px-3 py-2 text-on-surface-variant text-[12px] whitespace-nowrap">
+<span class="font-medium text-on-surface">Customer:</span> Tata Infra
+              </td>
+<td class="px-3 py-2 text-right whitespace-nowrap">
+<span class="font-code-medium text-[13px] font-semibold text-rose-700">−110 kg</span>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-slate-700 text-white flex items-center justify-center text-[10px] font-code-medium">RS</span>
+<span class="text-[12px] text-on-surface truncate">Ridhima S.</span>
+</div>
+</td>
+<td class="px-3 py-2 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-body-medium bg-amber-100 text-amber-800">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+<span>Awaiting Signoff</span>
+</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- SECTION 4: PAGINATION FOOTER -->
+<div class="h-10 px-space-md border-t border-surface-container-highest bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-space-sm text-meta-default font-meta-default">
+<div class="flex items-center gap-space-md text-on-surface-variant">
+<span>Showing <strong class="text-on-surface font-code-medium">1–50</strong> of <strong class="text-on-surface font-code-medium">1,428</strong> movements</span>
+<div class="h-3.5 w-px bg-surface-container-highest"></div>
+<div class="flex items-center gap-1">
+<span>Show:</span>
+<select class="h-6 px-1.5 rounded bg-surface border border-surface-container-highest text-on-surface font-code-medium text-[11px] focus:outline-none">
+<option value="25">25 rows</option>
+<option selected="" value="50">50 rows</option>
+<option value="100">100 rows</option>
+<option value="200">200 rows</option>
+</select>
+</div>
+</div>
+<!-- Navigation Buttons -->
+<div class="flex items-center gap-1">
+<button class="h-7 w-7 rounded flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface transition-colors" title="First Page" type="button">
+<span class="material-symbols-outlined text-[16px]">first_page</span>
+</button>
+<button class="h-7 w-7 rounded flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface transition-colors" title="Previous Page" type="button">
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+</button>
+<button class="h-7 min-w-[28px] px-1 rounded bg-primary-container text-white font-code-medium text-[11px] flex items-center justify-center shadow-xs" type="button">1</button>
+<button class="h-7 min-w-[28px] px-1 rounded text-on-surface hover:bg-surface font-code-medium text-[11px] flex items-center justify-center transition-colors" type="button">2</button>
+<button class="h-7 min-w-[28px] px-1 rounded text-on-surface hover:bg-surface font-code-medium text-[11px] flex items-center justify-center transition-colors" type="button">3</button>
+<span class="px-1 text-outline">...</span>
+<button class="h-7 min-w-[28px] px-1 rounded text-on-surface hover:bg-surface font-code-medium text-[11px] flex items-center justify-center transition-colors" type="button">29</button>
+<button class="h-7 w-7 rounded flex items-center justify-center text-on-surface hover:bg-surface transition-colors" title="Next Page" type="button">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+<button class="h-7 w-7 rounded flex items-center justify-center text-on-surface hover:bg-surface transition-colors" title="Last Page" type="button">
+<span class="material-symbols-outlined text-[16px]">last_page</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div></main>
+</div>
+</body></html>

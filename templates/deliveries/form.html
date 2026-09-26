@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}StockSense - New Delivery Order{% endblock %}
+
+{% block breadcrumb %}
+  <span class="hover:text-on-surface cursor-pointer"><a href="/delivery-orders">Delivery Orders</a></span>
+  <span class="text-outline-variant">/</span>
+  <span class="font-body-medium text-on-surface">New Order</span>
+{% endblock %}
+
+{% block content %}
+<div class="p-6 flex flex-col w-full space-y-4">
+  <form method="POST" action="/delivery-orders/new" id="deliveryForm" class="flex flex-col space-y-4">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+    <!-- Header Card -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-surface-container-highest">
+      <div>
+        <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Create Delivery Order</h1>
+        <p class="font-body-default text-body-default text-on-surface-variant mt-0.5">Initialize a customer shipment dispatch voucher. Stock availability will be checked on confirmation.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="/delivery-orders" class="h-8 px-3.5 bg-surface-container-low hover:bg-surface-container text-on-surface rounded-lg font-body-medium text-body-medium shadow-xs transition-colors flex items-center gap-1 border border-surface-container-highest">
+          Cancel
+        </a>
+        <button type="submit" class="h-8 px-4 bg-primary-container hover:bg-primary text-on-primary rounded-lg font-body-medium text-body-medium shadow-sm transition-colors flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">check</span>
+          <span>Save Order (Draft)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Metadata Fields Grid -->
+    <div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm border border-surface-container-highest">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div>
+          <label class="block font-meta-medium text-meta-medium text-on-surface mb-1">Customer <span class="text-error">*</span></label>
+          <div class="relative">
+            <select name="customer_id" required class="w-full h-8 pl-2.5 pr-8 bg-surface-container-low rounded-lg font-body-default text-body-default text-on-surface border border-surface-container-highest focus:outline-none focus:ring-1 focus:ring-primary-container appearance-none cursor-pointer">
+              <option value="">Select customer</option>
+              {% for c in customers %}
+              <option value="{{ c.id }}">{{ c.name }} ({{ c.city }})</option>
+              {% endfor %}
+            </select>
+            <span class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-outline">expand_more</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-meta-medium text-meta-medium text-on-surface mb-1">Dispatch Source Location <span class="text-error">*</span></label>
+          <div class="relative">
+            <select name="source_location_id" id="sourceLocationSelect" required onchange="updateAllStockCols()" class="w-full h-8 pl-2.5 pr-8 bg-surface-container-low rounded-lg font-body-default text-body-default text-on-surface border border-surface-container-highest focus:outline-none focus:ring-1 focus:ring-primary-container appearance-none cursor-pointer">
+              {% for loc in locations %}
+              <option value="{{ loc.id }}" {% if 'STOCK' in loc.code %}selected{% endif %}>{{ loc.name }} ({{ loc.code }})</option>
+              {% endfor %}
+            </select>
+            <span class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-outline">expand_more</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-meta-medium text-meta-medium text-on-surface mb-1">Priority</label>
+          <div class="relative">
+            <select name="priority" class="w-full h-8 pl-2.5 pr-8 bg-surface-container-low rounded-lg font-body-default text-body-default text-on-surface border border-surface-container-highest focus:outline-none focus:ring-1 focus:ring-primary-container appearance-none cursor-pointer">
+              <option value="Normal">Normal</option>
+              <option value="Urgent">Urgent (Priority Allocation)</option>
+            </select>
+            <span class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-outline">expand_more</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-meta-medium text-meta-medium text-on-surface mb-1">Scheduled Date</label>
+          <input name="scheduled_date" type="date" value="{{ now().strftime('%Y-%m-%d') if now is defined else '' }}" class="w-full h-8 px-2.5 bg-surface-container-low rounded-lg font-body-default text-body-default text-on-surface border border-surface-container-highest focus:outline-none focus:ring-1 focus:ring-primary-container"/>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block font-meta-medium text-meta-medium text-on-surface mb-1">Source Document / Sales Order</label>
+          <input name="source_document" type="text" placeholder="e.g. SO/2026/9912" class="w-full h-8 px-2.5 bg-surface-container-low rounded-lg font-body-default text-body-default text-on-surface border border-surface-container-highest focus:outline-none focus:ring-1 focus:ring-primary-container placeholder:text-outline"/>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block font-meta-medium text-meta-medium text-on-surface mb-1">Delivery Notes</label>
+          <input name="notes" type="text" placeholder="Delivery gate instructions, vehicle specification..." class="w-full h-8 px-2.5 bg-surface-container-low rounded-lg font-body-default text-body-default text-on-surface border border-surface-container-highest focus:outline-none focus:ring-1 focus:ring-primary-container placeholder:text-outline"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Line Items Table -->
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-surface-container-highest">
+      <div class="p-3 bg-surface-container flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px] text-secondary">local_shipping</span>
+          <span class="font-headline-sm text-headline-sm text-on-surface">Order Line Items</span>
+        </div>
+        <button type="button" onclick="addLineItem()" class="h-7 px-3 bg-surface-container-lowest hover:bg-surface-dim text-on-surface rounded font-body-medium text-[11px] border border-surface-container-highest flex items-center gap-1 shadow-xs">
+          <span class="material-symbols-outlined text-[14px]">add</span>
+          <span>Add Line</span>
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse" id="lineItemsTable">
+          <thead class="bg-surface-container-low text-outline uppercase font-table-header text-table-header">
+            <tr>
+              <th class="py-2 px-3 w-10 text-center">#</th>
+              <th class="py-2 px-3 min-w-[280px]">Product</th>
+              <th class="py-2 px-3 w-36 text-right">Quantity</th>
+              <th class="py-2 px-3 w-36 text-right">Available in Hub</th>
+              <th class="py-2 px-3 w-36 text-right">Remaining After</th>
+              <th class="py-2 px-3 w-14 text-center"></th>
+            </tr>
+          </thead>
+          <tbody class="font-body-default text-body-default text-on-surface divide-y divide-surface-container-highest" id="lineItemsBody">
+            <tr class="line-row">
+              <td class="py-2 px-3 text-center font-code-default text-slate-400 row-idx">1</td>
+              <td class="py-2 px-3">
+                <select name="product_id[]" required onchange="handleProductChange(this)" class="product-select w-full h-8 pl-2.5 pr-8 bg-surface-container-low rounded font-body-default text-body-default text-on-surface border border-surface-container-highest focus:outline-none focus:ring-1 focus:ring-primary-container">
+                  <option value="">Select product...</option>
+                  {% for p in products %}
+                  <option value="{{ p.id }}">{{ p.name }} ({{ p.sku }}) - {{ p.uom }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+              <td class="py-2 px-3 text-right">
+                <input name="quantity[]" required type="number" min="0.01" step="any" value="5" oninput="calculateRow(this)" class="qty-input w-full h-8 px-2.5 bg-surface-container-low rounded font-code-medium text-code-medium text-right text-on-surface border border-surface-container-highest focus:outline-none focus:ring-1 focus:ring-primary-container"/>
+              </td>
+              <td class="py-2 px-3 text-right font-code-default text-on-surface-variant avail-col">
+                —
+              </td>
+              <td class="py-2 px-3 text-right font-code-medium font-bold text-on-surface after-col">
+                —
+              </td>
+              <td class="py-2 px-3 text-center">
+                <button type="button" onclick="removeLineItem(this)" class="h-7 w-7 text-outline hover:text-error hover:bg-surface-container rounded flex items-center justify-center transition-colors">
+                  <span class="material-symbols-outlined text-[16px]">delete</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function addLineItem() {
+    const tbody = document.getElementById('lineItemsBody');
+    const firstRow = tbody.querySelector('.line-row');
+    const newRow = firstRow.cloneNode(true);
+
+    newRow.querySelector('.qty-input').value = '5';
+    newRow.querySelector('.avail-col').textContent = '—';
+    newRow.querySelector('.after-col').textContent = '—';
+    newRow.querySelector('.product-select').selectedIndex = 0;
+
+    tbody.appendChild(newRow);
+    renumberRows();
+  }
+
+  function removeLineItem(btn) {
+    const tbody = document.getElementById('lineItemsBody');
+    if (tbody.querySelectorAll('.line-row').length > 1) {
+      btn.closest('.line-row').remove();
+      renumberRows();
+    }
+  }
+
+  function renumberRows() {
+    const rows = document.querySelectorAll('#lineItemsBody .line-row');
+    rows.forEach((r, idx) => {
+      r.querySelector('.row-idx').textContent = idx + 1;
+    });
+  }
+
+  async function handleProductChange(selectElem) {
+    const row = selectElem.closest('.line-row');
+    const productId = selectElem.value;
+    const locationId = document.getElementById('sourceLocationSelect').value;
+
+    if (!productId) {
+      row.querySelector('.avail-col').textContent = '—';
+      row.querySelector('.after-col').textContent = '—';
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/stock?product=${productId}&location=${locationId}`);
+      const data = await res.json();
+      row.dataset.avail = data.available;
+      row.dataset.uom = data.uom;
+      row.querySelector('.avail-col').textContent = `${data.available} ${data.uom}`;
+      calculateRow(row.querySelector('.qty-input'));
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function calculateRow(qtyInput) {
+    const row = qtyInput.closest('.line-row');
+    const avail = parseFloat(row.dataset.avail || 0);
+    const qty = parseFloat(qtyInput.value || 0);
+    const uom = row.dataset.uom || '';
+    const after = avail - qty;
+
+    const afterElem = row.querySelector('.after-col');
+    afterElem.textContent = `${after} ${uom}`;
+    if (after < 0) {
+      afterElem.classList.add('text-error');
+    } else {
+      afterElem.classList.remove('text-error');
+    }
+  }
+
+  function updateAllStockCols() {
+    const rows = document.querySelectorAll('#lineItemsBody .line-row');
+    rows.forEach(r => {
+      const select = r.querySelector('.product-select');
+      if (select.value) {
+        handleProductChange(select);
+      }
+    });
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}StockSense - Delivery Orders{% endblock %}
+
+{% block breadcrumb %}
+  <span class="hover:text-on-surface cursor-pointer">Operations</span>
+  <span class="text-outline-variant">/</span>
+  <span class="font-body-medium text-on-surface">Delivery Orders</span>
+{% endblock %}
+
+{% block content %}
+<div class="p-6 flex flex-col w-full space-y-4">
+  <!-- Header Bar -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-surface-container-highest">
+    <div class="flex flex-col min-w-0">
+      <div class="flex items-center gap-2">
+        <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Delivery Orders</h1>
+        <span class="px-2 py-0.5 rounded-full text-[11px] font-code-medium bg-emerald-100 text-emerald-900 border border-emerald-200">Outbound Log</span>
+      </div>
+      <p class="font-body-default text-body-default text-on-surface-variant mt-0.5">Manage customer fulfillment, pick/pack queues, and final dispatch release.</p>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      {% if can('deliveries:create') %}
+      <a href="/delivery-orders/new" class="h-8 px-3.5 bg-primary-container hover:bg-primary text-on-primary rounded-lg font-body-medium text-body-medium shadow-sm transition-colors flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[17px]">add</span>
+        <span>New Delivery Order</span>
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Status Tabs & Filter Bar -->
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-surface-container-highest">
+    <!-- Tabs -->
+    <div class="border-b border-surface-container-highest px-4 pt-2 flex items-center gap-1 overflow-x-auto bg-surface-container-low">
+      <a href="?tab=all&search={{ search }}&customer={{ selected_customer }}&priority={{ selected_priority }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'all' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        All <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-surface-container">{{ tab_counts.all }}</span>
+      </a>
+      <a href="?tab=draft&search={{ search }}&customer={{ selected_customer }}&priority={{ selected_priority }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'draft' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Draft <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-slate-200">{{ tab_counts.draft }}</span>
+      </a>
+      <a href="?tab=waiting&search={{ search }}&customer={{ selected_customer }}&priority={{ selected_priority }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'waiting' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Waiting Stock <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-red-100 text-red-900">{{ tab_counts.waiting }}</span>
+      </a>
+      <a href="?tab=ready&search={{ search }}&customer={{ selected_customer }}&priority={{ selected_priority }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'ready' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Ready to Pick <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-blue-100 text-blue-900">{{ tab_counts.ready }}</span>
+      </a>
+      <a href="?tab=picked&search={{ search }}&customer={{ selected_customer }}&priority={{ selected_priority }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'picked' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Picked <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-amber-100 text-amber-900">{{ tab_counts.picked }}</span>
+      </a>
+      <a href="?tab=packed&search={{ search }}&customer={{ selected_customer }}&priority={{ selected_priority }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'packed' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Packed <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-indigo-100 text-indigo-900">{{ tab_counts.packed }}</span>
+      </a>
+      <a href="?tab=done&search={{ search }}&customer={{ selected_customer }}&priority={{ selected_priority }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'done' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Dispatched <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-emerald-100 text-emerald-900">{{ tab_counts.done }}</span>
+      </a>
+    </div>
+
+    <!-- Filters -->
+    <form method="GET" action="/delivery-orders" class="p-3 bg-surface-container-lowest flex flex-wrap items-center justify-between gap-2.5 border-b border-surface-container-highest">
+      <input type="hidden" name="tab" value="{{ tab }}"/>
+      <div class="flex flex-1 flex-wrap items-center gap-2 min-w-[280px]">
+        <div class="relative flex-1 min-w-[220px] max-w-sm">
+          <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[17px] text-outline">search</span>
+          <input name="search" value="{{ search }}" class="w-full h-8 pl-8 pr-3 bg-surface-container-low rounded-lg font-body-default text-body-default text-on-surface placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-primary-container shadow-xs" placeholder="Search reference or doc..." type="text"/>
+        </div>
+        <div class="relative">
+          <select name="customer" onchange="this.form.submit()" class="h-8 pl-2.5 pr-7 bg-surface-container-low rounded-lg font-body-default text-body-default text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container shadow-xs appearance-none cursor-pointer">
+            <option value="">All Customers</option>
+            {% for c in customers %}
+            <option value="{{ c.id }}" {% if selected_customer == c.id|string %}selected{% endif %}>{{ c.name }}</option>
+            {% endfor %}
+          </select>
+          <span class="material-symbols-outlined pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[16px] text-outline">expand_more</span>
+        </div>
+        <div class="relative">
+          <select name="priority" onchange="this.form.submit()" class="h-8 pl-2.5 pr-7 bg-surface-container-low rounded-lg font-body-default text-body-default text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container shadow-xs appearance-none cursor-pointer">
+            <option value="">All Priorities</option>
+            <option value="Normal" {% if selected_priority == 'Normal' %}selected{% endif %}>Normal</option>
+            <option value="Urgent" {% if selected_priority == 'Urgent' %}selected{% endif %}>Urgent</option>
+          </select>
+          <span class="material-symbols-outlined pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[16px] text-outline">expand_more</span>
+        </div>
+      </div>
+      <a href="/delivery-orders" class="h-8 px-2.5 text-on-surface-variant hover:text-on-surface bg-surface-container-low rounded-lg font-body-medium text-body-medium transition-colors shadow-xs flex items-center gap-1">
+        <span class="material-symbols-outlined text-[15px]">filter_alt_off</span>
+        <span>Reset</span>
+      </a>
+    </form>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-surface-container-low text-outline uppercase font-table-header text-table-header">
+          <tr>
+            <th class="py-2.5 px-4 w-[14%]">Reference</th>
+            <th class="py-2.5 px-3 w-[22%]">Customer</th>
+            <th class="py-2.5 px-3 w-[15%]">Source Hub</th>
+            <th class="py-2.5 px-3 w-[12%]">Priority</th>
+            <th class="py-2.5 px-3 w-[13%]">Scheduled Date</th>
+            <th class="py-2.5 px-3 w-[14%]">Status</th>
+            <th class="py-2.5 px-3 text-right w-[10%]">Action</th>
+          </tr>
+        </thead>
+        <tbody class="font-body-default text-body-default text-on-surface divide-y divide-surface-container-highest">
+          {% for d in deliveries %}
+          <tr class="hover:bg-surface-container-low transition-colors">
+            <td class="py-2.5 px-4 font-code-medium font-bold text-secondary">
+              <a href="/delivery-orders/{{ d.id }}" class="hover:underline">{{ d.reference }}</a>
+            </td>
+            <td class="py-2.5 px-3 font-body-medium text-on-surface truncate">{{ d.customer.name if d.customer else 'N/A' }}</td>
+            <td class="py-2.5 px-3 font-code-default text-[11px] text-on-surface-variant">{{ d.source_location.code if d.source_location else 'MAIN/STOCK' }}</td>
+            <td class="py-2.5 px-3">
+              {% if d.priority == 'Urgent' %}
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-900 font-meta-medium text-[10px] uppercase font-bold">Urgent</span>
+              {% else %}
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-meta-medium text-[10px] uppercase">Normal</span>
+              {% endif %}
+            </td>
+            <td class="py-2.5 px-3 font-meta-default text-on-surface-variant">{{ d.scheduled_date.strftime('%b %d, %Y') if d.scheduled_date else '—' }}</td>
+            <td class="py-2.5 px-3">
+              {% if d.status == 'Done' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-meta-medium text-[11px] border border-emerald-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Dispatched
+                </span>
+              {% elif d.status == 'Packed' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-900 font-meta-medium text-[11px] border border-indigo-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-indigo-600"></span> Packed
+                </span>
+              {% elif d.status == 'Picked' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-meta-medium text-[11px] border border-amber-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Picked
+                </span>
+              {% elif d.status == 'Ready' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-100 text-blue-900 font-meta-medium text-[11px] border border-blue-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span> Ready to Pick
+                </span>
+              {% elif d.status == 'Waiting' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-100 text-red-900 font-meta-medium text-[11px] border border-red-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span> Waiting Stock
+                </span>
+              {% else %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-200 text-slate-800 font-meta-medium text-[11px]">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> {{ d.status }}
+                </span>
+              {% endif %}
+            </td>
+            <td class="py-2.5 px-3 text-right">
+              <a href="/delivery-orders/{{ d.id }}" class="h-7 px-2.5 rounded bg-surface-container text-on-surface hover:bg-surface-dim font-meta-medium text-[11px] inline-flex items-center shadow-xs">
+                View
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="py-8 text-center text-on-surface-variant font-meta-default">No delivery orders found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div class="p-3 bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-3 text-on-surface-variant border-t border-surface-container-highest">
+      <span class="font-meta-default text-meta-default">Showing <strong class="font-meta-medium text-on-surface">{{ deliveries|length }}</strong> delivery orders</span>
+      <div class="flex items-center gap-1">
+        {% if pagination.has_prev %}
+        <a href="?page={{ pagination.prev_num }}&tab={{ tab }}&search={{ search }}&customer={{ selected_customer }}&priority={{ selected_priority }}" class="h-7 px-2 rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container font-meta-medium text-meta-medium flex items-center gap-1 shadow-xs">
+          <span class="material-symbols-outlined text-[15px]">chevron_left</span>
+          <span>Previous</span>
+        </a>
+        {% endif %}
+        <span class="h-7 w-7 flex items-center justify-center rounded-lg bg-primary-container text-on-primary font-meta-medium text-meta-medium shadow-xs">{{ pagination.page }}</span>
+        {% if pagination.has_next %}
+        <a href="?page={{ pagination.next_num }}&tab={{ tab }}&search={{ search }}&customer={{ selected_customer }}&priority={{ selected_priority }}" class="h-7 px-2 rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container font-meta-medium text-meta-medium flex items-center gap-1 shadow-xs">
+          <span>Next</span>
+          <span class="material-symbols-outlined text-[15px]">chevron_right</span>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

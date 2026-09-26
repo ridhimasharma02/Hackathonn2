@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}StockSense - Inventory Adjustments{% endblock %}
+
+{% block breadcrumb %}
+  <span class="hover:text-on-surface cursor-pointer">Operations</span>
+  <span class="text-outline-variant">/</span>
+  <span class="font-body-medium text-on-surface">Inventory Adjustments</span>
+{% endblock %}
+
+{% block content %}
+<div class="p-6 flex flex-col w-full space-y-4">
+  <!-- Header Bar -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-surface-container-highest">
+    <div class="flex flex-col min-w-0">
+      <div class="flex items-center gap-2">
+        <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Inventory Adjustments</h1>
+        <span class="px-2 py-0.5 rounded-full text-[11px] font-code-medium bg-amber-100 text-amber-900 border border-amber-200">Cycle Count Sheets</span>
+      </div>
+      <p class="font-body-default text-body-default text-on-surface-variant mt-0.5">Physical cycle count audits, blind recounts, and stock ledger variance adjustments.</p>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      {% if can('adjustments:create') %}
+      <a href="/adjustments/new" class="h-8 px-3.5 bg-primary-container hover:bg-primary text-on-primary rounded-lg font-body-medium text-body-medium shadow-sm transition-colors flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[17px]">add</span>
+        <span>Issue Count Sheet</span>
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Status Tabs & Filter Bar -->
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-surface-container-highest">
+    <!-- Tabs -->
+    <div class="border-b border-surface-container-highest px-4 pt-2 flex items-center gap-1 overflow-x-auto bg-surface-container-low">
+      <a href="?tab=all&search={{ search }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'all' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        All <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-surface-container">{{ tab_counts.all }}</span>
+      </a>
+      <a href="?tab=draft&search={{ search }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'draft' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Draft Sheets <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-slate-200">{{ tab_counts.draft }}</span>
+      </a>
+      <a href="?tab=counted&search={{ search }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'counted' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Count Submitted <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-amber-100 text-amber-900">{{ tab_counts.counted }}</span>
+      </a>
+      <a href="?tab=approved&search={{ search }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'approved' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Approved <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-emerald-100 text-emerald-900">{{ tab_counts.approved }}</span>
+      </a>
+      <a href="?tab=rejected&search={{ search }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'rejected' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Rejected <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-red-100 text-red-900">{{ tab_counts.rejected }}</span>
+      </a>
+    </div>
+
+    <!-- Filters -->
+    <form method="GET" action="/adjustments" class="p-3 bg-surface-container-lowest flex flex-wrap items-center justify-between gap-2.5 border-b border-surface-container-highest">
+      <input type="hidden" name="tab" value="{{ tab }}"/>
+      <div class="flex flex-1 flex-wrap items-center gap-2 min-w-[280px]">
+        <div class="relative flex-1 min-w-[220px] max-w-sm">
+          <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[17px] text-outline">search</span>
+          <input name="search" value="{{ search }}" class="w-full h-8 pl-8 pr-3 bg-surface-container-low rounded-lg font-body-default text-body-default text-on-surface placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-primary-container shadow-xs" placeholder="Search reference or sheet title..." type="text"/>
+        </div>
+      </div>
+      <a href="/adjustments" class="h-8 px-2.5 text-on-surface-variant hover:text-on-surface bg-surface-container-low rounded-lg font-body-medium text-body-medium transition-colors shadow-xs flex items-center gap-1">
+        <span class="material-symbols-outlined text-[15px]">filter_alt_off</span>
+        <span>Reset</span>
+      </a>
+    </form>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-surface-container-low text-outline uppercase font-table-header text-table-header">
+          <tr>
+            <th class="py-2.5 px-4 w-[14%]">Reference</th>
+            <th class="py-2.5 px-3 w-[26%]">Sheet Title / Scope</th>
+            <th class="py-2.5 px-3 w-[16%]">Auditor / Assigned</th>
+            <th class="py-2.5 px-3 w-[14%]">Created Date</th>
+            <th class="py-2.5 px-3 w-[18%]">Status</th>
+            <th class="py-2.5 px-3 text-right w-[12%]">Action</th>
+          </tr>
+        </thead>
+        <tbody class="font-body-default text-body-default text-on-surface divide-y divide-surface-container-highest">
+          {% for a in adjustments %}
+          <tr class="hover:bg-surface-container-low transition-colors">
+            <td class="py-2.5 px-4 font-code-medium font-bold text-tertiary">
+              <a href="/adjustments/{{ a.id }}" class="hover:underline">{{ a.reference }}</a>
+            </td>
+            <td class="py-2.5 px-3">
+              <div class="font-body-medium text-on-surface leading-tight">{{ a.title }}</div>
+              <div class="font-meta-default text-[11px] text-on-surface-variant mt-0.5">{{ a.items|length }} item lines listed</div>
+            </td>
+            <td class="py-2.5 px-3 font-body-default text-on-surface">
+              {% if a.counter %}
+                <span class="font-medium text-on-surface">{{ a.counter.name }}</span>
+                <span class="block text-[11px] text-outline">Counted</span>
+              {% elif a.assignee %}
+                <span class="text-on-surface">{{ a.assignee.name }}</span>
+                <span class="block text-[11px] text-outline">Assigned</span>
+              {% else %}
+                <span class="text-outline">Unassigned</span>
+              {% endif %}
+            </td>
+            <td class="py-2.5 px-3 font-meta-default text-on-surface-variant">{{ a.created_at.strftime('%b %d, %Y') if a.created_at else '—' }}</td>
+            <td class="py-2.5 px-3">
+              {% if a.status == 'Approved' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-meta-medium text-[11px] border border-emerald-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Approved
+                </span>
+              {% elif a.status == 'Counted' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-meta-medium text-[11px] border border-amber-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Count Submitted
+                </span>
+              {% elif a.status == 'Draft' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-100 text-slate-800 font-meta-medium text-[11px] border border-slate-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Draft Sheet
+                </span>
+              {% elif a.status == 'Rejected' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-100 text-red-900 font-meta-medium text-[11px] border border-red-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span> Rejected
+                </span>
+              {% else %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-meta-medium text-[11px]">
+                  {{ a.status }}
+                </span>
+              {% endif %}
+            </td>
+            <td class="py-2.5 px-3 text-right">
+              <a href="/adjustments/{{ a.id }}" class="h-7 px-2.5 bg-surface-container hover:bg-surface-container-high text-on-surface rounded-lg font-body-medium text-meta-default transition-colors inline-flex items-center gap-1">
+                <span>View</span>
+                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" class="py-8 text-center text-on-surface-variant font-body-default">
+              <span class="material-symbols-outlined text-[32px] text-outline block mx-auto mb-2">fact_check</span>
+              No inventory adjustment sheets found for this filter.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if pagination and pagination.pages > 1 %}
+    <div class="px-4 py-3 bg-surface-container-low border-t border-surface-container-highest flex items-center justify-between text-meta-default">
+      <span class="text-on-surface-variant">Showing page {{ pagination.page }} of {{ pagination.pages }} ({{ pagination.total }} items)</span>
+      <div class="flex items-center gap-1">
+        {% if pagination.has_prev %}
+        <a href="?page={{ pagination.prev_num }}&tab={{ tab }}&search={{ search }}" class="px-2 py-1 bg-surface-container rounded hover:bg-surface-container-high text-on-surface">Previous</a>
+        {% endif %}
+        {% if pagination.has_next %}
+        <a href="?page={{ pagination.next_num }}&tab={{ tab }}&search={{ search }}" class="px-2 py-1 bg-surface-container rounded hover:bg-surface-container-high text-on-surface">Next</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

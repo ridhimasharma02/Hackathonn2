@@ -1,0 +1,378 @@
+{% extends "base.html" %}
+
+{% block title %}StockSense - Warehouse Staff Dashboard{% endblock %}
+
+{% block breadcrumb %}
+  <span class="hover:text-on-surface cursor-pointer">Operations</span>
+  <span class="text-outline-variant">/</span>
+  <span class="hover:text-on-surface cursor-pointer">Warehouse Staff</span>
+  <span class="text-outline-variant">/</span>
+  <span class="text-on-surface font-meta-medium text-meta-medium">Tasks</span>
+{% endblock %}
+
+{% block content %}
+<div class="px-space-xl py-space-xl flex flex-col w-full gap-space-lg">
+  <!-- TOP HEADER BAR -->
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md bg-surface-container-lowest p-space-lg rounded-xl shadow-sm">
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center gap-space-md">
+        <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight font-semibold">Good morning, {{ current_user.name.split(' ')[0] }}</h1>
+        <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-meta-medium text-[11px]">
+          <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+          <span>Shift Active</span>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2 font-meta-default text-meta-default text-on-surface-variant">
+        <span class="font-body-medium text-on-surface font-semibold">{{ tasks|length }} open warehouse tasks</span>
+        <span class="text-outline-variant">·</span>
+        <span class="text-emerald-700 font-medium">Shift A Operations</span>
+        <span class="text-outline-variant">·</span>
+        <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-surface-container font-code-default text-[11px] text-on-surface">
+          <span class="material-symbols-outlined text-[14px] text-secondary">domain</span>
+          Main Warehouse, Bay & Dock Operations
+        </span>
+      </div>
+    </div>
+    <!-- Right Controls -->
+    <div class="flex items-center gap-space-md shrink-0">
+      <a href="/internal-transfers/new" class="h-8 px-space-md flex items-center gap-1.5 bg-surface-container-lowest text-on-surface rounded font-body-medium text-body-medium shadow-sm hover:bg-surface-container-low transition-colors">
+        <span class="material-symbols-outlined text-[16px] text-secondary">swap_horiz</span>
+        <span>Move stock</span>
+      </a>
+      <a href="/inventory-adjustments" class="h-8 px-space-md flex items-center gap-1.5 bg-primary-container text-on-primary rounded font-body-medium text-body-medium shadow-sm hover:bg-primary transition-colors">
+        <span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
+        <span>Record a count</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- 5 CLICKABLE QUEUES STRIP -->
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-space-md">
+    <!-- Card 1 -->
+    <a href="/receipts" class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between gap-space-md group">
+      <div class="flex items-center justify-between">
+        <div class="w-8 h-8 rounded bg-secondary-container/60 flex items-center justify-center text-primary-container group-hover:scale-105 transition-transform">
+          <span class="material-symbols-outlined text-[18px]">rv_hookup</span>
+        </div>
+        <span class="px-1.5 py-0.5 rounded font-meta-medium text-[11px] bg-secondary-fixed/50 text-on-secondary-fixed">Pending</span>
+      </div>
+      <div>
+        <div class="font-headline-lg text-[22px] font-semibold text-on-surface leading-tight">{{ receipts_count }}</div>
+        <div class="font-meta-default text-[12px] text-on-surface-variant font-medium mt-0.5">Receipts to process</div>
+      </div>
+    </a>
+    <!-- Card 2 -->
+    <a href="/delivery-orders" class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between gap-space-md group">
+      <div class="flex items-center justify-between">
+        <div class="w-8 h-8 rounded bg-amber-100 flex items-center justify-center text-amber-900 group-hover:scale-105 transition-transform">
+          <span class="material-symbols-outlined text-[18px]">shopping_cart_checkout</span>
+        </div>
+        <span class="px-1.5 py-0.5 rounded font-meta-medium text-[11px] bg-amber-50 text-amber-800">Ready</span>
+      </div>
+      <div>
+        <div class="font-headline-lg text-[22px] font-semibold text-on-surface leading-tight">{{ pick_count }}</div>
+        <div class="font-meta-default text-[12px] text-on-surface-variant font-medium mt-0.5">Orders to pick</div>
+      </div>
+    </a>
+    <!-- Card 3 -->
+    <a href="/delivery-orders" class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between gap-space-md group">
+      <div class="flex items-center justify-between">
+        <div class="w-8 h-8 rounded bg-indigo-100 flex items-center justify-center text-indigo-900 group-hover:scale-105 transition-transform">
+          <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+        </div>
+        <span class="px-1.5 py-0.5 rounded font-meta-medium text-[11px] bg-indigo-50 text-indigo-800">Picked</span>
+      </div>
+      <div>
+        <div class="font-headline-lg text-[22px] font-semibold text-on-surface leading-tight">{{ pack_count }}</div>
+        <div class="font-meta-default text-[12px] text-on-surface-variant font-medium mt-0.5">Orders to pack</div>
+      </div>
+    </a>
+    <!-- Card 4 -->
+    <a href="/internal-transfers" class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between gap-space-md group">
+      <div class="flex items-center justify-between">
+        <div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary-container group-hover:scale-105 transition-transform">
+          <span class="material-symbols-outlined text-[18px]">forklift</span>
+        </div>
+        <span class="px-1.5 py-0.5 rounded font-meta-medium text-[11px] bg-surface-container-high text-on-surface-variant">Ready</span>
+      </div>
+      <div>
+        <div class="font-headline-lg text-[22px] font-semibold text-on-surface leading-tight">{{ transfers_count }}</div>
+        <div class="font-meta-default text-[12px] text-on-surface-variant font-medium mt-0.5">Internal transfers</div>
+      </div>
+    </a>
+    <!-- Card 5 -->
+    <a href="/inventory-adjustments" class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between gap-space-md group col-span-2 md:col-span-1">
+      <div class="flex items-center justify-between">
+        <div class="w-8 h-8 rounded bg-emerald-100 flex items-center justify-center text-emerald-900 group-hover:scale-105 transition-transform">
+          <span class="material-symbols-outlined text-[18px]">fact_check</span>
+        </div>
+        <span class="px-1.5 py-0.5 rounded font-meta-medium text-[11px] bg-emerald-50 text-emerald-800">Draft</span>
+      </div>
+      <div>
+        <div class="font-headline-lg text-[22px] font-semibold text-on-surface leading-tight">{{ counting_count }}</div>
+        <div class="font-meta-default text-[12px] text-on-surface-variant font-medium mt-0.5">Stock counting</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- MY PENDING TASKS TABLE CONTAINER -->
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col border border-surface-container-highest">
+    <!-- Header with Tabs and Filters -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between p-space-md gap-space-md bg-surface-container-lowest">
+      <div class="flex items-center gap-space-lg overflow-x-auto">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px] text-primary">assignment</span>
+          <span class="font-headline-sm text-headline-sm text-on-surface">My pending tasks</span>
+        </div>
+        <!-- Segmented Tab Pills -->
+        <div class="flex items-center gap-1 bg-surface-container-low p-0.5 rounded-lg" id="staffTaskFilters">
+          <button type="button" onclick="filterStaffTasks('all')" class="staff-tab px-2.5 py-1 rounded bg-surface-container-lowest text-primary font-headline-sm text-[12px] shadow-sm">All tasks ({{ tasks|length }})</button>
+          <button type="button" onclick="filterStaffTasks('urgent')" class="staff-tab px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface font-body-medium text-[12px] transition-colors">Urgent</button>
+          <button type="button" onclick="filterStaffTasks('Receive')" class="staff-tab px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface font-body-medium text-[12px] transition-colors">Receipts ({{ receipts_count }})</button>
+          <button type="button" onclick="filterStaffTasks('Pick')" class="staff-tab px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface font-body-medium text-[12px] transition-colors">Pick ({{ pick_count }})</button>
+          <button type="button" onclick="filterStaffTasks('Pack')" class="staff-tab px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface font-body-medium text-[12px] transition-colors">Pack ({{ pack_count }})</button>
+          <button type="button" onclick="filterStaffTasks('Count')" class="staff-tab px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface font-body-medium text-[12px] transition-colors">Counting ({{ counting_count }})</button>
+        </div>
+      </div>
+      <!-- Quick Action in Header -->
+      <div class="flex items-center gap-space-sm shrink-0">
+        <div class="relative flex items-center">
+          <span class="material-symbols-outlined absolute left-2 text-[15px] text-outline">search</span>
+          <input id="staffTaskSearch" onkeyup="searchStaffTasks()" class="h-8 pl-7 pr-3 w-48 text-on-surface bg-surface-container-low rounded font-body-default text-body-default placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest" placeholder="Filter task or SKU..." type="text"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Canvas -->
+    <div class="overflow-x-auto w-full">
+      <table class="w-full text-left" id="staffTasksTable">
+        <thead>
+          <tr class="bg-surface-container-low text-on-surface-variant font-table-header text-table-header uppercase">
+            <th class="py-2.5 px-space-md tracking-wider">TASK</th>
+            <th class="py-2.5 px-space-md tracking-wider">REFERENCE</th>
+            <th class="py-2.5 px-space-md tracking-wider">LOCATION</th>
+            <th class="py-2.5 px-space-md tracking-wider">ITEMS & QTY</th>
+            <th class="py-2.5 px-space-md tracking-wider">PRIORITY</th>
+            <th class="py-2.5 px-space-md tracking-wider">SCHEDULED DUE</th>
+            <th class="py-2.5 px-space-md tracking-wider">STATUS</th>
+            <th class="py-2.5 px-space-md text-right tracking-wider">ACTION</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-surface-container" id="staffTasksBody">
+          {% for task in tasks %}
+          <tr class="task-row hover:bg-surface-container-low transition-colors relative {% if task.is_urgent %}bg-amber-500/5{% endif %}" data-type="{{ task.type }}" data-urgent="{{ 'true' if task.is_urgent else 'false' }}">
+            <td class="py-2.5 px-space-md">
+              <div class="flex items-center gap-2.5">
+                <div class="w-1.5 h-7 rounded-full {% if task.is_urgent %}bg-amber-500{% else %}bg-transparent{% endif %} shrink-0"></div>
+                <div class="w-7 h-7 rounded {% if task.type == 'Receive' %}bg-secondary-fixed/50 text-primary-container{% elif task.type == 'Pick' %}bg-amber-100 text-amber-900{% elif task.type == 'Pack' %}bg-indigo-100 text-indigo-900{% elif task.type == 'Move' %}bg-indigo-50 text-tertiary-container{% else %}bg-emerald-100 text-emerald-900{% endif %} flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[16px]">
+                    {% if task.type == 'Receive' %}move_to_inbox
+                    {% elif task.type == 'Pick' %}shopping_cart_checkout
+                    {% elif task.type == 'Pack' %}inventory_2
+                    {% elif task.type == 'Move' %}sync_alt
+                    {% else %}checklist
+                    {% endif %}
+                  </span>
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <span class="font-headline-sm text-headline-sm text-on-surface truncate">{{ task.type }} Operation</span>
+                  <span class="font-meta-default text-[11px] text-on-surface-variant truncate">{{ task.partner }}</span>
+                </div>
+              </div>
+            </td>
+            <td class="py-2.5 px-space-md">
+              <a href="{{ task.url }}" class="font-code-medium text-code-medium text-primary-container px-1.5 py-0.5 bg-surface-container rounded hover:underline">{{ task.reference }}</a>
+            </td>
+            <td class="py-2.5 px-space-md">
+              <span class="font-code-default text-[11px] bg-surface-container-high/60 px-2 py-0.5 rounded text-on-surface">{{ task.location }}</span>
+            </td>
+            <td class="py-2.5 px-space-md">
+              <span class="font-body-medium text-body-medium text-on-surface">{{ task.items_desc }}</span>
+            </td>
+            <td class="py-2.5 px-space-md">
+              {% if task.is_urgent %}
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-900 font-meta-medium text-[10px] uppercase font-bold">Urgent</span>
+              {% else %}
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-meta-medium text-[10px] uppercase">Normal</span>
+              {% endif %}
+            </td>
+            <td class="py-2.5 px-space-md">
+              <span class="font-body-default text-body-default text-on-surface {% if task.is_overdue %}text-error font-medium{% endif %}">
+                {{ task.due_date.strftime('%b %d, %H:%M') if task.due_date else 'Today' }}
+              </span>
+            </td>
+            <td class="py-2.5 px-space-md">
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-50 text-blue-900 font-meta-medium text-[11px]">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                Action Required
+              </span>
+            </td>
+            <td class="py-2.5 px-space-md text-right">
+              <a href="{{ task.url }}" class="h-7 px-3 rounded bg-primary-container text-on-primary hover:bg-primary font-body-medium text-[12px] inline-flex items-center gap-1 shadow-sm transition-colors">
+                <span>{{ task.action_label }}</span>
+                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="8" class="py-6 text-center text-on-surface-variant font-meta-default">You're all caught up! No pending tasks in your queue.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table Footer Bar -->
+    <div class="p-space-sm px-space-md bg-surface-container-low flex items-center justify-between font-meta-default text-[12px] text-on-surface-variant">
+      <span>Showing {{ tasks|length }} active warehouse task(s)</span>
+      <div class="flex items-center gap-2">
+        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-600"></span> Shift operations synchronized in real-time</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM 3-COLUMN OPERATIONAL SUMMARY -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+    <!-- Column 1: Handed over -->
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md flex flex-col justify-between border border-surface-container-highest">
+      <div class="flex flex-col gap-space-sm">
+        <div class="flex items-center justify-between pb-space-xs">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px] text-secondary">approval_delegation</span>
+            <span class="font-headline-sm text-headline-sm text-on-surface">Handed over – awaiting manager</span>
+          </div>
+          <span class="px-1.5 py-0.5 rounded font-code-medium text-[11px] bg-secondary-container text-on-secondary-fixed">{{ handed_over|length }} pending</span>
+        </div>
+        <p class="font-meta-default text-[11px] text-on-surface-variant -mt-1">{{ handed_over|length }} items awaiting manager authorization</p>
+        <div class="flex flex-col gap-2 mt-2">
+          {% for item in handed_over %}
+          <div class="p-2 rounded bg-surface-container-low flex flex-col gap-1">
+            <div class="flex items-center justify-between">
+              <a href="{{ item.url }}" class="font-code-medium text-[11px] text-primary hover:underline">{{ item.reference }}</a>
+              <span class="font-meta-default text-[10px] text-on-surface-variant">Active</span>
+            </div>
+            <div class="flex items-center gap-1 font-meta-default text-[11px] text-on-surface-variant">
+              <span class="material-symbols-outlined text-[13px] text-amber-700">schedule</span>
+              <span>{{ item.desc }}</span>
+            </div>
+          </div>
+          {% else %}
+          <div class="p-2 text-center text-on-surface-variant font-meta-default text-[11px]">No items awaiting manager signoff.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 2: Quick Links & Actions -->
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md flex flex-col justify-between border border-surface-container-highest">
+      <div class="flex flex-col gap-space-sm">
+        <div class="flex items-center justify-between pb-space-xs">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px] text-amber-600">inventory_2</span>
+            <span class="font-headline-sm text-headline-sm text-on-surface">Warehouse Stock</span>
+          </div>
+          <a href="/products" class="font-meta-medium text-[11px] text-primary hover:underline">View Catalog</a>
+        </div>
+        <p class="font-meta-default text-[11px] text-on-surface-variant -mt-1">Real-time stock ledger lookups</p>
+        <div class="flex flex-col gap-2 mt-2">
+          <a href="/products" class="p-2.5 rounded bg-surface-container-low hover:bg-surface-container transition-colors flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-primary">search</span>
+              <span class="font-body-medium text-[12px] text-on-surface">Browse Inventory</span>
+            </div>
+            <span class="material-symbols-outlined text-[14px] text-on-surface-variant">arrow_forward</span>
+          </a>
+          <a href="/move-history" class="p-2.5 rounded bg-surface-container-low hover:bg-surface-container transition-colors flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-secondary">history</span>
+              <span class="font-body-medium text-[12px] text-on-surface">My 30-Day Movement History</span>
+            </div>
+            <span class="material-symbols-outlined text-[14px] text-on-surface-variant">arrow_forward</span>
+          </a>
+          <a href="/internal-transfers/new" class="p-2.5 rounded bg-surface-container-low hover:bg-surface-container transition-colors flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-primary">swap_horiz</span>
+              <span class="font-body-medium text-[12px] text-on-surface">Record Internal Transfer</span>
+            </div>
+            <span class="material-symbols-outlined text-[14px] text-on-surface-variant">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 3: Recent Movements -->
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md flex flex-col justify-between border border-surface-container-highest">
+      <div class="flex flex-col gap-space-sm">
+        <div class="flex items-center justify-between pb-space-xs">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px] text-secondary">history_toggle_off</span>
+            <span class="font-headline-sm text-headline-sm text-on-surface">Recent movements</span>
+          </div>
+          <span class="font-code-default text-[11px] text-on-surface-variant">Last 30 Days</span>
+        </div>
+        <p class="font-meta-default text-[11px] text-on-surface-variant -mt-1">Recent warehouse transactions</p>
+        <!-- Compact Timeline -->
+        <div class="relative flex flex-col gap-3 mt-2 pl-3">
+          <div class="absolute left-1 top-1 bottom-1 w-0.5 bg-surface-container-high"></div>
+          {% for m in recent_movements[:4] %}
+          <div class="relative flex items-start gap-2">
+            <span class="w-2 h-2 rounded-full bg-primary mt-1 -ml-[13px] ring-4 ring-surface-container-lowest"></span>
+            <div class="flex flex-col">
+              <div class="flex items-center gap-1.5">
+                <span class="font-code-medium text-[11px] text-primary">{{ m.at.strftime('%H:%M') }}</span>
+                <span class="font-meta-medium text-[11px] text-on-surface">{{ m.operation }} ({{ m.reference }})</span>
+              </div>
+              <span class="font-meta-default text-[11px] text-on-surface-variant">
+                {{ m.product.name }}: {{ m.quantity|int if m.quantity == m.quantity|int else m.quantity }} {{ m.product.uom }}
+              </span>
+            </div>
+          </div>
+          {% else %}
+          <div class="text-on-surface-variant font-meta-default text-[11px]">No recent stock movements.</div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="pt-space-md mt-2 flex justify-start">
+        <a class="font-body-medium text-[12px] text-primary-container hover:text-primary flex items-center gap-1 font-medium transition-colors" href="/move-history">
+          <span>View personal shift log</span>
+          <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function filterStaffTasks(type) {
+    const tabs = document.querySelectorAll('.staff-tab');
+    tabs.forEach(t => {
+      t.classList.remove('bg-surface-container-lowest', 'text-primary', 'font-headline-sm', 'shadow-sm');
+      t.classList.add('text-on-surface-variant');
+    });
+    event.target.classList.add('bg-surface-container-lowest', 'text-primary', 'font-headline-sm', 'shadow-sm');
+    event.target.classList.remove('text-on-surface-variant');
+
+    const rows = document.querySelectorAll('#staffTasksBody .task-row');
+    rows.forEach(r => {
+      if (type === 'all') {
+        r.style.display = '';
+      } else if (type === 'urgent') {
+        r.style.display = (r.getAttribute('data-urgent') === 'true') ? '' : 'none';
+      } else {
+        r.style.display = (r.getAttribute('data-type') === type) ? '' : 'none';
+      }
+    });
+  }
+
+  function searchStaffTasks() {
+    const query = document.getElementById('staffTaskSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#staffTasksBody .task-row');
+    rows.forEach(r => {
+      r.style.display = r.innerText.toLowerCase().includes(query) ? '' : 'none';
+    });
+  }
+</script>
+{% endblock %}

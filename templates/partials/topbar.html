@@ -1,0 +1,120 @@
+<!-- StockSense Topbar Header -->
+<header class="fixed top-0 left-[248px] right-0 h-12 bg-surface-container-lowest border-b border-surface-container-highest z-40 px-5 flex items-center justify-between select-none">
+  
+  <!-- Left: Dynamic Breadcrumb & Warehouse Hub Indicator -->
+  <div class="flex items-center gap-3 shrink-0">
+    <div class="flex items-center gap-1.5 font-body-default text-body-default text-on-surface-variant">
+      {% block breadcrumb %}
+        <span class="hover:text-on-surface cursor-pointer">StockSense</span>
+        <span>/</span>
+        <span class="font-body-medium text-on-surface">Operations</span>
+      {% endblock %}
+    </div>
+    <div class="h-4 w-px bg-surface-container-highest"></div>
+    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-container text-on-surface font-body-medium text-[12px] border border-surface-container-highest">
+      <span class="material-symbols-outlined text-[15px] text-on-surface-variant">store</span>
+      <span>Main Warehouse (Pune Hub)</span>
+    </div>
+  </div>
+
+  <!-- Middle: Global Search with keyboard shortcut '/' -->
+  <div class="w-80 relative">
+    <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant pointer-events-none">search</span>
+    <input 
+      id="globalSearchInput"
+      class="w-full h-8 pl-8 pr-7 bg-surface rounded-sm border border-surface-container-highest font-body-default text-[12px] text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container" 
+      placeholder="Search products, SKUs, references (REC, DO, IT)..." 
+      type="text"
+      autocomplete="off"
+    />
+    <span class="absolute right-2 top-1/2 -translate-y-1/2 font-code-medium text-[10px] text-outline bg-surface-container px-1 py-0.5 rounded border border-surface-container-highest pointer-events-none">/</span>
+
+    <!-- Dropdown results -->
+    <div id="globalSearchResults" class="hidden absolute left-0 right-0 mt-1 bg-surface-container-lowest border border-surface-container-highest rounded-md shadow-lg max-h-80 overflow-y-auto z-50"></div>
+  </div>
+
+  <!-- Right: Actions, Notifications and User Profile -->
+  <div class="flex items-center gap-2.5 shrink-0">
+    
+    <!-- Quick Create Buttons (for users with create permissions) -->
+    <div class="flex items-center gap-1.5">
+      {% if can('receipts:create') %}
+        <a href="/receipts/new" class="h-8 px-2.5 bg-primary text-on-primary rounded-sm font-body-medium text-[12px] hover:bg-primary-container transition-colors flex items-center gap-1 shadow-xs">
+          <span class="material-symbols-outlined text-[15px]">add</span>
+          <span>Receipt</span>
+        </a>
+      {% endif %}
+      {% if can('deliveries:create') %}
+        <a href="/delivery-orders/new" class="h-8 px-2.5 bg-surface-container-lowest text-on-surface border border-surface-container-highest rounded-sm font-body-medium text-[12px] hover:bg-surface-container transition-colors flex items-center gap-1 shadow-xs">
+          <span class="material-symbols-outlined text-[15px] text-on-surface-variant">local_shipping</span>
+          <span>Delivery Order</span>
+        </a>
+      {% endif %}
+      {% if can('transfers:create') and not can('deliveries:create') %}
+        <a href="/internal-transfers/new" class="h-8 px-2.5 bg-primary-container text-on-primary rounded-sm font-body-medium text-[12px] hover:bg-primary transition-colors flex items-center gap-1 shadow-xs">
+          <span class="material-symbols-outlined text-[15px]">swap_horiz</span>
+          <span>Move Stock</span>
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="h-4 w-px bg-surface-container-highest mx-0.5"></div>
+
+    <!-- Notification Bell -->
+    <div class="relative">
+      <button id="notifDropdownBtn" class="relative p-1.5 text-on-surface-variant hover:text-on-surface rounded-sm hover:bg-surface-container transition-colors" title="Notifications" type="button">
+        <span class="material-symbols-outlined text-[18px]">notifications</span>
+        <span id="notifBadge" class="absolute top-1 right-1 w-3.5 h-3.5 bg-error text-on-error font-code-medium text-[9px] rounded-full flex items-center justify-center leading-none">3</span>
+      </button>
+
+      <!-- Notifications Dropdown Panel -->
+      <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-80 bg-surface-container-lowest border border-surface-container-highest rounded-md shadow-xl z-50 overflow-hidden">
+        <div class="px-3 py-2 border-b border-surface-container-highest bg-surface-container flex items-center justify-between">
+          <span class="font-headline-sm text-headline-sm text-on-surface">Notifications</span>
+          <span class="text-[10px] font-code-default text-outline">Live Tasks</span>
+        </div>
+        <div id="notifList" class="max-h-72 overflow-y-auto">
+          <!-- Live filled by stocksense.js -->
+          <div class="p-4 text-center text-meta-default text-outline">Loading tasks...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Profile Dropdown -->
+    <div class="relative">
+      <button id="userProfileMenuBtn" class="flex items-center gap-1 pl-1 cursor-pointer hover:opacity-80 transition-opacity focus:outline-none" type="button">
+        {% if current_user.is_manager %}
+          <img alt="Profile" class="w-7 h-7 rounded-full object-cover border border-surface-container-highest" src="/static/img/ridhima_sharma.png" onerror="this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuDTptHVDjIQ2l7v9FCKnXUTVlG5J3TpxKu5UZS6JrCk3TCkvwgFPiicfJ3H_QCk8i2yKtjfjzaSL2lWiyg9pu5IA3Qza-E6hpqMCeVw0eBeCRrQ7n1Z3nXFzzvoKm5tDfWXQP7HHz4YNKSvmMiaIXHG45M_AuMKtxWUJxmpULmqG2sH6YAkUnfqiX71_SURCu89dtAhQoz6vP6iwAGrCQZ3m0vtbr1EQalnHFm3Vy_Geneth9HEYt6B'"/>
+        {% else %}
+          <img alt="Profile" class="w-7 h-7 rounded-full object-cover border border-surface-container-highest" src="/static/img/aman_kumar.png" onerror="this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuB6XK5-ij94aUbU2TZinmMBHPwnRSmRnIg1Of5N1a_Q9hbXatLXsacTj9bu-bLmn8HucMD6aTFcHzKa7S9uERLFMFroNtQU--NvXEYpxvQyXbISoFRYA22OP3ZbI_bgoRhj0dRTvVBy5dxHCf2-IuXY6lYUQjwjfFhTXRxbBeWeE8vq1U8aKAxXN0uz_yNm-jMYFLOFVvU8Wz9neujwmkZ35CAB0eGebI1euHZDFAEBDRCcEhv_MnoR'"/>
+        {% endif %}
+        <span class="material-symbols-outlined text-[14px] text-on-surface-variant">arrow_drop_down</span>
+      </button>
+
+      <!-- Profile Menu -->
+      <div id="userProfileMenu" class="hidden absolute right-0 mt-2 w-48 bg-surface-container-lowest border border-surface-container-highest rounded-md shadow-xl py-1 z-50">
+        <div class="px-3 py-2 border-b border-surface-container-highest">
+          <p class="font-body-medium text-body-medium text-on-surface truncate">{{ current_user.name }}</p>
+          <p class="text-[11px] font-code-default text-outline truncate">{{ current_user.email }}</p>
+        </div>
+        <a href="/profile" class="flex items-center gap-2 px-3 py-2 text-[12px] text-on-surface hover:bg-surface-container transition-colors">
+          <span class="material-symbols-outlined text-[16px] text-on-surface-variant">person</span>
+          <span>My Profile &amp; Role</span>
+        </a>
+        {% if current_user.is_manager %}
+          <a href="/settings" class="flex items-center gap-2 px-3 py-2 text-[12px] text-on-surface hover:bg-surface-container transition-colors">
+            <span class="material-symbols-outlined text-[16px] text-on-surface-variant">settings</span>
+            <span>Settings</span>
+          </a>
+        {% endif %}
+        <div class="border-t border-surface-container-highest my-1"></div>
+        <a href="/logout" class="flex items-center gap-2 px-3 py-2 text-[12px] text-error hover:bg-red-50 transition-colors">
+          <span class="material-symbols-outlined text-[16px]">logout</span>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+</header>

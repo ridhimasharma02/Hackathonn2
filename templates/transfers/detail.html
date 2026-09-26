@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block title %}StockSense - Internal Transfer {{ transfer.reference }}{% endblock %}
+
+{% block breadcrumb %}
+  <span class="hover:text-on-surface cursor-pointer"><a href="/internal-transfers">Internal Transfers</a></span>
+  <span class="text-outline-variant">/</span>
+  <span class="font-code-medium text-on-surface">{{ transfer.reference }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-col w-full pb-24">
+  <!-- Top Meta Header Area -->
+  <div class="bg-surface-container-lowest px-space-xl py-space-md border-b border-surface-container-highest shadow-sm">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+      <div class="flex flex-col min-w-0">
+        <div class="flex items-center gap-space-sm mb-0.5">
+          <span class="font-table-header text-[10px] text-on-surface-variant uppercase tracking-wider bg-surface-container px-1.5 py-0.5 rounded">INTERNAL TRANSFER</span>
+          {% if transfer.status == 'Done' %}
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-emerald-100 text-emerald-900 border border-emerald-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Completed
+            </span>
+          {% elif transfer.status == 'Ready' %}
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-secondary-container/60 text-primary-container">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span> Ready to Move
+            </span>
+          {% elif transfer.status == 'Draft' %}
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-slate-200 text-slate-800">
+              <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Draft
+            </span>
+          {% else %}
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-body-medium bg-red-100 text-red-900">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span> Canceled
+            </span>
+          {% endif %}
+          <span class="font-code-default text-[11px] text-outline">Priority: {{ transfer.priority }}</span>
+        </div>
+        <div class="flex items-baseline gap-space-md">
+          <h1 class="font-code-medium text-[22px] leading-tight text-on-surface tracking-tight">{{ transfer.reference }}</h1>
+          <span class="font-body-default text-meta-default text-on-surface-variant truncate">
+            Source: <strong class="font-code-medium text-on-surface">{{ transfer.source_location.code }}</strong> → Destination: <strong class="font-code-medium text-on-surface">{{ transfer.destination_location.code }}</strong> • Reason: {{ transfer.reason or 'Internal Rebalance' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Canvas Container -->
+  <div class="p-space-xl space-y-space-lg">
+    <!-- Stepper Card -->
+    <div class="bg-surface-container-lowest rounded-md border border-surface-container-highest p-space-md shadow-sm">
+      <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-2">
+        <div class="flex items-center gap-3">
+          <div class="w-6 h-6 rounded-full {% if transfer.status in ('Draft', 'Ready', 'Done') %}bg-primary-container text-on-primary{% else %}border border-slate-300 bg-surface-container text-slate-400{% endif %} flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[15px]">check</span>
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="font-body-medium text-body-medium text-on-surface">1. Draft</span>
+            <span class="font-meta-default text-[11px] text-on-surface-variant">Transfer Created</span>
+          </div>
+          <div class="hidden md:block flex-1 h-[2px] {% if transfer.status in ('Ready', 'Done') %}bg-primary-container{% else %}bg-surface-container-highest{% endif %} mx-2"></div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="w-6 h-6 rounded-full {% if transfer.status in ('Ready', 'Done') %}bg-primary-container text-on-primary{% else %}border border-slate-300 bg-surface-container text-slate-400{% endif %} flex items-center justify-center shrink-0">
+            {% if transfer.status == 'Done' %}
+              <span class="material-symbols-outlined text-[15px]">check</span>
+            {% elif transfer.status == 'Ready' %}
+              <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+            {% else %}
+              <span class="font-code-medium text-[11px]">2</span>
+            {% endif %}
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="font-body-medium text-body-medium text-on-surface">2. Ready to Move</span>
+            <span class="font-meta-default text-[11px] text-on-surface-variant">Stock Allocated</span>
+          </div>
+          <div class="hidden md:block flex-1 h-[2px] {% if transfer.status == 'Done' %}bg-primary-container{% else %}border-t-2 border-dashed border-slate-300{% endif %} mx-2"></div>
+        </div>
+
+        <div class="flex items-center gap-3 {% if transfer.status != 'Done' %}opacity-60{% endif %}">
+          <div class="w-6 h-6 rounded-full {% if transfer.status == 'Done' %}bg-emerald-700 text-white{% else %}border border-slate-300 bg-surface-container text-slate-400{% endif %} flex items-center justify-center shrink-0">
+            {% if transfer.status == 'Done' %}
+              <span class="material-symbols-outlined text-[15px]">check</span>
+            {% else %}
+              <span class="font-code-medium text-[11px]">3</span>
+            {% endif %}
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="font-body-medium text-body-medium {% if transfer.status == 'Done' %}text-on-surface font-semibold{% else %}text-slate-500{% endif %}">3. Completed</span>
+            <span class="font-meta-default text-[11px] text-slate-400">Stock Relocated</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Route Diagram Visual Card -->
+    <div class="bg-surface-container-lowest rounded-lg border border-surface-container-highest shadow-sm overflow-hidden">
+      <div class="px-space-lg py-space-sm bg-surface-container-low border-b border-surface-container-highest flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[17px] text-primary-container">route</span>
+          <span class="font-headline-sm text-headline-sm text-on-surface uppercase tracking-wide">Stock Relocation Route & Impact Analysis</span>
+        </div>
+        <div class="flex items-center gap-space-lg font-meta-default text-[11px] text-on-surface-variant">
+          <span>Net Delta: <strong class="font-code-medium text-on-surface">0 (Neutral)</strong></span>
+        </div>
+      </div>
+      <div class="p-space-lg">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-space-md items-center">
+          <!-- Source Node Card (Left) -->
+          <div class="md:col-span-4 bg-surface rounded border border-surface-container-highest p-space-md relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-primary-container"></div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-table-header text-[10px] text-outline uppercase tracking-wider">SOURCE LOCATION</span>
+              <span class="material-symbols-outlined text-[16px] text-on-surface-variant">upload_file</span>
+            </div>
+            <div class="font-headline-sm text-headline-sm text-on-surface leading-snug">{{ transfer.source_location.name }}</div>
+            <div class="font-code-default text-[12px] text-on-surface-variant mt-0.5">{{ transfer.source_location.code }}</div>
+          </div>
+
+          <!-- Connecting Flow Vector (Middle) -->
+          <div class="md:col-span-4 flex flex-col items-center justify-center px-space-xs text-center py-2 md:py-0">
+            <div class="w-full flex items-center relative my-2">
+              <div class="flex-1 border-t-2 border-dashed border-primary-container/40"></div>
+              <div class="mx-2 px-space-md py-1.5 rounded-full bg-surface-container-lowest border border-primary-container/40 shadow-sm flex items-center gap-1.5 shrink-0 z-10">
+                <span class="material-symbols-outlined text-[16px] text-primary-container animate-pulse">local_shipping</span>
+                <span class="font-code-medium text-[12px] text-on-surface font-bold">{{ transfer.items|length }} line(s)</span>
+                <span class="material-symbols-outlined text-[14px] text-on-surface-variant">arrow_forward</span>
+              </div>
+              <div class="flex-1 border-t-2 border-dashed border-primary-container/40"></div>
+            </div>
+            <div class="font-body-default text-[11px] text-on-surface-variant flex items-center gap-1 mt-0.5">
+              <span>Internal Move</span>
+              <span>•</span>
+              <span class="font-body-medium text-on-surface">Operator: {{ transfer.creator.name if transfer.creator else 'Staff' }}</span>
+            </div>
+          </div>
+
+          <!-- Destination Node Card (Right) -->
+          <div class="md:col-span-4 bg-surface rounded border border-surface-container-highest p-space-md relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-secondary-container"></div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-table-header text-[10px] text-outline uppercase tracking-wider">DESTINATION LOCATION</span>
+              <span class="material-symbols-outlined text-[16px] text-on-surface-variant">download</span>
+            </div>
+            <div class="font-headline-sm text-headline-sm text-on-surface leading-snug">{{ transfer.destination_location.name }}</div>
+            <div class="font-code-default text-[12px] text-on-surface-variant mt-0.5">{{ transfer.destination_location.code }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Line Items Table -->
+    <div class="bg-surface-container-lowest rounded-md border border-surface-container-highest shadow-sm overflow-hidden">
+      <div class="h-10 px-space-lg border-b border-surface-container-highest flex items-center justify-between bg-surface-bright">
+        <h2 class="font-body-medium text-body-medium text-on-surface font-semibold">Transfer Items</h2>
+        <span class="px-2 py-0.5 rounded text-[11px] font-code-medium bg-slate-200 text-slate-800">{{ transfer.items|length }} line(s)</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse text-left">
+          <thead>
+            <tr class="h-8 bg-surface-container-low border-b border-surface-container-highest text-slate-600 font-table-header text-table-header uppercase">
+              <th class="px-space-lg py-1 w-10 text-center">#</th>
+              <th class="px-space-md py-1 min-w-[200px]">Product</th>
+              <th class="px-space-md py-1 w-24">SKU</th>
+              <th class="px-space-md py-1 w-28 text-right">Transfer Qty</th>
+              <th class="px-space-md py-1 w-20">Unit</th>
+              <th class="px-space-md py-1 w-32 text-right">Source Current</th>
+              <th class="px-space-md py-1 w-32 text-right">Source After</th>
+              <th class="px-space-md py-1 w-32 text-right">Dest Current</th>
+              <th class="px-space-md py-1 w-32 text-right">Dest After</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-surface-container-highest font-body-default text-body-default text-on-surface">
+            {% for item_data in items_info %}
+            {% set it = item_data.item %}
+            <tr class="h-10 hover:bg-slate-50/80 transition-colors">
+              <td class="px-space-lg text-center font-code-default text-slate-400">{{ loop.index }}</td>
+              <td class="px-space-md py-2 font-body-medium font-semibold text-on-surface">{{ it.product.name }}</td>
+              <td class="px-space-md font-code-medium text-slate-700">{{ it.product.sku }}</td>
+              <td class="px-space-md text-right font-code-medium font-bold text-tertiary">
+                {{ it.quantity|int if it.quantity == it.quantity|int else it.quantity }}
+              </td>
+              <td class="px-space-md text-slate-600 font-code-default">{{ it.product.uom }}</td>
+              <td class="px-space-md text-right font-code-default text-on-surface-variant">
+                {{ item_data.src_on_hand|int if item_data.src_on_hand == item_data.src_on_hand|int else item_data.src_on_hand }}
+              </td>
+              <td class="px-space-md text-right font-code-medium font-medium text-error">
+                {{ item_data.src_after|int if item_data.src_after == item_data.src_after|int else item_data.src_after }}
+              </td>
+              <td class="px-space-md text-right font-code-default text-on-surface-variant">
+                {{ item_data.dest_on_hand|int if item_data.dest_on_hand == item_data.dest_on_hand|int else item_data.dest_on_hand }}
+              </td>
+              <td class="px-space-md text-right font-code-medium font-medium text-emerald-800">
+                {{ item_data.dest_after|int if item_data.dest_after == item_data.dest_after|int else item_data.dest_after }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Timeline & Custody Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+      <div class="lg:col-span-7 bg-surface-container-lowest rounded-md border border-surface-container-highest shadow-sm p-4">
+        <h3 class="font-body-medium text-body-medium text-on-surface font-semibold mb-3">Custody Information</h3>
+        <dl class="divide-y divide-surface-container-highest text-body-default">
+          <div class="py-2 flex justify-between">
+            <dt class="font-meta-medium text-on-surface-variant text-[12px]">Created By</dt>
+            <dd class="font-body-default text-on-surface">{{ transfer.creator.name if transfer.creator else 'Staff' }} ({{ transfer.created_at.strftime('%b %d, %H:%M') }})</dd>
+          </div>
+          <div class="py-2 flex justify-between">
+            <dt class="font-meta-medium text-on-surface-variant text-[12px]">Completed By</dt>
+            <dd class="font-body-default text-on-surface">{{ transfer.done_user.name if transfer.done_user else '—' }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="lg:col-span-5 bg-surface-container-lowest rounded-md border border-surface-container-highest shadow-sm p-4">
+        <h3 class="font-body-medium text-body-medium text-on-surface font-semibold mb-3">Activity Timeline</h3>
+        <div class="relative pl-6 space-y-4 before:content-[''] before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[2px] before:bg-surface-container-highest">
+          {% for log in logs %}
+          <div class="relative">
+            <div class="absolute -left-[27px] top-0.5 w-3.5 h-3.5 rounded-full bg-primary-container border-2 border-white"></div>
+            <div class="flex items-center justify-between">
+              <span class="font-code-medium text-[11px] text-on-surface font-bold">{{ log.action }}</span>
+              <span class="text-meta-default text-[10px] text-slate-400">{{ log.at.strftime('%H:%M') }}</span>
+            </div>
+            <p class="font-body-default text-[12px] text-on-surface-variant mt-0.5">{{ log.note or '' }} ({{ log.user.name if log.user else 'System' }})</p>
+          </div>
+          {% else %}
+          <div class="text-on-surface-variant font-meta-default text-[11px]">No activity logs recorded.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<!-- Sticky Bottom Action Bar -->
+<footer class="fixed bottom-0 left-[248px] right-0 h-14 bg-surface-container-lowest border-t border-surface-container-highest px-space-xl flex items-center justify-between z-30 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+  <div class="flex items-center gap-space-sm">
+    {% if transfer.status in ('Draft', 'Ready') and can('transfers:cancel') %}
+    <form method="POST" action="/internal-transfers/{{ transfer.id }}/cancel" onsubmit="return confirm('Cancel this internal transfer?');">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <button class="h-8 px-space-md rounded border border-red-300 text-red-700 bg-white hover:bg-red-50 font-body-medium text-meta-default transition-colors flex items-center gap-1.5" type="submit">
+        <span class="material-symbols-outlined text-[15px]">close</span>
+        <span>Cancel Transfer</span>
+      </button>
+    </form>
+    {% endif %}
+  </div>
+
+  <div class="flex items-center gap-space-md">
+    {% if transfer.status == 'Draft' and can('transfers:confirm') %}
+    <form method="POST" action="/internal-transfers/{{ transfer.id }}/confirm">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <button class="h-8 px-5 rounded bg-primary-container hover:bg-primary text-on-primary font-body-medium text-body-default shadow-sm transition-all flex items-center gap-2" type="submit">
+        <span class="material-symbols-outlined text-[17px]">check</span>
+        <span>Confirm Transfer</span>
+      </button>
+    </form>
+    {% endif %}
+
+    {% if transfer.status == 'Ready' and can('transfers:complete') %}
+    <form method="POST" action="/internal-transfers/{{ transfer.id }}/complete">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <button class="h-8 px-5 rounded bg-emerald-700 hover:bg-emerald-800 text-white font-body-medium text-body-default shadow-sm transition-all flex items-center gap-2" type="submit">
+        <span class="material-symbols-outlined text-[17px]">swap_horiz</span>
+        <span>Complete Relocation</span>
+      </button>
+    </form>
+    {% endif %}
+  </div>
+</footer>
+{% endblock %}

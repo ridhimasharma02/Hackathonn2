@@ -1,0 +1,220 @@
+<!-- StockSense Fixed Left Sidebar (248px) -->
+<aside class="fixed left-0 top-0 h-full w-[248px] bg-primary z-50 flex flex-col justify-between border-r border-slate-800 select-none">
+  <div class="flex flex-col h-[calc(100%-61px)]">
+    
+    <!-- Top Brand Header -->
+    <div class="h-12 px-4 border-b border-slate-800 flex items-center gap-2.5 shrink-0">
+      <div class="w-7 h-7 rounded bg-[#1e3a66] border border-[#2a4d80] flex items-center justify-center text-white font-bold text-sm shadow-sm shrink-0">
+        <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+      </div>
+      <div class="flex flex-col min-w-0 leading-tight">
+        <span class="font-headline-sm text-headline-sm text-white tracking-tight truncate">StockSense</span>
+        <span class="font-table-header text-[10px] text-slate-400 truncate">Pune Plant 01 - Mfg &amp; Dist</span>
+      </div>
+    </div>
+
+    <!-- Scrollable Navigation Items -->
+    <div class="flex-1 overflow-y-auto py-3 px-2 space-y-4">
+      
+      {% if current_user.is_manager %}
+        <!-- INVENTORY MANAGER NAVIGATION -->
+
+        <!-- Section: Overview -->
+        <section>
+          <div>
+            <span class="block px-2.5 py-1 font-table-header text-table-header text-slate-400 tracking-wider uppercase">Overview</span>
+          </div>
+          <nav class="space-y-0.5 mt-1">
+            <a href="/" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm transition-colors {% if request.endpoint == 'dashboard.index' %}bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+              <span class="material-symbols-outlined text-[18px]">dashboard</span>
+              <span class="truncate">Dashboard</span>
+            </a>
+          </nav>
+        </section>
+
+        <!-- Section: Inventory -->
+        <section>
+          <div>
+            <span class="block px-2.5 py-1 font-table-header text-table-header text-slate-400 tracking-wider uppercase">Inventory</span>
+          </div>
+          <nav class="space-y-0.5 mt-1">
+            <a href="/products" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm font-body-default text-body-default transition-colors {% if request.path.startswith('/products') %}bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                <span class="truncate">Products</span>
+              </div>
+            </a>
+            <a href="/inventory-adjustments" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm font-body-default text-body-default transition-colors {% if request.path.startswith('/inventory-adjustments') %}bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px]">tune</span>
+                <span class="truncate">Inventory Adjustments</span>
+              </div>
+              {% if sidebar_counts.get('adjustments') %}
+                <span class="px-1.5 py-0.5 rounded text-[10px] font-code-medium bg-amber-500/20 text-amber-300">{{ sidebar_counts.adjustments }}</span>
+              {% endif %}
+            </a>
+          </nav>
+        </section>
+
+        <!-- Section: Operations -->
+        <section>
+          <div>
+            <span class="block px-2.5 py-1 font-table-header text-table-header text-slate-400 tracking-wider uppercase">Operations</span>
+          </div>
+          <nav class="space-y-0.5 mt-1">
+            <a href="/receipts" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm font-body-default text-body-default transition-colors {% if request.path.startswith('/receipts') %}bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px]">move_to_inbox</span>
+                <span class="truncate">Receipts</span>
+              </div>
+              {% if sidebar_counts.get('receipts') %}
+                <span class="px-1.5 py-0.5 rounded text-[10px] font-code-medium bg-blue-500/20 text-blue-300">{{ sidebar_counts.receipts }}</span>
+              {% endif %}
+            </a>
+            <a href="/delivery-orders" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm font-body-default text-body-default transition-colors {% if request.path.startswith('/delivery-orders') %}bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px]">local_shipping</span>
+                <span class="truncate">Delivery Orders</span>
+              </div>
+              {% if sidebar_counts.get('deliveries') %}
+                <span class="px-1.5 py-0.5 rounded text-[10px] font-code-medium bg-emerald-500/20 text-emerald-300">{{ sidebar_counts.deliveries }}</span>
+              {% endif %}
+            </a>
+            <a href="/internal-transfers" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm font-body-default text-body-default transition-colors {% if request.path.startswith('/internal-transfers') %}bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px]">compare_arrows</span>
+                <span class="truncate">Internal Transfers</span>
+              </div>
+              {% if sidebar_counts.get('transfers') %}
+                <span class="px-1.5 py-0.5 rounded text-[10px] font-code-medium bg-amber-500/20 text-amber-300">{{ sidebar_counts.transfers }}</span>
+              {% endif %}
+            </a>
+          </nav>
+        </section>
+
+        <!-- Section: Reporting -->
+        <section>
+          <div>
+            <span class="block px-2.5 py-1 font-table-header text-table-header text-slate-400 tracking-wider uppercase">Reporting</span>
+          </div>
+          <nav class="space-y-0.5 mt-1">
+            <a href="/move-history" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm font-body-default text-body-default transition-colors {% if request.path.startswith('/move-history') %}bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+              <span class="material-symbols-outlined text-[18px]">history</span>
+              <span class="truncate">Move History</span>
+            </a>
+          </nav>
+        </section>
+
+        <!-- Section: Configuration (Manager Only) -->
+        <section>
+          <div>
+            <span class="block px-2.5 py-1 font-table-header text-table-header text-slate-400 tracking-wider uppercase">Configuration</span>
+          </div>
+          <nav class="space-y-0.5 mt-1">
+            <a href="/settings" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm font-body-default text-body-default transition-colors {% if request.path.startswith('/settings') and 'locations' not in request.args.get('tab', '') %}bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+              <span class="material-symbols-outlined text-[18px]">settings</span>
+              <span class="truncate">Settings</span>
+            </a>
+            <a href="/settings?tab=locations" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm font-body-default text-body-default transition-colors {% if request.path.startswith('/settings') and request.args.get('tab') == 'locations' %}bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+              <span class="material-symbols-outlined text-[18px]">warehouse</span>
+              <span class="truncate">Locations &amp; Warehouses</span>
+            </a>
+          </nav>
+        </section>
+
+      {% else %}
+        <!-- WAREHOUSE STAFF NAVIGATION -->
+        <!-- Staff sidebar: Dashboard, Receipts, Delivery Orders, Internal Transfers, Inventory Counting, Stock, Move History -->
+
+        <nav class="space-y-0.5 mt-1">
+          <a href="/" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm transition-colors {% if request.endpoint == 'dashboard.index' %}bg-primary-container text-on-primary border-l-2 border-secondary-fixed font-headline-sm{% else %}text-slate-300 hover:bg-white/5 hover:text-white font-body-medium text-body-medium{% endif %}">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[18px]">dashboard</span>
+              <span>Dashboard</span>
+            </div>
+          </a>
+
+          <a href="/receipts" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm transition-colors {% if request.path.startswith('/receipts') %}bg-primary-container text-on-primary border-l-2 border-secondary-fixed font-headline-sm{% else %}text-slate-300 hover:bg-white/5 hover:text-white font-body-medium text-body-medium{% endif %}">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[18px]">input</span>
+              <span>Receipts</span>
+            </div>
+            {% if sidebar_counts.get('receipts') %}
+              <span class="px-1.5 py-0.5 font-code-medium rounded bg-primary-container text-slate-200 text-[10px] leading-none">{{ sidebar_counts.receipts }}</span>
+            {% endif %}
+          </a>
+
+          <a href="/delivery-orders" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm transition-colors {% if request.path.startswith('/delivery-orders') %}bg-primary-container text-on-primary border-l-2 border-secondary-fixed font-headline-sm{% else %}text-slate-300 hover:bg-white/5 hover:text-white font-body-medium text-body-medium{% endif %}">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[18px]">local_shipping</span>
+              <span>Delivery Orders</span>
+            </div>
+            {% if sidebar_counts.get('deliveries') %}
+              <span class="px-1.5 py-0.5 font-code-medium rounded bg-primary-container text-slate-200 text-[10px] leading-none">{{ sidebar_counts.deliveries }}</span>
+            {% endif %}
+          </a>
+
+          <a href="/internal-transfers" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm transition-colors {% if request.path.startswith('/internal-transfers') %}bg-primary-container text-on-primary border-l-2 border-secondary-fixed font-headline-sm{% else %}text-slate-300 hover:bg-white/5 hover:text-white font-body-medium text-body-medium{% endif %}">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[18px]">swap_horiz</span>
+              <span>Internal Transfers</span>
+            </div>
+            {% if sidebar_counts.get('transfers') %}
+              <span class="px-1.5 py-0.5 font-code-medium rounded bg-primary-container text-slate-200 text-[10px] leading-none">{{ sidebar_counts.transfers }}</span>
+            {% endif %}
+          </a>
+
+          <a href="/inventory-adjustments" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm transition-colors {% if request.path.startswith('/inventory-adjustments') %}bg-primary-container text-on-primary border-l-2 border-secondary-fixed font-headline-sm{% else %}text-slate-300 hover:bg-white/5 hover:text-white font-body-medium text-body-medium{% endif %}">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[18px]">fact_check</span>
+              <span>Inventory Counting</span>
+            </div>
+            {% if sidebar_counts.get('adjustments') %}
+              <span class="px-1.5 py-0.5 font-code-medium rounded bg-primary-container text-slate-200 text-[10px] leading-none">{{ sidebar_counts.adjustments }}</span>
+            {% endif %}
+          </a>
+
+          <a href="/products" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm transition-colors {% if request.path.startswith('/products') %}bg-primary-container text-on-primary border-l-2 border-secondary-fixed font-headline-sm{% else %}text-slate-300 hover:bg-white/5 hover:text-white font-body-medium text-body-medium{% endif %}">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+              <span>Stock</span>
+            </div>
+          </a>
+
+          <a href="/move-history" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm transition-colors {% if request.path.startswith('/move-history') %}bg-primary-container text-on-primary border-l-2 border-secondary-fixed font-headline-sm{% else %}text-slate-300 hover:bg-white/5 hover:text-white font-body-medium text-body-medium{% endif %}">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[18px]">history</span>
+              <span>Move History</span>
+            </div>
+          </a>
+        </nav>
+
+      {% endif %}
+
+    </div>
+  </div>
+
+  <!-- Bottom Profile Row -->
+  <div class="h-[61px] border-t border-slate-800 px-3 py-2 flex items-center justify-between bg-primary/60">
+    <a href="/profile" class="flex items-center gap-2.5 min-w-0 hover:opacity-90 transition-opacity">
+      {% if current_user.is_manager %}
+        <img alt="Profile" class="w-8 h-8 rounded-full object-cover border border-slate-700 shrink-0" src="/static/img/ridhima_sharma.png" onerror="this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuDTptHVDjIQ2l7v9FCKnXUTVlG5J3TpxKu5UZS6JrCk3TCkvwgFPiicfJ3H_QCk8i2yKtjfjzaSL2lWiyg9pu5IA3Qza-E6hpqMCeVw0eBeCRrQ7n1Z3nXFzzvoKm5tDfWXQP7HHz4YNKSvmMiaIXHG45M_AuMKtxWUJxmpULmqG2sH6YAkUnfqiX71_SURCu89dtAhQoz6vP6iwAGrCQZ3m0vtbr1EQalnHFm3Vy_Geneth9HEYt6B'"/>
+      {% else %}
+        <img alt="Profile" class="w-8 h-8 rounded-full object-cover border border-slate-700 shrink-0" src="/static/img/aman_kumar.png" onerror="this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuB6XK5-ij94aUbU2TZinmMBHPwnRSmRnIg1Of5N1a_Q9hbXatLXsacTj9bu-bLmn8HucMD6aTFcHzKa7S9uERLFMFroNtQU--NvXEYpxvQyXbISoFRYA22OP3ZbI_bgoRhj0dRTvVBy5dxHCf2-IuXY6lYUQjwjfFhTXRxbBeWeE8vq1U8aKAxXN0uz_yNm-jMYFLOFVvU8Wz9neujwmkZ35CAB0eGebI1euHZDFAEBDRCcEhv_MnoR'"/>
+      {% endif %}
+      <div class="min-w-0 flex flex-col leading-tight">
+        <span class="font-body-medium text-body-medium text-white truncate">{{ current_user.name }}</span>
+        <span class="font-meta-default text-[11px] text-slate-400 truncate">
+          {{ 'Inventory Manager' if current_user.is_manager else 'Warehouse Staff' }}
+        </span>
+      </div>
+    </a>
+    <a href="/logout" class="text-slate-400 hover:text-white transition-colors p-1 rounded-sm" title="Sign Out">
+      <span class="material-symbols-outlined text-[18px]">logout</span>
+    </a>
+  </div>
+</aside>

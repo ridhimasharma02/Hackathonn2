@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+
+{% block title %}StockSense - {{ product.name }} ({{ product.sku }}){% endblock %}
+
+{% block breadcrumb %}
+  <span class="hover:text-on-surface cursor-pointer"><a href="/products">Products</a></span>
+  <span class="text-outline-variant">/</span>
+  <span class="font-code-medium text-on-surface">{{ product.sku }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="p-6 flex flex-col w-full space-y-4">
+  <!-- Product Header Card -->
+  <div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm border border-surface-container-highest flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="flex items-start gap-4">
+      <div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-primary-container shrink-0">
+        <span class="material-symbols-outlined text-[28px]">inventory_2</span>
+      </div>
+      <div class="flex flex-col">
+        <div class="flex items-center gap-2.5">
+          <h1 class="font-headline-lg text-[22px] text-on-surface font-semibold">{{ product.name }}</h1>
+          <span class="px-2 py-0.5 rounded font-code-medium text-[12px] bg-surface-container text-primary-container font-bold border border-surface-container-highest">{{ product.sku }}</span>
+          {% if overall_status == 'In Stock' %}
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#DCFCE7] text-[#15803D] font-meta-medium text-[11px]">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#15803D]"></span> In Stock
+            </span>
+          {% elif overall_status == 'Low Stock' %}
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309] font-meta-medium text-[11px]">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#B45309]"></span> Low Stock
+            </span>
+          {% else %}
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#FEE2E2] text-[#B91C1C] font-meta-medium text-[11px]">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#B91C1C]"></span> Out of Stock
+            </span>
+          {% endif %}
+        </div>
+        <p class="font-body-default text-body-default text-on-surface-variant mt-1">{{ product.description or 'No specifications listed for this product.' }}</p>
+        <div class="flex items-center gap-3 text-meta-default text-on-surface-variant mt-2">
+          <span>Category: <strong class="text-on-surface font-medium">{{ product.category.name if product.category else 'General' }}</strong></span>
+          <span class="text-outline-variant">•</span>
+          <span>Unit: <strong class="text-on-surface font-code-default">{{ product.uom }}</strong></span>
+          <span class="text-outline-variant">•</span>
+          <span>Reorder Threshold: <strong class="text-on-surface font-code-default">{{ product.reorder_level }} {{ product.uom }}</strong></span>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      {% if can('receipts:create') %}
+      <a href="/receipts/new?product_id={{ product.id }}" class="h-8 px-3 rounded bg-primary text-on-primary font-body-medium text-[12px] hover:bg-primary-container transition-colors flex items-center gap-1">
+        <span class="material-symbols-outlined text-[16px]">add</span>
+        <span>Order Restock</span>
+      </a>
+      {% endif %}
+      {% if can('products:create') %}
+      <button onclick="openEditProductModal()" class="h-8 px-3 rounded bg-surface-container text-on-surface font-body-medium text-[12px] hover:bg-surface-dim transition-colors flex items-center gap-1 border border-surface-container-highest">
+        <span class="material-symbols-outlined text-[16px]">edit</span>
+        <span>Edit Details</span>
+      </button>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Stock Summary KPIs -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-surface-container-highest">
+      <span class="font-table-header text-table-header uppercase text-outline">Total On-Hand</span>
+      <div class="font-headline-lg text-[26px] font-bold text-on-surface mt-1">
+        {{ matrix.total_on_hand|int if matrix.total_on_hand == matrix.total_on_hand|int else matrix.total_on_hand }} <span class="text-sm font-normal text-on-surface-variant">{{ product.uom }}</span>
+      </div>
+      <p class="font-meta-default text-[11px] text-on-surface-variant mt-1">Strict sum of ledger movements across all warehouses</p>
+    </div>
+    <div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-surface-container-highest">
+      <span class="font-table-header text-table-header uppercase text-outline">Reserved Stock</span>
+      <div class="font-headline-lg text-[26px] font-bold text-amber-800 mt-1">
+        {{ matrix.total_reserved|int if matrix.total_reserved == matrix.total_reserved|int else matrix.total_reserved }} <span class="text-sm font-normal text-on-surface-variant">{{ product.uom }}</span>
+      </div>
+      <p class="font-meta-default text-[11px] text-on-surface-variant mt-1">Allocated to active dispatches and transfers</p>
+    </div>
+    <div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-surface-container-highest">
+      <span class="font-table-header text-table-header uppercase text-outline">Available Stock</span>
+      <div class="font-headline-lg text-[26px] font-bold text-emerald-800 mt-1">
+        {{ matrix.total_available|int if matrix.total_available == matrix.total_available|int else matrix.total_available }} <span class="text-sm font-normal text-on-surface-variant">{{ product.uom }}</span>
+      </div>
+      <p class="font-meta-default text-[11px] text-on-surface-variant mt-1">Free to allocate for new delivery orders</p>
+    </div>
+  </div>
+
+  <!-- Stock By Location Table -->
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-surface-container-highest">
+    <div class="p-3 bg-surface-container flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px] text-primary">warehouse</span>
+        <span class="font-headline-sm text-headline-sm text-on-surface">Stock Breakdown by Location</span>
+      </div>
+      <span class="font-meta-medium text-[11px] text-on-surface-variant">{{ matrix.locations|length }} Locations</span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-surface-container-low text-outline uppercase font-table-header text-table-header">
+          <tr>
+            <th class="py-2.5 px-4">Warehouse & Location</th>
+            <th class="py-2.5 px-3">Location Code</th>
+            <th class="py-2.5 px-3 text-right">On Hand</th>
+            <th class="py-2.5 px-3 text-right">Reserved</th>
+            <th class="py-2.5 px-3 text-right">Available</th>
+            <th class="py-2.5 px-3 text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody class="font-body-default text-body-default text-on-surface divide-y divide-surface-container-highest">
+          {% for loc_info in matrix.locations %}
+          <tr class="hover:bg-surface-container-low transition-colors">
+            <td class="py-2.5 px-4">
+              <span class="font-body-medium text-body-medium text-on-surface">{{ loc_info.warehouse }} · {{ loc_info.location_name }}</span>
+            </td>
+            <td class="py-2.5 px-3">
+              <span class="font-code-default text-[11px] bg-surface-container px-2 py-0.5 rounded text-on-surface">{{ loc_info.location_code }}</span>
+            </td>
+            <td class="py-2.5 px-3 text-right font-code-medium font-semibold text-on-surface">
+              {{ loc_info.on_hand|int if loc_info.on_hand == loc_info.on_hand|int else loc_info.on_hand }} {{ product.uom }}
+            </td>
+            <td class="py-2.5 px-3 text-right font-code-default text-on-surface-variant">
+              {{ loc_info.reserved|int if loc_info.reserved == loc_info.reserved|int else loc_info.reserved }} {{ product.uom }}
+            </td>
+            <td class="py-2.5 px-3 text-right font-code-medium font-semibold text-emerald-800">
+              {{ loc_info.available|int if loc_info.available == loc_info.available|int else loc_info.available }} {{ product.uom }}
+            </td>
+            <td class="py-2.5 px-3 text-right">
+              <a href="/internal-transfers/new?product_id={{ product.id }}&source_id={{ loc_info.location_id }}" class="h-6 px-2 rounded bg-surface-container text-on-surface hover:bg-surface-dim font-meta-medium text-[11px] inline-flex items-center">
+                Move Stock
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Movements for this Product -->
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-surface-container-highest">
+    <div class="p-3 bg-surface-container flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px] text-primary">history</span>
+        <span class="font-headline-sm text-headline-sm text-on-surface">Stock Ledger History for {{ product.name }}</span>
+      </div>
+      <a href="/history?product={{ product.id }}" class="font-meta-medium text-[11px] text-primary hover:underline">Full History</a>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-surface-container-low text-outline uppercase font-table-header text-table-header">
+          <tr>
+            <th class="py-2 px-3">Date & Time</th>
+            <th class="py-2 px-3">Reference</th>
+            <th class="py-2 px-3">Operation</th>
+            <th class="py-2 px-3">From Location</th>
+            <th class="py-2 px-3">To Location</th>
+            <th class="py-2 px-3 text-right">Quantity</th>
+            <th class="py-2 px-3">Operator</th>
+          </tr>
+        </thead>
+        <tbody class="font-body-default text-body-default text-on-surface divide-y divide-surface-container-highest">
+          {% for m in movements %}
+          <tr class="hover:bg-surface-container-low transition-colors">
+            <td class="py-2 px-3 font-code-default text-[11px] text-on-surface-variant">{{ m.at.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td class="py-2 px-3 font-code-medium text-[12px] text-primary font-medium">{{ m.reference }}</td>
+            <td class="py-2 px-3">
+              <span class="px-1.5 py-0.5 rounded text-[10px] font-meta-medium bg-surface-container text-on-surface">{{ m.operation }}</span>
+            </td>
+            <td class="py-2 px-3 font-code-default text-[11px] text-on-surface-variant">{{ m.from_location.code if m.from_location else 'External / Vendor' }}</td>
+            <td class="py-2 px-3 font-code-default text-[11px] text-on-surface-variant">{{ m.to_location.code if m.to_location else 'Customer / Outward' }}</td>
+            <td class="py-2 px-3 text-right font-code-medium font-bold text-on-surface">
+              {{ m.quantity|int if m.quantity == m.quantity|int else m.quantity }} {{ product.uom }}
+            </td>
+            <td class="py-2 px-3 text-[11px] text-on-surface-variant">{{ m.user.name if m.user else 'System' }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="py-4 text-center text-on-surface-variant font-meta-default">No movement records found for this product.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+{% if can('products:create') %}
+<!-- Edit Product Modal -->
+<div class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs transition-opacity duration-200" id="editProductModal">
+  <div class="relative w-full max-w-[600px] bg-surface-container-lowest rounded-xl shadow-xl overflow-hidden flex flex-col max-h-[90vh] border border-surface-container-highest">
+    <div class="px-5 py-4 bg-surface-container-lowest flex items-start justify-between border-b border-surface-container-highest">
+      <div class="flex flex-col">
+        <h2 class="font-headline-md text-headline-md text-on-surface">Edit Product Details</h2>
+        <p class="font-meta-default text-meta-default text-on-surface-variant mt-0.5">Update specifications and reorder threshold for SKU {{ product.sku }}.</p>
+      </div>
+      <button class="p-1 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container transition-colors" onclick="closeEditProductModal()" type="button">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+    </div>
+    <form action="/products/{{ product.id }}/edit" method="POST" class="flex flex-col flex-1 overflow-hidden">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <div class="p-5 overflow-y-auto space-y-4 flex-1">
+        <div>
+          <label class="block font-meta-medium text-meta-medium text-on-surface mb-1">Product Name</label>
+          <input name="name" value="{{ product.name }}" required class="w-full h-8 px-2.5 bg-surface-container-lowest rounded-lg font-body-default text-body-default text-on-surface border border-surface-container-highest focus:outline-none focus:ring-1 focus:ring-primary-container" type="text"/>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-meta-medium text-meta-medium text-on-surface mb-1">Category</label>
+            <select name="category_id" class="w-full h-8 pl-2.5 pr-8 bg-surface-container-lowest rounded-lg font-body-default text-body-default text-on-surface border border-surface-container-highest focus:outline-none focus:ring-1 focus:ring-primary-container">
+              {% for c in categories %}
+              <option value="{{ c.id }}" {% if product.category_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="block font-meta-medium text-meta-medium text-on-surface mb-1">Reorder Level</label>
+            <input name="reorder_level" min="0" value="{{ product.reorder_level }}" required class="w-full h-8 px-2.5 bg-surface-container-lowest rounded-lg font-code-medium text-code-medium text-on-surface border border-surface-container-highest focus:outline-none focus:ring-1 focus:ring-primary-container" type="number"/>
+          </div>
+        </div>
+        <div>
+          <label class="block font-meta-medium text-meta-medium text-on-surface mb-1">Description & Spec</label>
+          <textarea name="description" class="w-full p-2.5 bg-surface-container-lowest rounded-lg font-body-default text-body-default text-on-surface border border-surface-container-highest focus:outline-none focus:ring-1 focus:ring-primary-container resize-none" rows="3">{{ product.description or '' }}</textarea>
+        </div>
+      </div>
+      <div class="px-5 py-3.5 bg-surface-container-low flex items-center justify-end gap-2 border-t border-surface-container-highest">
+        <button class="h-8 px-3.5 bg-surface-container-lowest hover:bg-surface-container text-on-surface rounded-lg font-body-medium text-body-medium shadow-xs transition-colors border border-surface-container-highest" onclick="closeEditProductModal()" type="button">Cancel</button>
+        <button class="h-8 px-4 bg-primary-container hover:bg-primary text-on-primary rounded-lg font-body-medium text-body-medium shadow-sm transition-colors" type="submit">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function openEditProductModal() {
+    const modal = document.getElementById('editProductModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+  }
+  function closeEditProductModal() {
+    const modal = document.getElementById('editProductModal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+</script>
+{% endblock %}

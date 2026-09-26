@@ -1,0 +1,9 @@
+# Caddyfile: Edge Proxy & Auto-TLS Reverse Proxy
+{
+    admin off
+}
+
+:80 {
+    encode gzip zstd
+    reverse_proxy backend:8000
+}

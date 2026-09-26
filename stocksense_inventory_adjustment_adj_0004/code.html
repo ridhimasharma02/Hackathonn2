@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="web_dashboard" name="shell-type"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style>
+<script src="https://cdn.tailwindcss.com"></script>
+<script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-tint": "#445e8d", "on-tertiary": "#ffffff", "surface-bright": "#f8f9fb", "on-secondary-container": "#54617e", "on-background": "#191c1e", "error-container": "#ffdad6", "primary-fixed-dim": "#adc7fb", "inverse-on-surface": "#f0f1f3", "surface-dim": "#d9dadc", "on-secondary": "#ffffff", "on-primary-fixed": "#001b3f", "on-surface": "#191c1e", "on-tertiary-fixed-variant": "#0039b5", "surface-container-lowest": "#ffffff", "on-primary-fixed-variant": "#2c4773", "tertiary": "#001c66", "on-error": "#ffffff", "surface-container-low": "#f3f4f6", "on-tertiary-fixed": "#001551", "on-error-container": "#93000a", "tertiary-container": "#002e98", "surface-variant": "#e1e2e4", "on-secondary-fixed-variant": "#3a4663", "surface-container-highest": "#e1e2e4", "error": "#ba1a1a", "surface": "#f8f9fb", "on-secondary-fixed": "#0e1b35", "on-primary": "#ffffff", "secondary-fixed": "#d8e2ff", "primary-fixed": "#d7e3ff", "inverse-surface": "#2e3132", "on-surface-variant": "#44474f", "on-primary-container": "#8ba5d7", "surface-container-high": "#e7e8ea", "secondary-fixed-dim": "#bac6e8", "tertiary-fixed": "#dce1ff", "inverse-primary": "#adc7fb", "secondary-container": "#d0dcff", "secondary": "#525e7b", "outline": "#747780", "background": "#f8f9fb", "primary": "#01244f", "outline-variant": "#c4c6d0", "primary-container": "#1e3a66", "surface-container": "#edeef0", "tertiary-fixed-dim": "#b7c4ff", "on-tertiary-container": "#869fff" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xs": "0.25rem", "space-sm": "0.375rem", "space-xl": "1rem", "gutter": "0.75rem", "space-lg": "0.75rem", "space-md": "0.5rem", "margin": "1rem" }, "fontFamily": { "body-default": [ "IBM Plex Sans" ], "meta-medium": [ "IBM Plex Sans" ], "code-default": [ "JetBrains Mono" ], "body-medium": [ "IBM Plex Sans" ], "table-header": [ "IBM Plex Sans" ], "headline-lg": [ "IBM Plex Sans" ], "headline-md": [ "IBM Plex Sans" ], "headline-sm": [ "IBM Plex Sans" ], "meta-default": [ "IBM Plex Sans" ], "code-medium": [ "JetBrains Mono" ] }, "fontSize": { "body-default": [ "13px", { "lineHeight": "18px", "fontWeight": "400" } ], "meta-medium": [ "12px", { "lineHeight": "16px", "fontWeight": "500" } ], "code-default": [ "12px", { "lineHeight": "16px", "fontWeight": "400" } ], "body-medium": [ "13px", { "lineHeight": "18px", "fontWeight": "500" } ], "table-header": [ "11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" } ], "headline-lg": [ "18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "headline-md": [ "15px", { "lineHeight": "20px", "letterSpacing": "-0.005em", "fontWeight": "600" } ], "headline-sm": [ "13px", { "lineHeight": "18px", "fontWeight": "600" } ], "meta-default": [ "12px", { "lineHeight": "16px", "fontWeight": "400" } ], "code-medium": [ "12px", { "lineHeight": "16px", "fontWeight": "500" } ] } } } };</script>
+</head>
+<body class="bg-surface font-body-default text-body-default text-on-surface antialiased">
+<aside class="fixed left-0 top-0 h-full w-[240px] bg-[#13203A] z-50 flex flex-col justify-between border-r border-slate-800">
+<div class="flex flex-col h-[calc(100%-56px)]">
+<div class="h-12 px-space-lg border-b border-slate-800 flex items-center gap-space-md shrink-0">
+<img alt="StockSense Logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1X3_oUN3UnIFP7xHyGjrhPOFRLnT3DpnQBdFWT_8FwzziCRI4xMdCZ6L9JO-RRmEwJ8SFBTCeUvaDtoPE6q16El5Z26uGiSNO7FsZmiFMu1mhKyWMq7hA-LvnzVfjl7zbmqiW4VSVJhHilmaaWuwupSHcwxutn3wZ8JUdlepHbHScMYBcNWE2SFSvXAxtOKomAY7jEeivo7oUvXYS6EQw2gCncvMWzAIW7vncRT7j0Uhve2aPM6j2Sijw"/>
+<div class="flex flex-col min-w-0 leading-tight">
+<span class="font-headline-sm text-headline-sm text-white tracking-tight truncate">StockSense</span>
+<span class="font-table-header text-[10px] text-slate-400 truncate">Pune Plant 01</span>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto py-space-sm px-space-xs space-y-space-md">
+<section>
+<div><span class="block px-space-md py-space-xs font-table-header text-table-header text-slate-400 tracking-wider uppercase">OVERVIEW</span></div>
+<nav class="space-y-0.5 mt-0.5" data-active-classes="bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim">
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="dashboard" href="#">
+<span class="truncate">Dashboard</span>
+</a>
+</nav>
+</section>
+<section>
+<div><span class="block px-space-md py-space-xs font-table-header text-table-header text-slate-400 tracking-wider uppercase">INVENTORY</span></div>
+<nav class="space-y-0.5 mt-0.5" data-active-classes="bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim">
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="products" href="#">
+<span class="truncate">Products</span>
+</a>
+</nav>
+</section>
+<section>
+<div><span class="block px-space-md py-space-xs font-table-header text-table-header text-slate-400 tracking-wider uppercase">OPERATIONS</span></div>
+<nav class="space-y-0.5 mt-0.5" data-active-classes="bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim">
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="receipts" href="#">
+<span class="truncate">Receipts</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-medium bg-blue-500/20 text-blue-300">7</span>
+</a>
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="delivery-orders" href="#">
+<span class="truncate">Delivery Orders</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-medium bg-emerald-500/20 text-emerald-300">12</span>
+</a>
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="internal-transfers" href="#">
+<span class="truncate">Internal Transfers</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-medium bg-amber-500/20 text-amber-300">4</span>
+</a>
+<a aria-current="page" class="flex items-center justify-between px-space-md py-space-xs rounded-sm transition-colors bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim" data-path="inventory-adjustments" href="#">
+<span class="truncate">Inventory Adjustments</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-medium bg-amber-500/20 text-amber-300">3</span>
+</a>
+</nav>
+</section>
+<section>
+<div><span class="block px-space-md py-space-xs font-table-header text-table-header text-slate-400 tracking-wider uppercase">REPORTING</span></div>
+<nav class="space-y-0.5 mt-0.5" data-active-classes="bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim">
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="move-history" href="#">
+<span class="truncate">Move History</span>
+</a>
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="stock-valuation" href="#">
+<span class="truncate">Stock Valuation</span>
+</a>
+</nav>
+</section>
+<section>
+<div><span class="block px-space-md py-space-xs font-table-header text-table-header text-slate-400 tracking-wider uppercase">CONFIGURATION</span></div>
+<nav class="space-y-0.5 mt-0.5" data-active-classes="bg-white/10 text-white font-body-medium border-l-[3px] border-primary-fixed-dim">
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="settings" href="#">
+<span class="truncate">Settings</span>
+</a>
+<a class="flex items-center justify-between px-space-md py-space-xs rounded-sm font-body-default text-body-default text-slate-300 hover:bg-white/5 hover:text-white transition-colors" data-path="locations-and-warehouses" href="#">
+<span class="truncate">Locations &amp; Warehouses</span>
+</a>
+</nav>
+</section>
+</div>
+</div>
+<div class="h-[56px] border-t border-slate-800 px-space-md py-space-xs flex items-center justify-between bg-black/20">
+<div class="flex items-center gap-space-sm min-w-0">
+<img alt="Ridhima Sharma" class="w-8 h-8 rounded-full object-cover border border-slate-700 shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTptHVDjIQ2l7v9FCKnXUTVlG5J3TpxKu5UZS6JrCk3TCkvwgFPiicfJ3H_QCk8i2yKtjfjzaSL2lWiyg9pu5IA3Qza-E6hpqMCeVw0eBeCRrQ7n1Z3nXFzzvoKm5tDfWXQP7HHz4YNKSvmMiaIXHG45M_AuMKtxWUJxmpULmqG2sH6YAkUnfqiX71_SURCu89dtAhQoz6vP6iwAGrCQZ3m0vtbr1EQalnHFm3Vy_Geneth9HEYt6B"/>
+<div class="min-w-0 flex flex-col leading-tight">
+<span class="font-body-medium text-body-medium text-white truncate">Ridhima Sharma</span>
+<span class="font-meta-default text-[11px] text-slate-400 truncate">Inventory Manager</span>
+</div>
+</div>
+<button class="text-slate-400 hover:text-white transition-colors p-1 rounded-sm" title="Sign Out" type="button">
+<span class="material-symbols-outlined text-[18px]">logout</span>
+</button>
+</div>
+</aside>
+<div class="pl-[240px]">
+<header class="fixed top-0 left-[240px] right-0 h-12 bg-surface-container-lowest border-b border-surface-container-highest z-40 px-space-xl flex items-center justify-between">
+<div class="flex items-center gap-space-md shrink-0">
+<div class="flex items-center gap-1.5 font-body-default text-body-default text-on-surface-variant">
+<span class="hover:text-on-surface cursor-pointer">Operations</span>
+<span class="text-outline-variant">/</span>
+<span class="hover:text-on-surface cursor-pointer">Inventory Adjustments</span>
+<span class="text-outline-variant">/</span>
+<span class="font-code-medium text-code-medium text-on-surface">ADJ-0004</span>
+</div>
+<div class="h-4 w-px bg-surface-container-highest mx-space-xs"></div>
+<button class="flex items-center gap-space-xs px-space-md py-space-xs rounded bg-surface-container text-on-surface font-body-medium text-meta-default border border-surface-container-highest hover:bg-surface-dim transition-colors" type="button">
+<span class="material-symbols-outlined text-[15px] text-on-surface-variant">warehouse</span>
+<span>Main Warehouse (Pune Hub)</span>
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">expand_more</span>
+</button>
+</div>
+<div class="w-80 relative">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant">search</span>
+<input class="w-full h-8 pl-8 pr-7 bg-surface rounded-sm border border-surface-container-highest font-body-default text-meta-default text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container" placeholder="Search products, SKUs, references..." type="text"/>
+<span class="absolute right-2 top-1/2 -translate-y-1/2 font-code-medium text-[10px] text-outline bg-surface-container px-1 py-0.5 rounded border border-surface-container-highest">/</span>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<button class="relative p-1.5 text-on-surface-variant hover:text-on-surface rounded-sm hover:bg-surface-container transition-colors" title="Notifications" type="button">
+<span class="material-symbols-outlined text-[18px]">notifications</span>
+<span class="absolute top-1 right-1 w-3.5 h-3.5 bg-error text-on-error font-code-medium text-[9px] rounded-full flex items-center justify-center leading-none">5</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface rounded-sm hover:bg-surface-container transition-colors" title="Help &amp; Documentation" type="button">
+<span class="material-symbols-outlined text-[18px]">help_outline</span>
+</button>
+<div class="flex items-center gap-space-xs pl-space-xs cursor-pointer">
+<img alt="Ridhima Sharma" class="w-7 h-7 rounded-full object-cover border border-surface-container-highest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTptHVDjIQ2l7v9FCKnXUTVlG5J3TpxKu5UZS6JrCk3TCkvwgFPiicfJ3H_QCk8i2yKtjfjzaSL2lWiyg9pu5IA3Qza-E6hpqMCeVw0eBeCRrQ7n1Z3nXFzzvoKm5tDfWXQP7HHz4YNKSvmMiaIXHG45M_AuMKtxWUJxmpULmqG2sH6YAkUnfqiX71_SURCu89dtAhQoz6vP6iwAGrCQZ3m0vtbr1EQalnHFm3Vy_Geneth9HEYt6B"/>
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">arrow_drop_down</span>
+</div>
+</div>
+</header>
+<main class="w-full pt-12 min-h-screen bg-surface-container-low max-w-full"><div class="flex flex-col w-full">
+<!-- Main Operational Container -->
+<div class="w-full px-space-xl py-space-lg space-y-space-lg pb-24">
+<!-- Top Document Header -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<!-- Identity & Status -->
+<div class="space-y-1">
+<div class="flex items-center gap-space-sm">
+<span class="font-table-header text-table-header text-on-surface-variant tracking-wider uppercase">INVENTORY ADJUSTMENT</span>
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-body-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+              Count Submitted
+            </span>
+</div>
+<div class="flex items-baseline gap-space-md">
+<h1 class="font-code-medium text-[24px] leading-tight font-bold text-on-surface tracking-tight">ADJ-0004</h1>
+<span class="font-body-default text-meta-default text-on-surface-variant">Zone B Quarterly Routine Review</span>
+</div>
+</div>
+<!-- Utility Action Buttons -->
+<div class="flex items-center gap-space-sm self-start lg:self-center shrink-0">
+<button class="h-8 px-space-md bg-surface-container-low hover:bg-surface-container text-on-surface font-body-medium text-meta-medium rounded flex items-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">print</span>
+<span>Print Count Sheet</span>
+</button>
+<button class="h-8 px-space-md bg-surface-container-low hover:bg-surface-container text-on-surface font-body-medium text-meta-medium rounded flex items-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">ios_share</span>
+<span>Export Discrepancy Note</span>
+</button>
+<button class="h-8 w-8 bg-surface-container-low hover:bg-surface-container text-on-surface font-body-medium rounded flex items-center justify-center transition-colors" title="More options" type="button">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Document Metadata Line -->
+<div class="pt-space-sm bg-surface-container-low/50 px-space-md py-space-xs rounded flex flex-wrap items-center gap-y-1 gap-x-space-md text-meta-default font-meta-default text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warehouse</span>
+<span>Location: <strong class="text-on-surface font-body-medium">Main Warehouse (Pune Hub) · Rack B-12</strong></span>
+</div>
+<span class="text-outline-variant">·</span>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<span>Created Today at 10:15 AM by <strong class="text-on-surface font-body-medium">Aman Kumar (Warehouse Staff)</strong></span>
+</div>
+<span class="text-outline-variant">·</span>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">verified_user</span>
+<span>Assigned Manager: <strong class="text-on-surface font-body-medium">Ridhima Sharma</strong></span>
+</div>
+</div>
+</div>
+<!-- Key Metadata Summary Bar -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-start gap-space-sm">
+<div class="p-2 rounded bg-surface-container text-on-surface-variant shrink-0">
+<span class="material-symbols-outlined text-[18px]">inventory_2</span>
+</div>
+<div class="min-w-0">
+<span class="block font-table-header text-table-header text-on-surface-variant uppercase">Count Cycle / Session</span>
+<p class="font-body-medium text-body-default text-on-surface truncate" title="Cycle Count Q4 - Zone B Consumables">Cycle Count Q4 - Zone B Consumables</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-start gap-space-sm">
+<div class="p-2 rounded bg-surface-container text-on-surface-variant shrink-0">
+<span class="material-symbols-outlined text-[18px]">person_check</span>
+</div>
+<div class="min-w-0">
+<span class="block font-table-header text-table-header text-table-header uppercase">Physical Count By</span>
+<p class="font-body-medium text-body-default text-on-surface truncate">Aman Kumar (Shift A)</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-start gap-space-sm">
+<div class="p-2 rounded bg-surface-container text-on-surface-variant shrink-0">
+<span class="material-symbols-outlined text-[18px]">qr_code_scanner</span>
+</div>
+<div class="min-w-0">
+<span class="block font-table-header text-table-header text-table-header uppercase">Verification Method</span>
+<p class="font-body-medium text-body-default text-on-surface truncate">Barcode Terminal Scan + Physical Tally</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-start gap-space-sm">
+<div class="p-2 rounded bg-red-50 text-red-700 shrink-0">
+<span class="material-symbols-outlined text-[18px]">trending_down</span>
+</div>
+<div class="min-w-0">
+<span class="block font-table-header text-table-header text-table-header uppercase">Financial Impact</span>
+<p class="font-code-medium text-body-default text-red-700 font-semibold truncate">Net Loss: -₹750.00 <span class="font-body-default text-[11px] font-normal text-on-surface-variant">(Shrinkage)</span></p>
+</div>
+</div>
+</div>
+<!-- Variance Ledger Hero Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<!-- Card Header -->
+<div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="font-table-header text-table-header uppercase tracking-wider text-on-surface font-semibold">LEDGER VARIANCE ANALYSIS</span>
+<span class="text-outline-variant font-code-default text-meta-default">/</span>
+<span class="font-code-medium text-code-medium text-primary-container">SKU: WG006</span>
+<span class="font-body-default text-meta-default text-on-surface-variant">(Work Gloves Nitrile - Size L)</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-code-medium bg-red-100 text-red-800 uppercase tracking-wide">Shortage Flagged</span>
+</div>
+<!-- Ledger Content Grid -->
+<div class="p-space-lg">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-space-lg items-center">
+<!-- Column 1: System Qty -->
+<div class="md:col-span-3 bg-surface-container-low/60 p-space-md rounded-lg flex flex-col justify-between h-full">
+<span class="font-table-header text-table-header text-on-surface-variant uppercase">System Quantity</span>
+<div class="mt-2 flex items-baseline gap-1.5">
+<span class="font-code-medium text-[26px] font-semibold text-on-surface">124</span>
+<span class="font-body-default text-meta-default text-on-surface-variant">pair</span>
+</div>
+<span class="font-meta-default text-[11px] text-on-surface-variant mt-1">Recorded in Ledger Prior to Audit</span>
+</div>
+<!-- Column 2: Physical Count -->
+<div class="md:col-span-3 bg-surface-container-low/60 p-space-md rounded-lg flex flex-col justify-between h-full">
+<span class="font-table-header text-table-header text-on-surface-variant uppercase">Physical Count</span>
+<div class="mt-2 flex items-baseline gap-1.5">
+<span class="font-code-medium text-[26px] font-semibold text-on-surface">121</span>
+<span class="font-body-default text-meta-default text-on-surface-variant">pair</span>
+</div>
+<span class="font-meta-default text-[11px] text-on-surface-variant mt-1">Verified via 2 physical recount cycles</span>
+</div>
+<!-- Divider Arrow Graphic (Desktop Only) -->
+<div class="hidden md:flex md:col-span-1 justify-center items-center text-on-surface-variant">
+<div class="h-10 w-px bg-surface-container-highest"></div>
+</div>
+<!-- Column 3: Adjustment & Justification -->
+<div class="md:col-span-5 bg-red-50/60 p-space-md rounded-lg flex flex-col justify-between h-full">
+<div class="flex items-center justify-between">
+<span class="font-table-header text-table-header text-red-900 uppercase">Adjustment Delta</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-red-100 text-red-700 font-code-medium text-code-medium font-bold">
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span>
+                −3 pair
+              </span>
+</div>
+<div class="mt-2">
+<p class="font-headline-sm text-headline-sm text-red-900">Reason: Missing</p>
+<p class="font-body-default text-meta-default text-red-800/80 mt-0.5 leading-snug">Unaccounted shortage during bin count at Rack B-12. Potential tear/transit drop.</p>
+</div>
+</div>
+</div>
+<!-- Ledger Footer note -->
+<div class="mt-space-md pt-space-sm flex items-center justify-between text-meta-default font-meta-default text-on-surface-variant bg-surface-container-low/30 px-space-md py-1.5 rounded">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-on-surface-variant">info</span>
+<span>Tolerance allowed: <strong class="font-code-medium text-on-surface">±0 pair</strong> for PPE/Consumables category.</span>
+</div>
+<span class="text-on-surface font-body-medium">Requires Inventory Manager signoff before ledger adjustment is posted.</span>
+</div>
+</div>
+</div>
+<!-- Count Results Table Section -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<!-- Table Header Bar -->
+<div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Count Results &amp; Stock Valuation</h2>
+<span class="px-2 py-0.5 rounded text-[11px] font-code-medium bg-surface-container text-on-surface-variant">1 SKU Counted</span>
+</div>
+<div class="flex items-center gap-space-sm text-meta-default text-on-surface-variant font-meta-default">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span> 1 Discrepant</span>
+<span class="text-outline-variant">·</span>
+<span>Currency: INR (₹)</span>
+</div>
+</div>
+<!-- High Density Table Container -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/70 font-table-header text-table-header text-on-surface-variant uppercase tracking-wider">
+<th class="py-2.5 px-space-md">Product &amp; SKU</th>
+<th class="py-2.5 px-space-md">Location / Bin</th>
+<th class="py-2.5 px-space-md text-right">System at Count</th>
+<th class="py-2.5 px-space-md text-right">System Now</th>
+<th class="py-2.5 px-space-md text-right">Physical Count</th>
+<th class="py-2.5 px-space-md text-center">Adjustment</th>
+<th class="py-2.5 px-space-md">Reason &amp; Findings</th>
+<th class="py-2.5 px-space-md text-right">Unit Cost &amp; Delta Value</th>
+</tr>
+</thead>
+<tbody class="font-body-default text-body-default text-on-surface">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors bg-red-50/20">
+<td class="py-3 px-space-md">
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">pan_tool</span>
+</div>
+<div class="min-w-0">
+<p class="font-body-medium text-body-medium text-on-surface leading-tight">Work Gloves (Nitrile)</p>
+<p class="font-code-default text-[11px] text-on-surface-variant">SKU: WG006 <span class="text-outline-variant">·</span> Consumables &amp; Packaging</p>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md whitespace-nowrap">
+<span class="inline-block px-2 py-0.5 rounded font-code-medium text-[11px] bg-surface-container text-on-surface">
+                  AISLE-02 · RCK-B12 · SH-03
+                </span>
+</td>
+<td class="py-3 px-space-md text-right font-code-default text-code-default">
+                124 pair
+              </td>
+<td class="py-3 px-space-md text-right font-code-default text-code-default">
+                124 pair
+              </td>
+<td class="py-3 px-space-md text-right font-code-medium text-code-medium font-semibold">
+                121 pair
+              </td>
+<td class="py-3 px-space-md text-center">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-code-medium bg-red-100 text-red-800 font-semibold">
+<span class="material-symbols-outlined text-[12px]">south_east</span>
+                  −3 pair
+                </span>
+</td>
+<td class="py-3 px-space-md max-w-xs">
+<p class="font-body-medium text-meta-medium text-red-900 leading-tight">Missing</p>
+<p class="font-meta-default text-[11px] text-on-surface-variant line-clamp-1" title="Physical count short by 3 pairs; suspected packaging tear / transit loss">Physical count short by 3 pairs; suspected packaging tear / transit loss</p>
+</td>
+<td class="py-3 px-space-md text-right whitespace-nowrap">
+<p class="font-code-medium text-code-medium text-red-700 font-semibold">-₹750.00</p>
+<p class="font-code-default text-[11px] text-on-surface-variant">@ ₹250.00/pair</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Summary Footer -->
+<div class="px-space-lg py-space-sm bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm font-body-default text-meta-default">
+<div class="flex items-center gap-space-sm">
+<span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-red-100 text-red-700 text-[10px] font-bold">!</span>
+<span class="font-body-medium text-on-surface">1 item with discrepancy</span>
+<span class="text-outline-variant">·</span>
+<span class="text-on-surface-variant">Recount confirmed twice by inventory auditor</span>
+</div>
+<div class="flex items-center gap-space-md">
+<span class="text-on-surface-variant">Net Physical Variance:</span>
+<span class="font-code-medium text-body-medium font-semibold text-red-700">-3 pair (-₹750.00)</span>
+</div>
+</div>
+</div>
+<!-- Two-Column Bottom Section: Field Notes & Activity Timeline -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- Left Column: Count Inspection & Field Notes -->
+<div class="lg:col-span-6 bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col justify-between space-y-space-md">
+<div>
+<div class="flex items-center justify-between pb-space-sm mb-space-md">
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">assignment</span>
+              Count Inspection &amp; Field Notes
+            </h3>
+<span class="font-table-header text-[10px] px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant uppercase">Signed Log</span>
+</div>
+<!-- Note Block -->
+<div class="bg-surface-container-low p-space-md rounded-lg space-y-space-xs">
+<div class="flex items-center justify-between text-meta-default">
+<div class="flex items-center gap-1.5 font-body-medium text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">edit_note</span>
+<span>Recorded Note by Aman Kumar</span>
+</div>
+<span class="font-code-default text-[11px] text-on-surface-variant">10:41 AM</span>
+</div>
+<p class="font-body-default text-body-default text-on-surface leading-relaxed italic pl-space-md">
+              "Recounted twice on Shelf 03 in Rack B-12. 121 pairs physically present in unopened master boxes and loose count. 3 pairs unaccounted for compared to system stock of 124."
+            </p>
+</div>
+</div>
+<!-- Terminal & Hardware Metadata -->
+<div class="grid grid-cols-2 gap-space-sm pt-space-xs">
+<div class="p-space-sm rounded bg-surface-container-low">
+<span class="block font-table-header text-[10px] text-on-surface-variant uppercase">Scanner Terminal</span>
+<div class="flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">devices</span>
+<span class="font-code-medium text-meta-medium text-on-surface">RF Terminal #T04</span>
+</div>
+<span class="block font-meta-default text-[10px] text-on-surface-variant">Device Synced 10:40 AM</span>
+</div>
+<div class="p-space-sm rounded bg-surface-container-low">
+<span class="block font-table-header text-[10px] text-on-surface-variant uppercase">Batch / Lot Reference</span>
+<div class="flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">barcode</span>
+<span class="font-code-medium text-meta-medium text-on-surface">LOT-2024-GLV-09</span>
+</div>
+<span class="block font-meta-default text-[10px] text-on-surface-variant">Expiry: Oct 2026</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Activity & Movement Timeline -->
+<div class="lg:col-span-6 bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-space-sm mb-space-md">
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">history</span>
+              Activity &amp; Movement Timeline
+            </h3>
+<span class="font-meta-default text-meta-default text-on-surface-variant">Shift A Audit</span>
+</div>
+<!-- Timeline Items -->
+<div class="space-y-space-md pl-1 relative">
+<!-- Timeline Item 1 -->
+<div class="flex items-start gap-space-md relative">
+<div class="w-6 h-6 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 text-[12px] font-bold mt-0.5">
+                !
+              </div>
+<div class="min-w-0 flex-1">
+<div class="flex items-baseline justify-between gap-space-xs">
+<span class="font-body-medium text-body-medium text-on-surface">Physical count submitted by Aman Kumar</span>
+<span class="font-code-default text-[11px] text-on-surface-variant shrink-0">10:42 AM</span>
+</div>
+<p class="font-body-default text-meta-default text-on-surface-variant mt-0.5">
+                  Count entered as <strong class="font-code-medium text-on-surface">121 pair</strong> (Expected: 124 pair). Discrepancy flagged as Missing (-3 pair).
+                </p>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="flex items-start gap-space-md relative">
+<div class="w-6 h-6 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[13px]">play_arrow</span>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-baseline justify-between gap-space-xs">
+<span class="font-body-medium text-body-medium text-on-surface">Cycle count order initiated by Ridhima Sharma</span>
+<span class="font-code-default text-[11px] text-on-surface-variant shrink-0">10:15 AM</span>
+</div>
+<p class="font-body-default text-meta-default text-on-surface-variant mt-0.5">
+                  Auto-scheduled quarterly audit for Zone B Consumables.
+                </p>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="flex items-start gap-space-md relative">
+<div class="w-6 h-6 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[13px]">lock</span>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-baseline justify-between gap-space-xs">
+<span class="font-body-medium text-body-medium text-on-surface">Shift start inventory balance locked</span>
+<span class="font-code-default text-[11px] text-on-surface-variant shrink-0">08:00 AM</span>
+</div>
+<p class="font-body-default text-meta-default text-on-surface-variant mt-0.5">
+                  System ledger balance snapshot saved at <strong class="font-code-medium text-on-surface">124 pair</strong> prior to morning dispatches.
+                </p>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-space-md mt-space-sm flex items-center justify-between text-meta-default text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Terminal Logs Synchronized</span>
+<span class="font-code-default text-[11px]">Audit ID: AUD-2024-Q4-B12</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Bottom Action Bar -->
+<div class="fixed bottom-0 left-[240px] right-0 h-16 bg-surface-container-lowest shadow-[0_-4px_12px_rgba(0,0,0,0.06)] z-30 px-space-xl flex items-center justify-between">
+<!-- Left Controls -->
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="h-8 px-space-md rounded bg-red-50 hover:bg-red-100 text-red-700 font-body-medium text-meta-medium transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">close</span>
+<span>Reject Count</span>
+</button>
+<button class="h-8 px-space-md rounded bg-surface-container-low hover:bg-surface-container text-on-surface font-body-medium text-meta-medium transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">replay</span>
+<span>Request Recount</span>
+</button>
+</div>
+<!-- Center Status Text -->
+<div class="hidden md:flex items-center gap-2 text-center text-meta-default font-meta-default text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+<span><strong class="text-on-surface font-body-medium">1 discrepancy</strong> requires manager authorization · Stock balance will update immediately upon approval.</span>
+</div>
+<!-- Right Primary Action -->
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="h-9 px-space-xl rounded bg-primary-container hover:bg-primary text-on-primary font-body-medium text-meta-medium shadow-sm transition-all flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>Approve Adjustment</span>
+</button>
+</div>
+</div>
+</div></main>
+</div>
+</body></html>

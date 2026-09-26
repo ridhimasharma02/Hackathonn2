@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block title %}StockSense - Warehouse & System Settings{% endblock %}
+
+{% block breadcrumb %}
+  <span class="hover:text-on-surface cursor-pointer">Configuration</span>
+  <span class="text-outline-variant">/</span>
+  <span class="font-body-medium text-on-surface">Settings</span>
+{% endblock %}
+
+{% block content %}
+<div class="p-6 max-w-6xl mx-auto w-full space-y-4">
+  <!-- Header Bar -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-surface-container-highest">
+    <div>
+      <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">System Configuration &amp; Facilities</h1>
+      <p class="font-body-default text-body-default text-on-surface-variant mt-0.5">Manage warehouses, stock locations, security roles, and system resets.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <form method="POST" action="/settings/reset-demo" onsubmit="return confirm('WARNING: This will drop all transactions and re-seed the demo database with initial benchmark states. Proceed?');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <button type="submit" class="h-8 px-3 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-body-medium text-body-medium transition-colors flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+          <span>Reset Demo Data</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings Navigation Tabs -->
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container-highest overflow-hidden">
+    <div class="border-b border-surface-container-highest px-4 pt-2 flex items-center gap-2 bg-surface-container-low">
+      <a href="?tab=warehouses" class="px-4 py-2.5 border-b-2 font-body-medium text-body-medium whitespace-nowrap {% if tab == 'warehouses' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        <span class="material-symbols-outlined text-[16px] align-middle mr-1">warehouse</span> Warehouses
+      </a>
+      <a href="?tab=locations" class="px-4 py-2.5 border-b-2 font-body-medium text-body-medium whitespace-nowrap {% if tab == 'locations' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        <span class="material-symbols-outlined text-[16px] align-middle mr-1">pin_drop</span> Locations &amp; Bins
+      </a>
+      <a href="?tab=team" class="px-4 py-2.5 border-b-2 font-body-medium text-body-medium whitespace-nowrap {% if tab == 'team' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        <span class="material-symbols-outlined text-[16px] align-middle mr-1">group</span> Team &amp; Access Roles
+      </a>
+    </div>
+
+    <!-- TAB 1: WAREHOUSES -->
+    {% if tab == 'warehouses' %}
+    <div class="p-5 space-y-6">
+      <!-- Create Warehouse Form -->
+      <div class="bg-surface-container-low p-4 rounded-xl border border-surface-container-highest">
+        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-3 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px] text-tertiary">add_business</span>
+          Add New Warehouse Facility
+        </h2>
+        <form method="POST" action="/settings/warehouses/new" class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <div>
+            <label class="block font-table-header text-table-header uppercase text-on-surface-variant mb-1">Facility Name *</label>
+            <input type="text" name="name" required placeholder="e.g. Pune Plant 02" class="w-full h-8 px-2.5 bg-surface-container-lowest rounded border border-surface-container-highest text-body-default text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container"/>
+          </div>
+          <div>
+            <label class="block font-table-header text-table-header uppercase text-on-surface-variant mb-1">Facility Code (Uppercase) *</label>
+            <input type="text" name="code" required placeholder="e.g. WH3" class="w-full h-8 px-2.5 bg-surface-container-lowest rounded border border-surface-container-highest text-body-default text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container uppercase"/>
+          </div>
+          <div>
+            <label class="block font-table-header text-table-header uppercase text-on-surface-variant mb-1">Address / Plant Unit</label>
+            <input type="text" name="address" placeholder="e.g. Plot 42, Hinjewadi Phase 2" class="w-full h-8 px-2.5 bg-surface-container-lowest rounded border border-surface-container-highest text-body-default text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container"/>
+          </div>
+          <div>
+            <button type="submit" class="w-full h-8 px-3 bg-primary-container hover:bg-primary text-on-primary rounded font-body-medium text-body-medium shadow-sm transition-colors flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">add</span>
+              <span>Create Warehouse</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Warehouses Table -->
+      <div class="overflow-x-auto border border-surface-container-highest rounded-lg">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-surface-container-low font-table-header text-table-header uppercase text-on-surface-variant">
+            <tr>
+              <th class="py-2.5 px-4">Code</th>
+              <th class="py-2.5 px-3">Warehouse Name</th>
+              <th class="py-2.5 px-3">Address</th>
+              <th class="py-2.5 px-3">Sub-Locations</th>
+              <th class="py-2.5 px-3">Status</th>
+            </tr>
+          </thead>
+          <tbody class="font-body-default text-body-default text-on-surface divide-y divide-surface-container-highest">
+            {% for wh in warehouses %}
+            <tr class="hover:bg-surface-container-low transition-colors">
+              <td class="py-2.5 px-4 font-code-medium font-bold text-tertiary">{{ wh.code }}</td>
+              <td class="py-2.5 px-3 font-body-medium text-on-surface">{{ wh.name }}</td>
+              <td class="py-2.5 px-3 text-on-surface-variant">{{ wh.address or '—' }}</td>
+              <td class="py-2.5 px-3">
+                <span class="px-2 py-0.5 rounded text-[11px] font-code-medium bg-surface-container text-on-surface">
+                  {{ wh.locations|length }} locations
+                </span>
+              </td>
+              <td class="py-2.5 px-3">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-meta-medium bg-emerald-100 text-emerald-800">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Active
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- TAB 2: LOCATIONS -->
+    {% if tab == 'locations' %}
+    <div class="p-5 space-y-6">
+      <!-- Create Location Form -->
+      <div class="bg-surface-container-low p-4 rounded-xl border border-surface-container-highest">
+        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-3 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px] text-tertiary">add_location</span>
+          Add Location / Bin in Warehouse
+        </h2>
+        <form method="POST" action="/settings/locations/new" class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <div>
+            <label class="block font-table-header text-table-header uppercase text-on-surface-variant mb-1">Parent Warehouse *</label>
+            <div class="relative">
+              <select name="warehouse_id" required class="w-full h-8 pl-2.5 pr-7 bg-surface-container-lowest rounded border border-surface-container-highest text-body-default text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container appearance-none cursor-pointer">
+                <option value="">Select warehouse...</option>
+                {% for wh in warehouses %}
+                <option value="{{ wh.id }}">{{ wh.name }} ({{ wh.code }})</option>
+                {% endfor %}
+              </select>
+              <span class="material-symbols-outlined pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[16px] text-outline">expand_more</span>
+            </div>
+          </div>
+          <div>
+            <label class="block font-table-header text-table-header uppercase text-on-surface-variant mb-1">Location Name *</label>
+            <input type="text" name="name" required placeholder="e.g. Staging Rack C" class="w-full h-8 px-2.5 bg-surface-container-lowest rounded border border-surface-container-highest text-body-default text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container"/>
+          </div>
+          <div>
+            <label class="block font-table-header text-table-header uppercase text-on-surface-variant mb-1">Location Code *</label>
+            <input type="text" name="code" required placeholder="e.g. MAIN/RCK-C" class="w-full h-8 px-2.5 bg-surface-container-lowest rounded border border-surface-container-highest text-body-default text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container uppercase"/>
+          </div>
+          <div>
+            <button type="submit" class="w-full h-8 px-3 bg-primary-container hover:bg-primary text-on-primary rounded font-body-medium text-body-medium shadow-sm transition-colors flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">add</span>
+              <span>Create Location</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Locations Table -->
+      <div class="overflow-x-auto border border-surface-container-highest rounded-lg">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-surface-container-low font-table-header text-table-header uppercase text-on-surface-variant">
+            <tr>
+              <th class="py-2.5 px-4">Code</th>
+              <th class="py-2.5 px-3">Location Name</th>
+              <th class="py-2.5 px-3">Warehouse</th>
+              <th class="py-2.5 px-3">Status</th>
+              <th class="py-2.5 px-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="font-body-default text-body-default text-on-surface divide-y divide-surface-container-highest">
+            {% for loc in locations %}
+            <tr class="hover:bg-surface-container-low transition-colors">
+              <td class="py-2.5 px-4 font-code-medium font-bold text-tertiary">{{ loc.code }}</td>
+              <td class="py-2.5 px-3 font-body-medium text-on-surface">{{ loc.name }}</td>
+              <td class="py-2.5 px-3 text-on-surface-variant">{{ loc.warehouse.name }} ({{ loc.warehouse.code }})</td>
+              <td class="py-2.5 px-3">
+                {% if loc.active %}
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-meta-medium bg-emerald-100 text-emerald-800">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Active
+                </span>
+                {% else %}
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-meta-medium bg-slate-100 text-slate-700">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Inactive
+                </span>
+                {% endif %}
+              </td>
+              <td class="py-2.5 px-3 text-right">
+                <form method="POST" action="/settings/locations/{{ loc.id }}/toggle" class="inline">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                  <button type="submit" class="h-6 px-2 text-[11px] font-body-medium rounded {% if loc.active %}bg-red-50 text-red-700 hover:bg-red-100 border border-red-200{% else %}bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200{% endif %}">
+                    {{ 'Deactivate' if loc.active else 'Activate' }}
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- TAB 3: TEAM -->
+    {% if tab == 'team' %}
+    <div class="p-5 space-y-4">
+      <div class="overflow-x-auto border border-surface-container-highest rounded-lg">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-surface-container-low font-table-header text-table-header uppercase text-on-surface-variant">
+            <tr>
+              <th class="py-2.5 px-4">User</th>
+              <th class="py-2.5 px-3">Email Address</th>
+              <th class="py-2.5 px-3">Phone</th>
+              <th class="py-2.5 px-3">System Role</th>
+              <th class="py-2.5 px-3">Status</th>
+            </tr>
+          </thead>
+          <tbody class="font-body-default text-body-default text-on-surface divide-y divide-surface-container-highest">
+            {% for member in team_members %}
+            <tr class="hover:bg-surface-container-low transition-colors">
+              <td class="py-2.5 px-4">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-[#1e3a66] text-white flex items-center justify-center font-code-medium text-[11px]">
+                    {{ member.name[:2].upper() }}
+                  </div>
+                  <span class="font-body-medium text-on-surface">{{ member.name }}</span>
+                </div>
+              </td>
+              <td class="py-2.5 px-3 font-code-default text-[12px] text-on-surface">{{ member.email }}</td>
+              <td class="py-2.5 px-3 text-on-surface-variant">{{ member.phone or '—' }}</td>
+              <td class="py-2.5 px-3">
+                {% if member.role == 'INVENTORY_MANAGER' %}
+                <span class="px-2 py-0.5 rounded text-[11px] font-code-medium bg-purple-100 text-purple-900 border border-purple-200">
+                  INVENTORY_MANAGER
+                </span>
+                {% else %}
+                <span class="px-2 py-0.5 rounded text-[11px] font-code-medium bg-blue-100 text-blue-900 border border-blue-200">
+                  WAREHOUSE_STAFF
+                </span>
+                {% endif %}
+              </td>
+              <td class="py-2.5 px-3">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-meta-medium bg-emerald-100 text-emerald-800">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Active
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

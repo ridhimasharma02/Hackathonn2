@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}StockSense - Inbound Receipts{% endblock %}
+
+{% block breadcrumb %}
+  <span class="hover:text-on-surface cursor-pointer">Operations</span>
+  <span class="text-outline-variant">/</span>
+  <span class="font-body-medium text-on-surface">Receipts</span>
+{% endblock %}
+
+{% block content %}
+<div class="p-6 flex flex-col w-full space-y-4">
+  <!-- Header Bar -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-surface-container-highest">
+    <div class="flex flex-col min-w-0">
+      <div class="flex items-center gap-2">
+        <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Receipts</h1>
+        <span class="px-2 py-0.5 rounded-full text-[11px] font-code-medium bg-blue-100 text-blue-900 border border-blue-200">Inbound Log</span>
+      </div>
+      <p class="font-body-default text-body-default text-on-surface-variant mt-0.5">Track and receive purchase orders from suppliers into plant storage locations.</p>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      {% if can('receipts:create') %}
+      <a href="/receipts/new" class="h-8 px-3.5 bg-primary-container hover:bg-primary text-on-primary rounded-lg font-body-medium text-body-medium shadow-sm transition-colors flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[17px]">add</span>
+        <span>New Receipt</span>
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Status Tabs & Filter Bar -->
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-surface-container-highest">
+    <!-- Tabs -->
+    <div class="border-b border-surface-container-highest px-4 pt-2 flex items-center gap-1 overflow-x-auto bg-surface-container-low">
+      <a href="?tab=all&search={{ search }}&supplier={{ selected_supplier }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'all' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        All <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-surface-container">{{ tab_counts.all }}</span>
+      </a>
+      <a href="?tab=draft&search={{ search }}&supplier={{ selected_supplier }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'draft' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Draft <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-slate-200">{{ tab_counts.draft }}</span>
+      </a>
+      <a href="?tab=waiting&search={{ search }}&supplier={{ selected_supplier }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'waiting' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Waiting <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-amber-100 text-amber-900">{{ tab_counts.waiting }}</span>
+      </a>
+      <a href="?tab=ready&search={{ search }}&supplier={{ selected_supplier }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'ready' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Ready <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-blue-100 text-blue-900">{{ tab_counts.ready }}</span>
+      </a>
+      <a href="?tab=done&search={{ search }}&supplier={{ selected_supplier }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'done' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Done <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-emerald-100 text-emerald-900">{{ tab_counts.done }}</span>
+      </a>
+      <a href="?tab=canceled&search={{ search }}&supplier={{ selected_supplier }}" class="px-3 py-2 border-b-2 font-body-medium text-[13px] whitespace-nowrap {% if tab == 'canceled' %}border-primary text-primary font-semibold{% else %}border-transparent text-on-surface-variant hover:text-on-surface{% endif %}">
+        Canceled <span class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-red-100 text-red-900">{{ tab_counts.canceled }}</span>
+      </a>
+    </div>
+
+    <!-- Filters -->
+    <form method="GET" action="/receipts" class="p-3 bg-surface-container-lowest flex flex-wrap items-center justify-between gap-2.5 border-b border-surface-container-highest">
+      <input type="hidden" name="tab" value="{{ tab }}"/>
+      <div class="flex flex-1 flex-wrap items-center gap-2 min-w-[280px]">
+        <div class="relative flex-1 min-w-[220px] max-w-sm">
+          <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[17px] text-outline">search</span>
+          <input name="search" value="{{ search }}" class="w-full h-8 pl-8 pr-3 bg-surface-container-low rounded-lg font-body-default text-body-default text-on-surface placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-primary-container shadow-xs" placeholder="Search reference or PO number..." type="text"/>
+        </div>
+        <div class="relative">
+          <select name="supplier" onchange="this.form.submit()" class="h-8 pl-2.5 pr-7 bg-surface-container-low rounded-lg font-body-default text-body-default text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container shadow-xs appearance-none cursor-pointer">
+            <option value="">All Suppliers</option>
+            {% for s in suppliers %}
+            <option value="{{ s.id }}" {% if selected_supplier == s.id|string %}selected{% endif %}>{{ s.name }}</option>
+            {% endfor %}
+          </select>
+          <span class="material-symbols-outlined pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[16px] text-outline">expand_more</span>
+        </div>
+      </div>
+      <a href="/receipts" class="h-8 px-2.5 text-on-surface-variant hover:text-on-surface bg-surface-container-low rounded-lg font-body-medium text-body-medium transition-colors shadow-xs flex items-center gap-1">
+        <span class="material-symbols-outlined text-[15px]">filter_alt_off</span>
+        <span>Reset</span>
+      </a>
+    </form>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-surface-container-low text-outline uppercase font-table-header text-table-header">
+          <tr>
+            <th class="py-2.5 px-4 w-[14%]">Reference</th>
+            <th class="py-2.5 px-3 w-[22%]">Supplier</th>
+            <th class="py-2.5 px-3 w-[16%]">Destination</th>
+            <th class="py-2.5 px-3 w-[14%]">Source Document</th>
+            <th class="py-2.5 px-3 w-[12%]">Scheduled Date</th>
+            <th class="py-2.5 px-3 w-[12%]">Status</th>
+            <th class="py-2.5 px-3 text-right w-[10%]">Action</th>
+          </tr>
+        </thead>
+        <tbody class="font-body-default text-body-default text-on-surface divide-y divide-surface-container-highest">
+          {% for r in receipts %}
+          <tr class="hover:bg-surface-container-low transition-colors">
+            <td class="py-2.5 px-4 font-code-medium font-bold text-primary">
+              <a href="/receipts/{{ r.id }}" class="hover:underline">{{ r.reference }}</a>
+            </td>
+            <td class="py-2.5 px-3 font-body-medium text-on-surface truncate">{{ r.supplier.name if r.supplier else 'N/A' }}</td>
+            <td class="py-2.5 px-3 font-code-default text-[11px] text-on-surface-variant">{{ r.destination_location.code if r.destination_location else 'MAIN/STOCK' }}</td>
+            <td class="py-2.5 px-3 font-code-default text-on-surface-variant">{{ r.source_document or '—' }}</td>
+            <td class="py-2.5 px-3 font-meta-default text-on-surface-variant">{{ r.scheduled_date.strftime('%b %d, %Y') if r.scheduled_date else '—' }}</td>
+            <td class="py-2.5 px-3">
+              {% if r.status == 'Ready' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-100 text-blue-900 font-meta-medium text-[11px] border border-blue-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span> Ready
+                </span>
+              {% elif r.status == 'Waiting' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-meta-medium text-[11px] border border-amber-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Waiting
+                </span>
+              {% elif r.status == 'Done' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-meta-medium text-[11px] border border-emerald-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Done
+                </span>
+              {% elif r.status == 'Draft' %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-200 text-slate-800 font-meta-medium text-[11px]">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Draft
+                </span>
+              {% else %}
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-100 text-red-900 font-meta-medium text-[11px]">
+                  <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span> Canceled
+                </span>
+              {% endif %}
+            </td>
+            <td class="py-2.5 px-3 text-right">
+              <a href="/receipts/{{ r.id }}" class="h-7 px-2.5 rounded bg-surface-container text-on-surface hover:bg-surface-dim font-meta-medium text-[11px] inline-flex items-center shadow-xs">
+                View
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="py-8 text-center text-on-surface-variant font-meta-default">No receipts found matching this view.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div class="p-3 bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-3 text-on-surface-variant border-t border-surface-container-highest">
+      <span class="font-meta-default text-meta-default">Showing <strong class="font-meta-medium text-on-surface">{{ receipts|length }}</strong> receipts</span>
+      <div class="flex items-center gap-1">
+        {% if pagination.has_prev %}
+        <a href="?page={{ pagination.prev_num }}&tab={{ tab }}&search={{ search }}&supplier={{ selected_supplier }}" class="h-7 px-2 rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container font-meta-medium text-meta-medium flex items-center gap-1 shadow-xs">
+          <span class="material-symbols-outlined text-[15px]">chevron_left</span>
+          <span>Previous</span>
+        </a>
+        {% endif %}
+        <span class="h-7 w-7 flex items-center justify-center rounded-lg bg-primary-container text-on-primary font-meta-medium text-meta-medium shadow-xs">{{ pagination.page }}</span>
+        {% if pagination.has_next %}
+        <a href="?page={{ pagination.next_num }}&tab={{ tab }}&search={{ search }}&supplier={{ selected_supplier }}" class="h-7 px-2 rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container font-meta-medium text-meta-medium flex items-center gap-1 shadow-xs">
+          <span>Next</span>
+          <span class="material-symbols-outlined text-[15px]">chevron_right</span>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

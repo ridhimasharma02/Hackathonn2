@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "primary-container": "#1e3a66", "tertiary-container": "#002e98", "surface-container-highest": "#e1e2e4", "surface-tint": "#445e8d", "outline-variant": "#c4c6d0", "on-secondary-fixed-variant": "#3a4663", "on-error-container": "#93000a", "on-primary-fixed": "#001b3f", "on-error": "#ffffff", "tertiary": "#001c66", "background": "#f8f9fb", "on-primary": "#ffffff", "inverse-on-surface": "#f0f1f3", "on-background": "#191c1e", "on-secondary-container": "#54617e", "surface-bright": "#f8f9fb", "surface-container-high": "#e7e8ea", "inverse-surface": "#2e3132", "on-secondary-fixed": "#0e1b35", "on-surface": "#191c1e", "surface-variant": "#e1e2e4", "on-surface-variant": "#44474f", "on-secondary": "#ffffff", "primary-fixed": "#d7e3ff", "on-tertiary": "#ffffff", "surface-container-lowest": "#ffffff", "on-tertiary-container": "#869fff", "error": "#ba1a1a", "surface-container": "#edeef0", "tertiary-fixed-dim": "#b7c4ff", "on-primary-fixed-variant": "#2c4773", "surface": "#f8f9fb", "surface-dim": "#d9dadc", "tertiary-fixed": "#dce1ff", "outline": "#747780", "primary-fixed-dim": "#adc7fb", "on-tertiary-fixed": "#001551", "error-container": "#ffdad6", "secondary": "#525e7b", "secondary-fixed-dim": "#bac6e8", "surface-container-low": "#f3f4f6", "primary": "#01244f", "on-primary-container": "#8ba5d7", "secondary-container": "#d0dcff", "on-tertiary-fixed-variant": "#0039b5", "secondary-fixed": "#d8e2ff", "inverse-primary": "#adc7fb" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "gutter": "0.75rem", "space-lg": "0.75rem", "space-sm": "0.375rem", "space-xl": "1rem", "space-xs": "0.25rem", "space-md": "0.5rem", "margin": "1rem" }, "fontFamily": { "headline-md": ["IBM Plex Sans"], "headline-sm": ["IBM Plex Sans"], "body-medium": ["IBM Plex Sans"], "table-header": ["IBM Plex Sans"], "meta-default": ["IBM Plex Sans"], "meta-medium": ["IBM Plex Sans"], "body-default": ["IBM Plex Sans"], "code-default": ["JetBrains Mono"], "code-medium": ["JetBrains Mono"], "headline-lg": ["IBM Plex Sans"] }, "fontSize": { "headline-md": ["15px", { "lineHeight": "20px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "headline-sm": ["13px", { "lineHeight": "18px", "fontWeight": "600" }], "body-medium": ["13px", { "lineHeight": "18px", "fontWeight": "500" }], "table-header": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }], "meta-default": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "meta-medium": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "body-default": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "code-default": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "code-medium": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "headline-lg": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }] } } } };</script><style>@layer base{html,body{width:100%;margin:0;padding:0;background-color:#f8f9fb;color:#191c1e;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}#wms-nav-drawer-toggle:checked~#wms-backdrop{display:block;}#wms-nav-drawer-toggle:checked~#wms-drawer{transform:translateX(0);}</style></head><body class="bg-surface font-body-default text-on-surface antialiased flex flex-col min-h-screen"><input class="hidden" id="wms-nav-drawer-toggle" type="checkbox"/><div class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 hidden transition-opacity duration-200" id="wms-backdrop" onclick="document.getElementById('wms-nav-drawer-toggle').checked=false"></div><aside class="fixed inset-y-0 left-0 w-80 max-w-[85vw] bg-surface-container-lowest z-50 transform -translate-x-full transition-transform duration-200 ease-in-out flex flex-col pt-safe pb-safe shadow-[0_1px_8px_rgba(0,0,0,0.08)]" id="wms-drawer"><div class="h-14 px-margin flex items-center justify-between bg-surface"><div class="flex items-center gap-space-sm"><img alt="Brand logo. - Primary color: #1e3a66 - Font: ibmPlexSans - Mode: light - Roundness: rounded-sm" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VoUThKarn-BLG7s9pDBN2x7XZsgmKeQyJ3QhheHvgqXD5Npijwbbkm6l65NfG3QiWIXYa-PbwtQsMWms52rT1oB-tR2Eo_3GMInyX75I1kvgoqY65fILVRWDxiIpG46hg1ip-IkSq2PIgsDwartWbLPoLsltDQU3cC5mWjk6Z_VE03WZ8J3pfV2DwjIxhwaDsOt2fMEHkqQU3gKD2S8cRBRgXDixBk3Wrc8P9T4inHfFJXvZlWjX8CJV8"/><span class="font-headline-md text-headline-md text-primary tracking-tight">StockSense</span></div><label class="w-11 h-11 flex items-center justify-center text-on-surface-variant cursor-pointer active:bg-surface-container-high rounded" for="wms-nav-drawer-toggle"><span class="material-symbols-outlined text-[20px]">close</span></label></div><div class="flex-1 overflow-y-auto px-margin py-space-md space-y-space-md"><div class="flex items-center gap-space-md p-space-sm rounded bg-surface-container"><img alt="Profile" class="w-9 h-9 rounded-full object-cover shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1XIpaOCuc6uuRM_TpuILUY2Dqhwp4zvVW8HDqu9L5A2u72WUQH2R_UkaZ9ryuIydegYofyLIaesIMWYrYD8isVt_zIGlM68j2onzgk0TZ2ip0549oVOQpz51WzDnfehOi02E-c8DtDUIImJWAXdJ6bDT7CrFhDerxVOXiQybX4VXatKQBNFWCo-kM_QPaRAo-2-EYZDV_8F0dE0bO4MlVaMsDyS5AAVQFCYIQlD4i94vPYeac1wj29ZJQ"/><div class="flex-1 min-w-0"><div class="font-body-medium text-body-medium text-on-surface truncate">Ridhima Sharma</div><div class="font-table-header text-table-header text-on-surface-variant uppercase tracking-wider truncate">Inventory Manager</div></div></div><div><div class="px-space-sm py-space-xs font-table-header text-table-header text-on-surface-variant uppercase">Overview</div><a class="flex items-center gap-space-md px-space-sm h-10 rounded text-on-surface font-body-default text-body-default hover:bg-surface-container-high transition-colors" data-path="overview" href="#"><span class="material-symbols-outlined text-[18px] text-secondary">dashboard</span><span>Overview</span></a></div><div><div class="px-space-sm py-space-xs font-table-header text-table-header text-on-surface-variant uppercase">Inventory</div><div class="space-y-0.5"><a class="flex items-center gap-space-md px-space-sm h-10 rounded text-on-surface font-body-default text-body-default hover:bg-surface-container-high transition-colors" data-path="products" href="#"><span class="material-symbols-outlined text-[18px] text-secondary">inventory_2</span><span>Products</span></a><a class="flex items-center gap-space-md px-space-sm h-10 rounded text-on-surface font-body-default text-body-default hover:bg-surface-container-high transition-colors" data-path="stock-valuation" href="#"><span class="material-symbols-outlined text-[18px] text-secondary">payments</span><span>Stock Valuation</span></a></div></div><div><div class="px-space-sm py-space-xs font-table-header text-table-header text-on-surface-variant uppercase">Operations</div><div class="space-y-0.5"><a class="flex items-center justify-between px-space-sm h-10 rounded text-on-surface font-body-default text-body-default hover:bg-surface-container-high transition-colors" data-path="receipts" href="#"><div class="flex items-center gap-space-md"><span class="material-symbols-outlined text-[18px] text-secondary">call_received</span><span>Receipts</span></div><span class="px-1.5 py-0.5 rounded font-code-medium text-[11px] bg-secondary-container text-on-secondary-fixed">7</span></a><a class="flex items-center justify-between px-space-sm h-10 rounded text-on-surface font-body-default text-body-default hover:bg-surface-container-high transition-colors" data-path="delivery-orders" href="#"><div class="flex items-center gap-space-md"><span class="material-symbols-outlined text-[18px] text-secondary">local_shipping</span><span>Delivery Orders</span></div><span class="px-1.5 py-0.5 rounded font-code-medium text-[11px] bg-primary-fixed text-on-primary-fixed">12</span></a><a class="flex items-center justify-between px-space-sm h-10 rounded text-on-surface font-body-default text-body-default hover:bg-surface-container-high transition-colors" data-path="internal-transfers" href="#"><div class="flex items-center gap-space-md"><span class="material-symbols-outlined text-[18px] text-secondary">sync_alt</span><span>Internal Transfers</span></div><span class="px-1.5 py-0.5 rounded font-code-medium text-[11px] bg-surface-container-high text-on-surface-variant">4</span></a><a class="flex items-center justify-between px-space-sm h-10 rounded text-on-surface font-body-default text-body-default hover:bg-surface-container-high transition-colors" data-path="inventory-adjustments" href="#"><div class="flex items-center gap-space-md"><span class="material-symbols-outlined text-[18px] text-secondary">tune</span><span>Inventory Adjustments</span></div><span class="px-1.5 py-0.5 rounded font-code-medium text-[11px] bg-secondary-container text-on-secondary-fixed">3</span></a></div></div><div><div class="px-space-sm py-space-xs font-table-header text-table-header text-on-surface-variant uppercase">Reporting</div><div class="space-y-0.5"><a class="flex items-center gap-space-md px-space-sm h-10 rounded text-on-surface font-body-default text-body-default hover:bg-surface-container-high transition-colors" data-path="move-history" href="#"><span class="material-symbols-outlined text-[18px] text-secondary">history</span><span>Move History</span></a></div></div><div><div class="px-space-sm py-space-xs font-table-header text-table-header text-on-surface-variant uppercase">Configuration</div><div class="space-y-0.5"><a class="flex items-center gap-space-md px-space-sm h-10 rounded text-on-surface font-body-default text-body-default hover:bg-surface-container-high transition-colors" data-path="locations-warehouses" href="#"><span class="material-symbols-outlined text-[18px] text-secondary">warehouse</span><span>Locations &amp; Warehouses</span></a><a class="flex items-center gap-space-md px-space-sm h-10 rounded text-on-surface font-body-default text-body-default hover:bg-surface-container-high transition-colors" data-path="settings" href="#"><span class="material-symbols-outlined text-[18px] text-secondary">settings</span><span>Settings</span></a></div></div></div></aside><header class="fixed top-0 inset-x-0 z-40 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] pt-safe"><div class="h-14 px-margin flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-xs"><label class="w-11 h-11 flex items-center justify-center text-on-surface cursor-pointer rounded hover:bg-surface-container" for="wms-nav-drawer-toggle"><span class="material-symbols-outlined text-[22px]">menu</span></label><img alt="Brand logo. - Primary color: #1e3a66 - Font: ibmPlexSans - Mode: light - Roundness: rounded-sm" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VoUThKarn-BLG7s9pDBN2x7XZsgmKeQyJ3QhheHvgqXD5Npijwbbkm6l65NfG3QiWIXYa-PbwtQsMWms52rT1oB-tR2Eo_3GMInyX75I1kvgoqY65fILVRWDxiIpG46hg1ip-IkSq2PIgsDwartWbLPoLsltDQU3cC5mWjk6Z_VE03WZ8J3pfV2DwjIxhwaDsOt2fMEHkqQU3gKD2S8cRBRgXDixBk3Wrc8P9T4inHfFJXvZlWjX8CJV8"/></div><div class="flex flex-col items-center justify-center min-w-0 flex-1 px-space-xs"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-primary tracking-tight truncate">StockSense</span><span class="font-code-medium text-[10px] px-1 py-0.2 bg-surface-container-highest text-secondary rounded">WMS</span></div><div class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span><span class="font-table-header text-table-header text-on-surface-variant uppercase tracking-wider truncate">Pune Plant 01</span></div></div><div class="flex items-center gap-1"><button class="w-11 h-11 flex items-center justify-center text-on-surface-variant hover:text-on-surface rounded active:bg-surface-container"><span class="material-symbols-outlined text-[20px]">search</span></button><button class="relative w-11 h-11 flex items-center justify-center text-on-surface-variant hover:text-on-surface rounded active:bg-surface-container"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-2 right-2 min-w-4 h-4 px-1 rounded-full bg-primary text-on-primary font-code-medium text-[9px] flex items-center justify-center leading-none">5</span></button><div class="w-11 h-11 flex items-center justify-center pl-1"><img alt="Profile" class="w-8 h-8 rounded-full object-cover shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1XIpaOCuc6uuRM_TpuILUY2Dqhwp4zvVW8HDqu9L5A2u72WUQH2R_UkaZ9ryuIydegYofyLIaesIMWYrYD8isVt_zIGlM68j2onzgk0TZ2ip0549oVOQpz51WzDnfehOi02E-c8DtDUIImJWAXdJ6bDT7CrFhDerxVOXiQybX4VXatKQBNFWCo-kM_QPaRAo-2-EYZDV_8F0dE0bO4MlVaMsDyS5AAVQFCYIQlD4i94vPYeac1wj29ZJQ"/></div></div></div></header><main class="flex flex-col relative w-full px-margin pt-14 pb-20 bg-surface min-h-screen"><div class="flex flex-col w-full pb-6 space-y-3.5">
+<!-- 1. Header / Page Title Bar -->
+<div class="flex flex-col gap-1 pt-1">
+<div class="flex items-center justify-between">
+<span class="font-table-header text-table-header text-secondary uppercase tracking-widest flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-secondary">tune</span>
+        Operations / Overview
+      </span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-meta-medium text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+        Auto-sync ON · 10s
+      </span>
+</div>
+<div class="flex items-baseline justify-between mt-0.5">
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">Inventory Overview</h1>
+<span class="font-meta-default text-[11px] text-on-surface-variant">Shift A · 06:00 - 14:00</span>
+</div>
+<div class="flex items-center justify-between pt-0.5">
+<button class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container-high text-on-surface font-body-medium text-[12px] active:bg-surface-variant transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[15px] text-primary">warehouse</span>
+<span class="font-medium">Main Warehouse (Pune Hub)</span>
+<span class="material-symbols-outlined text-[14px] text-secondary">expand_more</span>
+</button>
+<span class="font-meta-medium text-[11px] text-secondary">Thu, Oct 24</span>
+</div>
+</div>
+<!-- Operational Alerts Banner (Shortage Alert) -->
+<div class="p-3 rounded-lg bg-error-container/40 flex flex-col gap-2 shadow-sm">
+<div class="flex items-start gap-2.5">
+<div class="w-7 h-7 rounded-full bg-error flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-on-error">warning</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1">
+<span class="font-headline-sm text-[12px] text-on-error-container tracking-tight">Stock Shortage Detected</span>
+<span class="font-code-medium text-[10px] uppercase px-1.5 py-0.2 rounded bg-error text-on-error font-medium">Critical</span>
+</div>
+<p class="font-body-default text-[12px] text-on-error-container/90 mt-0.5 leading-snug">
+<strong class="font-code-medium text-[11px]">DO-0010</strong>: LED Panels 36W has a deficit of <span class="font-code-medium text-error font-semibold">12 units</span> for Apex Auto dispatch.
+        </p>
+</div>
+</div>
+<div class="flex items-center justify-end gap-2 pt-1 border-t border-error/10">
+<button class="px-2.5 py-1 rounded bg-surface-container-lowest text-on-surface-variant font-meta-medium text-[11px] shadow-sm active:bg-surface-container">
+        Dismiss
+      </button>
+<button class="px-3 py-1 rounded bg-primary text-on-primary font-body-medium text-[11px] flex items-center gap-1 shadow-sm active:bg-primary-container">
+<span>Review DO-0010</span>
+<span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- 2. Primary Quick Actions -->
+<div class="flex flex-col gap-2">
+<!-- Big Touch Primary Trigger -->
+<button class="w-full h-11 px-4 rounded-lg bg-primary-container text-on-primary font-headline-sm text-headline-sm flex items-center justify-center gap-2 active:bg-primary shadow-sm transition-all duration-150 active:scale-[0.99]" type="button">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+<span>Create Operation / Intake</span>
+</button>
+<!-- Secondary 2-Col Button Group -->
+<div class="grid grid-cols-2 gap-2">
+<button class="h-10 px-3 rounded bg-surface-container-lowest text-primary font-body-medium text-body-medium flex items-center justify-center gap-1.5 shadow-sm active:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[17px] text-secondary">login</span>
+<span>New Receipt</span>
+</button>
+<button class="h-10 px-3 rounded bg-surface-container-lowest text-primary font-body-medium text-body-medium flex items-center justify-center gap-1.5 shadow-sm active:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[17px] text-secondary">local_shipping</span>
+<span>New Delivery</span>
+</button>
+</div>
+<!-- Quick Action Horizontal Scrollable Filter Chips -->
+<div class="flex items-center gap-1.5 overflow-x-auto py-0.5 no-scrollbar -mx-1 px-1">
+<button class="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full bg-error-container/60 text-on-error-container font-meta-medium text-[11px] shadow-xs active:bg-error-container">
+<span class="material-symbols-outlined text-[13px] text-error">bolt</span>
+<span>Urgent DO (1)</span>
+</button>
+<button class="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-fixed font-meta-medium text-[11px] shadow-xs active:bg-secondary-fixed-dim">
+<span class="material-symbols-outlined text-[13px] text-secondary">warning_amber</span>
+<span>Low Stock (3)</span>
+</button>
+<button class="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-meta-medium text-[11px] shadow-xs active:bg-surface-variant">
+<span class="material-symbols-outlined text-[13px] text-secondary">sync_alt</span>
+<span>Transfers (4)</span>
+</button>
+<button class="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-meta-medium text-[11px] shadow-xs active:bg-surface-variant">
+<span class="material-symbols-outlined text-[13px] text-secondary">checklist</span>
+<span>Cycle Count (1)</span>
+</button>
+</div>
+</div>
+<!-- 4. 2-Column KPI Cards Grid -->
+<div class="grid grid-cols-2 gap-2.5">
+<!-- Card 1 -->
+<div class="p-3 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col justify-between h-[104px]">
+<div class="flex items-center justify-between">
+<span class="font-table-header text-[10px] text-on-surface-variant uppercase tracking-wider">Total Stock</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">inventory_2</span>
+</div>
+<div>
+<div class="font-code-medium text-[20px] font-semibold text-primary leading-tight">1,428</div>
+<div class="flex items-center gap-1 mt-1">
+<span class="inline-flex items-center text-[10px] font-code-medium font-semibold px-1 py-0.2 rounded bg-emerald-100 text-emerald-800">
+            +4.2%
+          </span>
+<span class="font-meta-default text-[10px] text-on-surface-variant truncate">vs last wk</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="p-3 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col justify-between h-[104px]">
+<div class="flex items-center justify-between">
+<span class="font-table-header text-[10px] text-on-surface-variant uppercase tracking-wider">Gross Valuation</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">payments</span>
+</div>
+<div>
+<div class="font-code-medium text-[20px] font-semibold text-primary leading-tight">₹4.82 Cr</div>
+<div class="flex items-center gap-1 mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span class="font-meta-default text-[10px] text-on-surface-variant truncate">Asset baseline</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="p-3 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col justify-between h-[104px]">
+<div class="flex items-center justify-between">
+<span class="font-table-header text-[10px] text-on-surface-variant uppercase tracking-wider">Inward Pending</span>
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</div>
+<div>
+<div class="font-code-medium text-[19px] font-semibold text-on-surface leading-tight">7 Receipts</div>
+<div class="font-meta-default text-[11px] text-secondary mt-0.5 truncate flex items-center gap-1">
+<span class="font-code-default text-[11px] font-medium text-primary">420</span> units arriving
+        </div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="p-3 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col justify-between h-[104px]">
+<div class="flex items-center justify-between">
+<span class="font-table-header text-[10px] text-on-surface-variant uppercase tracking-wider">Outward Dispatch</span>
+<span class="w-2 h-2 rounded-full bg-amber-500"></span>
+</div>
+<div>
+<div class="font-code-medium text-[19px] font-semibold text-on-surface leading-tight">12 Orders</div>
+<div class="font-meta-default text-[11px] text-secondary mt-0.5 truncate flex items-center gap-1">
+<span class="font-code-default text-[11px] font-medium text-amber-700">312</span> units queued
+        </div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="p-3 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col justify-between h-[104px]">
+<div class="flex items-center justify-between">
+<span class="font-table-header text-[10px] text-on-surface-variant uppercase tracking-wider">Transfers</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">sync_alt</span>
+</div>
+<div>
+<div class="font-code-medium text-[19px] font-semibold text-on-surface leading-tight">4 Active</div>
+<div class="font-meta-default text-[11px] text-secondary mt-0.5 truncate flex items-center gap-1">
+<span class="font-code-default text-[11px] font-medium text-primary">38</span> moved today
+        </div>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="p-3 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col justify-between h-[104px]">
+<div class="flex items-center justify-between">
+<span class="font-table-header text-[10px] text-on-surface-variant uppercase tracking-wider">Discrepancies</span>
+<span class="w-2 h-2 rounded-full bg-error animate-ping"></span>
+</div>
+<div>
+<div class="font-code-medium text-[19px] font-semibold text-error leading-tight">2 Flagged</div>
+<div class="font-meta-default text-[10px] text-on-surface-variant mt-0.5 truncate">
+          ADJ-0004 pending
+        </div>
+</div>
+</div>
+</div>
+<!-- 5. Operations Quick Pipeline Progress Segment -->
+<div class="p-3 rounded-lg bg-surface-container-lowest shadow-sm space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-primary">Shift Throughput Pipeline</span>
+<span class="font-code-medium text-[11px] text-on-surface-variant">26 Total Tasks</span>
+</div>
+<!-- Segmented Graphic Bar -->
+<div class="h-2.5 w-full rounded-full bg-surface-container flex overflow-hidden">
+<div class="bg-primary h-full" style="width: 27%" title="Receipts: 7"></div>
+<div class="bg-secondary-container h-full" style="width: 46%" title="Deliveries: 12"></div>
+<div class="bg-primary-fixed-dim h-full" style="width: 15%" title="Transfers: 4"></div>
+<div class="bg-error h-full" style="width: 12%" title="Adjustments: 3"></div>
+</div>
+<!-- Legend Row -->
+<div class="grid grid-cols-4 gap-1 pt-1 text-center font-meta-medium text-[10px]">
+<div class="flex flex-col items-center">
+<span class="text-primary font-code-medium">7 In</span>
+<span class="text-on-surface-variant font-meta-default text-[9px]">Receipts</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-primary font-code-medium">12 Out</span>
+<span class="text-on-surface-variant font-meta-default text-[9px]">Deliveries</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-primary font-code-medium">4 Int</span>
+<span class="text-on-surface-variant font-meta-default text-[9px]">Transfers</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-error font-code-medium">3 Adj</span>
+<span class="text-on-surface-variant font-meta-default text-[9px]">Review</span>
+</div>
+</div>
+</div>
+<!-- 6. 'Stock by Location & Category' Matrix Panel -->
+<div class="rounded-lg bg-surface-container-lowest shadow-sm flex flex-col overflow-hidden">
+<!-- Panel Header -->
+<div class="px-3 py-2.5 bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">view_column</span>
+<span class="font-headline-sm text-headline-sm text-primary">Stock by Location</span>
+</div>
+<div class="flex items-center gap-1 text-secondary font-meta-medium text-[10px]">
+<span class="material-symbols-outlined text-[13px]">swipe</span>
+<span>Swipe table</span>
+</div>
+</div>
+<!-- Matrix Scroll Wrapper with Sticky Left Product Column -->
+<div class="overflow-x-auto w-full relative">
+<table class="w-full text-left border-collapse min-w-[520px]">
+<thead>
+<tr class="bg-surface-container-high text-on-surface-variant font-table-header text-[10px] uppercase tracking-wider">
+<th class="py-2 px-3 sticky left-0 z-10 bg-surface-container-high font-semibold shadow-xs">Product &amp; SKU</th>
+<th class="py-2 px-2 text-right">Main Wh</th>
+<th class="py-2 px-2 text-right">Prod Floor</th>
+<th class="py-2 px-2 text-right">Buffer / Yard</th>
+<th class="py-2 px-2 text-right font-semibold">Total Stock</th>
+<th class="py-2 px-3 text-right">Valuation</th>
+</tr>
+</thead>
+<tbody class="divide-y-0 text-[12px]">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-2 px-3 sticky left-0 z-10 bg-surface-container-lowest font-body-medium shadow-xs">
+<div class="text-on-surface truncate max-w-[130px]">Steel Rods 12mm</div>
+<div class="font-code-default text-[10px] text-on-surface-variant">SR001</div>
+</td>
+<td class="py-2 px-2 text-right font-code-default text-on-surface">152 kg</td>
+<td class="py-2 px-2 text-right font-code-default text-on-surface">153 kg</td>
+<td class="py-2 px-2 text-right font-code-default text-on-surface">64 kg</td>
+<td class="py-2 px-2 text-right font-code-medium font-semibold text-primary">369 kg</td>
+<td class="py-2 px-3 text-right font-code-default text-on-surface-variant">₹1.84 L</td>
+</tr>
+<!-- Row 2 -->
+<tr class="bg-error-container/20 hover:bg-error-container/30 transition-colors">
+<td class="py-2 px-3 sticky left-0 z-10 bg-error-container/30 font-body-medium shadow-xs">
+<div class="text-on-surface truncate max-w-[130px] flex items-center gap-1">
+<span>LED Panels 36W</span>
+<span class="w-1.5 h-1.5 rounded-full bg-error shrink-0"></span>
+</div>
+<div class="font-code-default text-[10px] text-error font-medium">LP012 · Stockout</div>
+</td>
+<td class="py-2 px-2 text-right font-code-medium text-error font-semibold">0 un</td>
+<td class="py-2 px-2 text-right font-code-default text-on-surface-variant">-</td>
+<td class="py-2 px-2 text-right font-code-default text-secondary">12 un <span class="text-[9px]">(Tr)</span></td>
+<td class="py-2 px-2 text-right font-code-medium font-semibold text-error">12 un</td>
+<td class="py-2 px-3 text-right font-code-default text-on-surface-variant">₹43,200</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-2 px-3 sticky left-0 z-10 bg-surface-container-lowest font-body-medium shadow-xs">
+<div class="text-on-surface truncate max-w-[130px]">Copper Wire 2.5mm</div>
+<div class="font-code-default text-[10px] text-on-surface-variant">CW005</div>
+</td>
+<td class="py-2 px-2 text-right font-code-default text-on-surface">8 sp</td>
+<td class="py-2 px-2 text-right font-code-default text-on-surface">14 sp</td>
+<td class="py-2 px-2 text-right font-code-default text-on-surface-variant">-</td>
+<td class="py-2 px-2 text-right font-code-medium font-semibold text-primary">22 sp</td>
+<td class="py-2 px-3 text-right font-code-default text-on-surface-variant">₹92,400</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-2 px-3 sticky left-0 z-10 bg-surface-container-lowest font-body-medium shadow-xs">
+<div class="text-on-surface truncate max-w-[130px]">Work Gloves Nitrile</div>
+<div class="font-code-default text-[10px] text-on-surface-variant">WG006</div>
+</td>
+<td class="py-2 px-2 text-right font-code-default text-on-surface">121 pr</td>
+<td class="py-2 px-2 text-right font-code-default text-error">-3 pr</td>
+<td class="py-2 px-2 text-right font-code-default text-on-surface-variant">-</td>
+<td class="py-2 px-2 text-right font-code-medium font-semibold text-primary">121 pr</td>
+<td class="py-2 px-3 text-right font-code-default text-on-surface-variant">₹30,250</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-2 px-3 sticky left-0 z-10 bg-surface-container-lowest font-body-medium shadow-xs">
+<div class="text-on-surface truncate max-w-[130px]">Aluminum Sheets</div>
+<div class="font-code-default text-[10px] text-on-surface-variant">AL042</div>
+</td>
+<td class="py-2 px-2 text-right font-code-default text-on-surface">50 sh</td>
+<td class="py-2 px-2 text-right font-code-default text-on-surface-variant">-</td>
+<td class="py-2 px-2 text-right font-code-default text-on-surface">200 sh</td>
+<td class="py-2 px-2 text-right font-code-medium font-semibold text-primary">250 sh</td>
+<td class="py-2 px-3 text-right font-code-default text-on-surface-variant">₹3.12 L</td>
+</tr>
+</tbody>
+<tfoot>
+<tr class="bg-surface-container font-headline-sm text-[11px] text-primary">
+<td class="py-2 px-3 sticky left-0 z-10 bg-surface-container font-semibold shadow-xs">Totals (Active SKUs)</td>
+<td class="py-2 px-2 text-right font-code-medium">331 items</td>
+<td class="py-2 px-2 text-right font-code-medium">164 items</td>
+<td class="py-2 px-2 text-right font-code-medium">276 items</td>
+<td class="py-2 px-2 text-right font-code-medium font-bold text-primary">774 items</td>
+<td class="py-2 px-3 text-right font-code-medium font-bold text-primary">₹6.61 L</td>
+</tr>
+</tfoot>
+</table>
+</div>
+<!-- Matrix Footnote / Action -->
+<div class="px-3 py-2 bg-surface-container-low flex items-center justify-between">
+<span class="font-meta-default text-[11px] text-on-surface-variant">Showing 5 of 34 categories</span>
+<a class="font-body-medium text-[11px] text-primary flex items-center gap-0.5 active:underline" href="#">
+<span>Full Matrix</span>
+<span class="material-symbols-outlined text-[13px]">chevron_right</span>
+</a>
+</div>
+</div>
+<!-- 7. Recent Movements Activity Feed -->
+<div class="rounded-lg bg-surface-container-lowest shadow-sm p-3 space-y-2.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-primary">history</span>
+<span class="font-headline-sm text-headline-sm text-primary">Recent Move Activity</span>
+</div>
+<span class="font-code-medium text-[11px] text-secondary">Live Log</span>
+</div>
+<!-- Feed Items -->
+<div class="space-y-2">
+<!-- Movement 1: Inward -->
+<div class="p-2 rounded bg-surface-container-low flex items-center justify-between gap-2 active:bg-surface-container transition-colors">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px]">call_received</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-code-medium text-[11px] font-semibold text-primary">REC-0005</span>
+<span class="font-meta-default text-[10px] text-on-surface-variant">· Metro Ind.</span>
+</div>
+<div class="font-body-default text-[11px] text-on-surface truncate">Steel Rods 12mm</div>
+</div>
+</div>
+<div class="text-right shrink-0">
+<div class="font-code-medium text-[12px] font-semibold text-emerald-700">+197 kg</div>
+<div class="font-meta-default text-[10px] text-on-surface-variant">11:15 AM</div>
+</div>
+</div>
+<!-- Movement 2: Outward -->
+<div class="p-2 rounded bg-surface-container-low flex items-center justify-between gap-2 active:bg-surface-container transition-colors">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-7 h-7 rounded bg-amber-100 text-amber-900 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px]">local_shipping</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-code-medium text-[11px] font-semibold text-primary">DO-0010</span>
+<span class="font-meta-default text-[10px] text-on-surface-variant">· Apex Auto</span>
+</div>
+<div class="font-body-default text-[11px] text-on-surface truncate">LED Panels 36W</div>
+</div>
+</div>
+<div class="text-right shrink-0">
+<div class="font-code-medium text-[12px] font-semibold text-error">-12 units</div>
+<div class="font-meta-default text-[10px] text-on-surface-variant">10:42 AM</div>
+</div>
+</div>
+<!-- Movement 3: Transfer -->
+<div class="p-2 rounded bg-surface-container-low flex items-center justify-between gap-2 active:bg-surface-container transition-colors">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-7 h-7 rounded bg-primary-fixed text-on-primary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px]">sync_alt</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-code-medium text-[11px] font-semibold text-primary">INT-0006</span>
+<span class="font-meta-default text-[10px] text-on-surface-variant">· Main → Prod</span>
+</div>
+<div class="font-body-default text-[11px] text-on-surface truncate">Copper Wire 2.5mm</div>
+</div>
+</div>
+<div class="text-right shrink-0">
+<div class="font-code-medium text-[12px] font-semibold text-primary">⇄ 8 spools</div>
+<div class="font-meta-default text-[10px] text-on-surface-variant">09:55 AM</div>
+</div>
+</div>
+<!-- Movement 4: Discrepancy Adjustment -->
+<div class="p-2 rounded bg-surface-container-low flex items-center justify-between gap-2 active:bg-surface-container transition-colors">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-7 h-7 rounded bg-error-container text-on-error-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-code-medium text-[11px] font-semibold text-primary">ADJ-0004</span>
+<span class="font-meta-default text-[10px] text-error font-medium">· Shrinkage</span>
+</div>
+<div class="font-body-default text-[11px] text-on-surface truncate">Work Gloves Nitrile</div>
+</div>
+</div>
+<div class="text-right shrink-0">
+<div class="font-code-medium text-[12px] font-semibold text-error">-3 pairs</div>
+<div class="font-meta-default text-[10px] text-on-surface-variant">09:12 AM</div>
+</div>
+</div>
+</div>
+<!-- Ledger Link -->
+<a class="pt-1.5 flex items-center justify-center gap-1 w-full text-center font-body-medium text-[12px] text-primary hover:text-primary-container active:underline" href="#">
+<span>View Complete Ledger (184 Moves)</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+<!-- 8. Mobile Quick Tools Card (Barcode Scanning & Operational Notes) -->
+<div class="p-3 rounded-lg bg-surface-container flex items-center justify-between gap-2 shadow-xs">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-9 h-9 rounded bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">qr_code_scanner</span>
+</div>
+<div class="min-w-0">
+<div class="font-headline-sm text-[12px] text-primary truncate">Direct Bin / SKU Scanner</div>
+<div class="font-meta-default text-[10px] text-secondary truncate">Ready for physical tally audit</div>
+</div>
+</div>
+<div class="flex items-center gap-1.5 shrink-0">
+<button class="h-8 px-2.5 rounded bg-surface-container-lowest text-primary font-body-medium text-[11px] shadow-xs active:bg-surface-container-high flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[14px]">edit_note</span>
+<span>Log</span>
+</button>
+<button class="h-8 px-3 rounded bg-primary text-on-primary font-body-medium text-[11px] shadow-sm active:bg-primary-container flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[14px]">barcode_scanner</span>
+<span>Scan</span>
+</button>
+</div>
+</div>
+</div></main><nav class="fixed bottom-0 inset-x-0 z-40 pb-safe bg-surface/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.06)]" data-active-classes="text-primary font-body-medium"><div class="flex justify-around items-center h-14 px-gutter"><a aria-current="page" class="flex flex-col items-center justify-center w-14 h-12 transition-colors text-primary font-body-medium" data-path="overview" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span><span class="font-table-header text-[10px] uppercase tracking-wider mt-0.5">Overview</span></a><a class="flex flex-col items-center justify-center w-14 h-12 text-on-surface-variant transition-colors active:text-primary" data-path="products" href="#"><span class="material-symbols-outlined text-[20px]">inventory_2</span><span class="font-table-header text-[10px] uppercase tracking-wider mt-0.5">Stock</span></a><a class="flex flex-col items-center justify-center w-14 h-12 text-on-surface-variant transition-colors active:text-primary" data-path="receipts" href="#"><span class="material-symbols-outlined text-[20px]">call_received</span><span class="font-table-header text-[10px] uppercase tracking-wider mt-0.5">Receipts</span></a><a class="flex flex-col items-center justify-center w-14 h-12 text-on-surface-variant transition-colors active:text-primary" data-path="delivery-orders" href="#"><span class="material-symbols-outlined text-[20px]">local_shipping</span><span class="font-table-header text-[10px] uppercase tracking-wider mt-0.5">Delivery</span></a><a class="flex flex-col items-center justify-center w-14 h-12 text-on-surface-variant transition-colors active:text-primary" data-path="settings" href="#"><span class="material-symbols-outlined text-[20px]">settings</span><span class="font-table-header text-[10px] uppercase tracking-wider mt-0.5">Config</span></a></div></nav></body></html>

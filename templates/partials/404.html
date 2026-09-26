@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>StockSense - Page Not Found</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>@layer base{html,body{margin:0;padding:0;}}</style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#01244f",
+            "primary-container": "#1e3a66",
+            "on-primary": "#ffffff",
+            "surface": "#f8f9fb",
+            "surface-container-low": "#f3f4f6",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-highest": "#e1e2e4",
+            "on-surface": "#191c1e",
+            "on-surface-variant": "#44474f"
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface font-sans antialiased min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-[480px] bg-surface-container-lowest rounded-xl border border-surface-container-highest shadow-md p-8 text-center flex flex-col items-center">
+    <div class="w-14 h-14 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center text-primary-container mb-4">
+      <span class="material-symbols-outlined text-[28px]">search_off</span>
+    </div>
+    <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-surface-container-low text-on-surface-variant uppercase tracking-wider font-semibold mb-2">HTTP 404 · NOT FOUND</span>
+    <h1 class="text-xl font-bold text-on-surface mb-2">Document or Record Not Found</h1>
+    <p class="text-[13px] text-on-surface-variant mb-6">The requested reference, document or view does not exist in the warehouse system.</p>
+    <a href="/" class="h-9 px-4 bg-primary-container hover:bg-primary text-on-primary text-[13px] font-medium rounded flex items-center justify-center gap-2 transition-colors shadow-sm">
+      <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+      <span>Return to Operations Dashboard</span>
+    </a>
+  </div>
+</body>
+</html>
